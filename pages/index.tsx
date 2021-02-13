@@ -23,19 +23,23 @@ const homeStyles = css`
     }
     &-wrapper {
       grid-area: page-text;
-      background-color: #141212;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 1) 24%,
+        rgba(82, 82, 242, 0.85) 100%
+      );
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       padding: 50px;
       &__icon {
-        color: white;
+        color: #000;
         font-size: 60px;
       }
       &__text {
         max-width: 420px;
         h2 {
-          color: white;
+          color: #000;
           font-size: 42px;
           margin: 0 0 40px 0;
         }
@@ -48,6 +52,7 @@ const homeStyles = css`
 
         button {
           background-color: #5252f2;
+          /* #5252f2; */
           box-shadow: none;
           color: #fff;
           border: none;
@@ -61,7 +66,7 @@ const homeStyles = css`
       &__list {
         margin: 0;
         padding: 0;
-        color: #fff;
+        color: #000;
         list-style: none;
         li {
           svg {
