@@ -1,20 +1,12 @@
-import { createWrapper } from 'next-redux-wrapper';
-import { Provider } from 'react-redux';
-import store from '../store/store';
+import { PrinterProvider } from '../components/PrintersContext';
 import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Provider store={store}>
+    <PrinterProvider>
       <Component {...pageProps} />
-    </Provider>
+    </PrinterProvider>
   );
 }
 
-// create a makeStore function
-const makeStore = () => store;
-
-// export an assembled wrapper
-const wrapper = createWrapper(makeStore, { debug: true });
-
-export default wrapper.withRedux(MyApp);
+export default MyApp;

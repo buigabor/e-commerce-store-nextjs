@@ -3,10 +3,7 @@ import { css } from '@emotion/react';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../components/Layout';
-import { fetchProducts } from '../store/actions/productAction';
 
 const homeStyles = css`
   height: 90vh;
@@ -79,12 +76,6 @@ const homeStyles = css`
 `;
 
 export default function Home() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchProducts());
-  }, []);
-  const { products } = useSelector((state) => state.post);
   return (
     <Layout>
       <div css={homeStyles}>
