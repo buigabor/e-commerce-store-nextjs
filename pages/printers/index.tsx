@@ -1,17 +1,22 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { faCaretDown, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Checkbox from '@material-ui/core/Checkbox';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
-import React, { useEffect, useState } from 'react';
-import Layout from '../components/Layout';
+import React, { useEffect, useRef, useState } from 'react';
+import Layout from '../../components/Layout';
+import { PrinterCard } from '../../components/Printer';
 import {
+  Printer,
+  useDispatchCart,
   useDispatchPrinters,
+  useOverlay,
   usePrinters,
-} from '../components/PrintersContext';
-import { getPrinters } from './api/database';
+  useUpdateOverlay,
+} from '../../components/PrintersContext';
+import { getPrinters } from '../api/database';
 
 const printersStyle = css`
   display: grid;
@@ -36,6 +41,7 @@ const printersStyle = css`
     padding: 1.5rem;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     border-radius: 1rem;
+    cursor: pointer;
     &-img {
       display: block;
       width: 100%;
@@ -115,6 +121,7 @@ const printersStyle = css`
       border-left: 1px solid gray;
     }
     &-row {
+      cursor: pointer;
       &__header {
         color: #163347;
         display: flex;
@@ -159,13 +166,22 @@ const printersStyle = css`
   }
 `;
 
-const Printers = ({ printersFetched }) => {
+interface PrintersProps {
+  printersFetched: Printer[];
+}
+
+const Printers = ({ printersFetched }: PrintersProps) => {
   const dispatch = useDispatchPrinters();
   const printers = usePrinters();
-  const [matFilterActive, setMatFilterActive] = useState(false);
-  const [techFilterActive, setTechFilterActive] = useState(false);
-  const [priceFilterActive, setPriceFilterActive] = useState(false);
-  const [price, setPrice] = useState([300, 1200]);
+  const [matFilterActive, setMatFilterActive] = useState<boolean>(false);
+  const [techFilterActive, setTechFilterActive] = useState<boolean>(false);
+  const [priceFilterActive, setPriceFilterActive] = useState<boolean>(false);
+  const [price, setPrice] = useState<number[] | number>([300, 1200]);
+  const [btnClicked, setBtnClicked] = useState(false);
+  const cartBtnEl = useRef<HTMLButtonElement>(null);
+  const dispatchCart = useDispatchCart();
+  const overlayActive = useOverlay();
+  const toggleOverlay = useUpdateOverlay();
 
   useEffect(() => {
     // Remove last 2 elements
@@ -177,11 +193,11 @@ const Printers = ({ printersFetched }) => {
     });
   }, []);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event: any, newValue: number | number[]) => {
     setPrice(newValue);
   };
 
-  function valuetext(value) {
+  function valuetext(value: number) {
     return `${value} €`;
   }
 
@@ -195,11 +211,9 @@ const Printers = ({ printersFetched }) => {
             <h2>CATEGORIES</h2>
             <div className="filter-row">
               <div
-                className={
-                  matFilterActive
-                    ? 'filter-row__header border-bottom'
-                    : 'filter-row__header'
-                }
+                className={`filter-row__header ${
+                  matFilterActive ? 'border-bottom' : ''
+                }`}
                 onClick={() => {
                   setMatFilterActive(!matFilterActive);
                 }}
@@ -209,11 +223,9 @@ const Printers = ({ printersFetched }) => {
                 <FontAwesomeIcon className="filter-icon" icon={faCaretDown} />
               </div>
               <div
-                className={
-                  matFilterActive
-                    ? 'filter-dropdown-content show'
-                    : 'filter-dropdown-content'
-                }
+                className={`filter-dropdown-content ${
+                  matFilterActive ? 'show' : ''
+                }`}
               >
                 <p>
                   <Checkbox
@@ -243,11 +255,9 @@ const Printers = ({ printersFetched }) => {
             </div>
             <div className="filter-row">
               <div
-                className={
-                  techFilterActive
-                    ? 'filter-row__header border-bottom'
-                    : 'filter-row__header'
-                }
+                className={`filter-row__header ${
+                  techFilterActive ? 'border-bottom' : ''
+                }`}
                 onClick={() => {
                   setTechFilterActive(!techFilterActive);
                 }}
@@ -257,11 +267,9 @@ const Printers = ({ printersFetched }) => {
                 <FontAwesomeIcon className="filter-icon" icon={faCaretDown} />
               </div>
               <div
-                className={
-                  techFilterActive
-                    ? 'filter-dropdown-content show'
-                    : 'filter-dropdown-content'
-                }
+                className={`filter-dropdown-content ${
+                  techFilterActive ? 'show' : ''
+                }`}
               >
                 <p>
                   <Checkbox
@@ -291,11 +299,9 @@ const Printers = ({ printersFetched }) => {
             </div>
             <div className="filter-row">
               <div
-                className={
-                  priceFilterActive
-                    ? 'filter-row__header border-bottom'
-                    : 'filter-row__header'
-                }
+                className={`filter-row__header ${
+                  priceFilterActive ? 'border-bottom' : ''
+                }`}
                 onClick={() => {
                   setPriceFilterActive(!priceFilterActive);
                 }}
@@ -305,11 +311,9 @@ const Printers = ({ printersFetched }) => {
                 <FontAwesomeIcon className="filter-icon" icon={faCaretDown} />
               </div>
               <div
-                className={
-                  priceFilterActive
-                    ? 'filter-dropdown-content show'
-                    : 'filter-dropdown-content'
-                }
+                className={`filter-dropdown-content ${
+                  priceFilterActive ? 'show' : ''
+                }`}
               >
                 <Typography id="range-slider" gutterBottom>
                   Price range (€)
@@ -328,23 +332,8 @@ const Printers = ({ printersFetched }) => {
             </div>
           </div>
           <div className="catalog">
-            {printers[0].map((printer) => {
-              return (
-                <article key={printer.id} className="product">
-                  <div className="img-container">
-                    <img
-                      src={printer.imgUrl}
-                      alt="Product 1"
-                      className="product-img"
-                    />
-                    <button className="bag-btn" data-id="1">
-                      <FontAwesomeIcon icon={faShoppingCart} /> add to cart
-                    </button>
-                  </div>
-                  <h3>{printer.name}</h3>
-                  <h4>{printer.price} €</h4>
-                </article>
-              );
+            {printers.map((printer) => {
+              return <PrinterCard printer={printer} />;
             })}
           </div>
         </div>
@@ -362,6 +351,7 @@ const Printers = ({ printersFetched }) => {
 export async function getStaticProps() {
   // Get printers from PG database
   const printersFetched = await getPrinters();
+
   return { props: { printersFetched } };
 }
 

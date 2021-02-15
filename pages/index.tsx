@@ -49,15 +49,20 @@ const homeStyles = css`
 
         button {
           background-color: #5252f2;
-          /* #5252f2; */
           box-shadow: none;
           color: #fff;
           border: none;
           border-radius: 5px;
-          padding: 18px 34px;
+          padding: 0.8rem 2rem;
           font-size: 16px;
           font-weight: 600;
           outline: none;
+          cursor: pointer;
+          transition: all 0.2s ease-in-out;
+
+          &:hover {
+            background-color: #3535f5;
+          }
         }
       }
       &__list {
