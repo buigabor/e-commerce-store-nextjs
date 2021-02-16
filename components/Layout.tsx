@@ -1,12 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import {
-  faChevronDown,
-  faChevronUp,
-  faWindowClose,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
+import { Cart } from './Cart';
 import { Nav } from './Nav';
 import { useOverlay, useUpdateOverlay } from './PrintersContext';
 
@@ -29,7 +24,7 @@ const overlayStyles = css`
     height: 100%;
     overflow: scroll;
     z-index: 4;
-    background: rgb(250, 244, 244);
+    background: rgb(255, 255, 255);
     padding: 1.5rem;
     transition: all 0.2s linear;
     transform: translateX(100%);
@@ -82,21 +77,22 @@ const overlayStyles = css`
     h4 {
       font-size: 0.85rem;
       text-transform: capitalize;
-      letter-spacing: var.$mainSpacing;
+      letter-spacing: 0.1rem;
     }
 
     h5 {
       margin: 0.5rem 0;
-      letter-spacing: var.$mainSpacing;
+      letter-spacing: 0.1rem;
     }
   }
 
   .item-amount {
     text-align: center;
+    margin: 3px 0;
   }
 
   .remove-item {
-    color: grey;
+    color: #929191 /* color: #fa6363; */;
     cursor: pointer;
   }
 `;
@@ -111,45 +107,13 @@ const Layout: React.FC = ({ children }) => {
       <div
         css={overlayStyles}
         style={{ visibility: overlayActive ? 'visible' : 'hidden' }}
+        onClick={(e) => {
+          if (e.target.classList.contains('css-c2wgtm-overlayStyles')) {
+            toggleOverlay();
+          }
+        }}
       >
-        <div
-          style={{
-            transform: overlayActive ? 'translateX(0%)' : 'translateX(100%)',
-          }}
-          className="cart"
-        >
-          <span className="close-cart">
-            <FontAwesomeIcon
-              icon={faWindowClose}
-              onClick={() => {
-                toggleOverlay();
-              }}
-            />
-          </span>
-          <h2>Your Cart</h2>
-          <div className="cart-content">
-            <div className="cart-item">
-              <img src="./images/product-1.jpeg" alt="product" />
-              <div>
-                <h4>queen bed</h4>
-                <h5>$9.00</h5>
-                <span className="remove-item">remove</span>
-              </div>
-              <div>
-                <FontAwesomeIcon icon={faChevronUp} />
-                <p className="item-amount">1</p>
-                <FontAwesomeIcon icon={faChevronDown} />
-              </div>
-            </div>
-          </div>
-
-          <div className="cart-footer">
-            <h3>
-              your total: $ <span className="cart-total">0</span>
-            </h3>
-            <button className="clear-cart banner-btn">clear cart</button>
-          </div>
-        </div>
+        <Cart />
       </div>
     </>
   );

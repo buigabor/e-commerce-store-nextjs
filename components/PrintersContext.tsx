@@ -6,13 +6,33 @@ import {
   useState,
 } from 'react';
 
-const PrinterStateContext = createContext<Printer[]>([]);
+interface PrinterState {
+  printers: Printer[];
+  loading: boolean;
+  error: null | string;
+}
+
+interface CartState {
+  cart: CartItem[];
+}
+
+const initialPrinterState = {
+  printers: [],
+  loading: false,
+  error: null,
+};
+
+const initialCartState = {
+  cart: [],
+};
+
+const PrinterStateContext = createContext<PrinterState>(initialPrinterState);
 const PrinterDispatchContext = createContext<Dispatch<ActionPrinters>>(
   () => null,
 );
 const OverlayContext = createContext<boolean>(false);
 const UpdateOverlayContext = createContext(() => {});
-const CartStateContext = createContext<CartItem[]>([]);
+const CartStateContext = createContext<CartState>(initialCartState);
 const CartDispatchContext = createContext<Dispatch<ActionCart>>(() => null);
 
 export interface CartItem extends Printer {
@@ -44,39 +64,75 @@ interface ActionCart {
 
 type Reducer<S, A> = (prevState: S, action: A) => S;
 
-const printersReducer: Reducer<Printer[], ActionPrinters> = (
-  state: Printer[],
+const printersReducer: Reducer<PrinterState, ActionPrinters> = (
+  state: PrinterState,
   action: ActionPrinters,
 ) => {
   switch (action.type) {
     case 'GET_PRINTERS':
-      return [...state, ...action.payload];
+      return { ...state, printers: [...action.payload] };
     default:
       return state;
   }
 };
 
-const cartReducer: Reducer<CartItem[], ActionCart> = (
-  state: CartItem[],
+const handleQuantity = (
+  state: CartState,
   action: ActionCart,
-) => {
+  mode: string,
+): CartItem[] => {
+  if (mode === 'add') {
+    return state.cart.map((printer: CartItem) => {
+      if (printer.id === action.payload) {
+        printer.quantity += 1;
+        return { ...printer };
+      }
+      return { ...printer };
+    });
+  } else if (mode === 'subtract') {
+    return state.cart.map((printer: CartItem) => {
+      if (printer.id === action.payload) {
+        printer.quantity -= 1;
+        return { ...printer };
+      }
+      return { ...printer };
+    });
+  } else {
+    return { ...state, ...state.cart };
+  }
+};
+
+const cartReducer: Reducer<CartState, ActionCart> = (
+  state: CartState,
+  action: ActionCart,
+): CartState => {
   switch (action.type) {
     case 'ADD_TO_CART':
-      return [...state, action.payload];
-    case 'REMOVE_ONE_FROM_CART':
-      return [...state, action.payload];
+      return { ...state, cart: [...state.cart, action.payload] };
+    case 'INCREMENT_QUANTITY':
+      return { ...state, cart: handleQuantity(state, action, 'add') };
+    case 'DECREMENT_QUANTITY':
+      return { ...state, cart: handleQuantity(state, action, 'subtract') };
     case 'REMOVE_FROM_CART':
-      return [...state, action.payload];
+      return {
+        ...state,
+        cart: state.cart.filter((printer) => {
+          return printer.id !== action.payload;
+        }),
+      };
     case 'CLEAR_CART':
-      return [...state, action.payload];
+      return { ...state };
     default:
       return state;
   }
 };
 
 export const PrinterProvider: React.FC = ({ children }) => {
-  const [printers, dispatchPrinters] = useReducer(printersReducer, []);
-  const [cart, dispatchCart] = useReducer(cartReducer, []);
+  const [printers, dispatchPrinters] = useReducer(
+    printersReducer,
+    initialPrinterState,
+  );
+  const [cart, dispatchCart] = useReducer(cartReducer, initialCartState);
   const [overlayActive, setOverlayActive] = useState<boolean>(false);
 
   function toggleOverlay() {

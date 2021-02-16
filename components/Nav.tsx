@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { useUpdateOverlay } from './PrintersContext';
 
 const navStyles = css`
   display: flex;
@@ -47,13 +48,15 @@ const navStyles = css`
   }
 
   .cart {
-    margin-right: 35px;
+    margin-right: 1rem;
     font-size: 20px;
     cursor: pointer;
+    transform: translateX(-4rem);
   }
 `;
 
 export const Nav = () => {
+  const toggleOverlay = useUpdateOverlay();
   return (
     <div css={navStyles}>
       <div className="logo">
@@ -80,7 +83,12 @@ export const Nav = () => {
         </div>
       </div>
       <div className="cart">
-        <FontAwesomeIcon icon={faShoppingCart} />
+        <FontAwesomeIcon
+          icon={faShoppingCart}
+          onClick={() => {
+            toggleOverlay();
+          }}
+        />
       </div>
     </div>
   );

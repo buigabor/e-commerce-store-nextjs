@@ -7,14 +7,14 @@ import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
 import React, { useEffect, useRef, useState } from 'react';
 import Layout from '../../components/Layout';
-import { PrinterCard } from '../../components/Printer';
+import { PrinterCard } from '../../components/PrinterCard';
 import {
   Printer,
   useDispatchCart,
   useDispatchPrinters,
   useOverlay,
   usePrinters,
-  useUpdateOverlay,
+  useUpdateOverlay
 } from '../../components/PrintersContext';
 import { getPrinters } from '../api/database';
 
@@ -172,7 +172,7 @@ interface PrintersProps {
 
 const Printers = ({ printersFetched }: PrintersProps) => {
   const dispatch = useDispatchPrinters();
-  const printers = usePrinters();
+  const printersState = usePrinters();
   const [matFilterActive, setMatFilterActive] = useState<boolean>(false);
   const [techFilterActive, setTechFilterActive] = useState<boolean>(false);
   const [priceFilterActive, setPriceFilterActive] = useState<boolean>(false);
@@ -201,8 +201,8 @@ const Printers = ({ printersFetched }: PrintersProps) => {
     return `${value} €`;
   }
 
-  if (printers.length > 0) {
-    console.log(printers);
+  if (printersState.printers.length > 0) {
+    console.log(printersState);
 
     return (
       <Layout>
@@ -332,8 +332,8 @@ const Printers = ({ printersFetched }: PrintersProps) => {
             </div>
           </div>
           <div className="catalog">
-            {printers.map((printer) => {
-              return <PrinterCard printer={printer} />;
+            {printersState.printers.map((printer) => {
+              return <PrinterCard key={printer.id} printer={printer} />;
             })}
           </div>
         </div>

@@ -14,7 +14,7 @@ export const PrinterCard = ({ printer }: PrinterProps) => {
   const toggleOverlay = useUpdateOverlay();
   return (
     <>
-      <article key={printer.id} className="product">
+      <article className="product">
         <Link href={'/printers/' + printer.id}>
           <div className="img-container">
             <img src={printer.imgUrl} alt="Product 1" className="product-img" />
