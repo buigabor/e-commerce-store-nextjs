@@ -30,6 +30,7 @@ const overlayStyles = css`
     transform: translateX(100%);
 
     h2 {
+      pointer-events: none;
       text-transform: capitalize;
       text-align: center;
       letter-spacing: 0.1rem;
@@ -58,9 +59,11 @@ const overlayStyles = css`
   .close-cart {
     font-size: 1.7rem;
     cursor: pointer;
+    pointer-events: all;
   }
 
   /*---------- Cart Item -------------------- */
+
   .cart-item {
     display: grid;
     align-items: center;
@@ -94,6 +97,38 @@ const overlayStyles = css`
   .remove-item {
     color: #929191 /* color: #fa6363; */;
     cursor: pointer;
+    pointer-events: all;
+  }
+
+  .clear-cart {
+    color: #fff;
+    border-radius: 4px;
+    background-color: #f5534f;
+    font-weight: 500;
+    margin-top: 13px;
+    border: none;
+    padding: 1rem 2.2rem;
+    font-size: 1.1em;
+    max-width: 250px;
+    cursor: pointer;
+    text-transform: uppercase;
+    outline: none;
+    pointer-events: all;
+    &:hover {
+      background-color: #fb706e;
+    }
+  }
+
+  .cart-footer {
+    pointer-events: none;
+  }
+  .cart-content {
+    pointer-events: none;
+  }
+
+  .arrow,
+  .arrow {
+    pointer-events: all;
   }
 `;
 
@@ -106,10 +141,11 @@ const Layout: React.FC = ({ children }) => {
       <div>{children}</div>
       <div
         css={overlayStyles}
+        className="overlay"
         style={{ visibility: overlayActive ? 'visible' : 'hidden' }}
         onClick={(e) => {
-          if (e.target.classList.contains('css-c2wgtm-overlayStyles')) {
-            toggleOverlay();
+          if (e.target.classList.contains('overlay')) {
+            return toggleOverlay();
           }
         }}
       >

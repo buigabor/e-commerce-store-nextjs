@@ -66,6 +66,7 @@ export const Cart: React.FC = () => {
                 </div>
                 <div>
                   <FontAwesomeIcon
+                    className="arrow"
                     icon={faChevronUp}
                     style={{ color: '#3030ec', cursor: 'pointer' }}
                     onClick={() => {
@@ -85,6 +86,7 @@ export const Cart: React.FC = () => {
                         payload: cartItem.id,
                       });
                     }}
+                    className="arrow"
                   />
                 </div>
               </div>
@@ -96,7 +98,17 @@ export const Cart: React.FC = () => {
           <h3>
             your total: <span className="cart-total">{calculateTotal()} €</span>
           </h3>
-          <button className="clear-cart banner-btn">clear cart</button>
+          <button
+            className="clear-cart banner-btn"
+            onClick={() => {
+              dispatch({
+                type: 'CLEAR_CART',
+                payload: null,
+              });
+            }}
+          >
+            clear cart
+          </button>
         </div>
       </div>
     </>

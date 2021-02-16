@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { useUpdateOverlay } from './PrintersContext';
+import { useCart, useUpdateOverlay } from './PrintersContext';
 
 const navStyles = css`
   display: flex;
@@ -18,12 +18,13 @@ const navStyles = css`
   .links {
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-basis: 30%;
 
     div {
       a {
-        padding: 21px 10px;
-        margin: 0 10px;
+        padding: 1.31rem 1rem;
+        margin: 0 0.6rem;
         transition: all 0.25s ease-in-out;
         border-bottom: 3px solid transparent;
         &:hover {
@@ -51,12 +52,37 @@ const navStyles = css`
     margin-right: 1rem;
     font-size: 20px;
     cursor: pointer;
-    transform: translateX(-4rem);
+    transform: translateX(-1rem);
+    display: flex;
+    align-items: center;
+    svg {
+      margin: 0 1.1rem;
+    }
+    &-items {
+      position: absolute;
+      top: -8px;
+      right: 3.5rem;
+      background: #5252f2;
+      padding: 0 5px;
+      border-radius: 30%;
+      color: #fff;
+      font-size: 0.85em;
+    }
   }
 `;
 
 export const Nav = () => {
+  const cartState = useCart();
   const toggleOverlay = useUpdateOverlay();
+
+  function calcTotalNumberOfItems() {
+    const sumPrice = cartState.cart.reduce((quantity, cartItem) => {
+      return quantity + cartItem.quantity;
+    }, 0);
+
+    return sumPrice;
+  }
+
   return (
     <div css={navStyles}>
       <div className="logo">
@@ -83,12 +109,23 @@ export const Nav = () => {
         </div>
       </div>
       <div className="cart">
-        <FontAwesomeIcon
-          icon={faShoppingCart}
-          onClick={() => {
-            toggleOverlay();
-          }}
-        />
+        <div>
+          <FontAwesomeIcon
+            icon={faShoppingCart}
+            onClick={() => {
+              toggleOverlay();
+            }}
+          />
+          <div
+            onClick={() => {
+              toggleOverlay();
+            }}
+            className="cart-items"
+          >
+            {calcTotalNumberOfItems()}
+          </div>
+        </div>
+        <FontAwesomeIcon icon={faUser} />
       </div>
     </div>
   );

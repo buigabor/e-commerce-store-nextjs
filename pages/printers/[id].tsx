@@ -9,13 +9,16 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { GetStaticProps } from 'next';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
+import slugify from 'slugify';
 import Layout from '../../components/Layout';
 import {
+  CartItem,
   Printer,
   useCart,
   useDispatchCart,
+  useUpdateOverlay,
 } from '../../components/PrintersContext';
 import { getAllPrintersIds, getPrintersById } from '../api/database';
 
@@ -60,7 +63,52 @@ const printerStyles = css`
         background-color: #3535f5;
       }
     }
+
+    &__cartBtn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 1.5rem;
+      align-self: flex-end;
+      span {
+        padding: 0.38rem 0.75rem;
+        margin: 0 1rem;
+        border-radius: 3px;
+        font-size: 1.1em;
+        border: 1px solid gray;
+      }
+      &-btn {
+        text-align: center;
+        background-color: #5252f2;
+        box-shadow: none;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        padding: 0.1rem 0.6rem;
+        font-size: 1.4em;
+        font-weight: 300;
+        outline: none;
+        cursor: pointer;
+        transition: all 0.1s ease-in-out;
+        border: 2px solid transparent;
+        &:hover {
+          background-color: transparent;
+          border: 2px solid #5252f2;
+          color: #5252f2;
+        }
+      }
+    }
   }
+
+  .red {
+    background-color: #f5534f;
+    &:hover {
+      background-color: transparent;
+      border: 2px solid #f5534f;
+      color: #f5534f;
+    }
+  }
+
   .printer-description {
   }
   .printer-video {
@@ -91,11 +139,26 @@ interface PrinterProps {
 
 const PrinterComponent = ({ printerFetched }: PrinterProps) => {
   const [printer, setPrinter] = useState<Printer | null>(null);
-  const [btnClicked, setBtnClicked] = useState(false);
-  const cartBtnEl = useRef<HTMLButtonElement>(null);
   const dispatch = useDispatchCart();
-  const cart = useCart();
-  console.log(cart);
+  const toggleOverlay = useUpdateOverlay();
+
+  const cartState = useCart();
+
+  function checkIfInCart() {
+    return cartState.cart.some((cartItem: CartItem) => {
+      return cartItem.id === printerFetched.id;
+    });
+  }
+
+  function showQuantity() {
+    if (printer && cartState) {
+      const currentPrinter = cartState.cart.find((cartItem) => {
+        return cartItem.id === printer.id;
+      });
+      return currentPrinter?.quantity;
+    }
+    return null;
+  }
 
   useEffect(() => {
     setPrinter(printerFetched);
@@ -118,7 +181,11 @@ const PrinterComponent = ({ printerFetched }: PrinterProps) => {
         <div css={printerStyles}>
           <div className="printer-header">
             <div className="printer-header__img">
-              <Image width={400} height={400} src={printer.imgUrl} />
+              <Image
+                width={400}
+                height={400}
+                src={`/printerImages/${slugify(printer.name)}.jpg`}
+              />
             </div>
             <div className="printer-header__content">
               <TableContainer component={Paper}>
@@ -141,14 +208,46 @@ const PrinterComponent = ({ printerFetched }: PrinterProps) => {
                   </TableBody>
                 </Table>
               </TableContainer>
-              <button
-                onClick={() => {
-                  dispatch({ type: 'ADD_TO_CART', payload: printerFetched });
-                }}
-                className="printer-header__cta"
-              >
-                Add To Cart
-              </button>
+              {checkIfInCart() ? (
+                <div className="printer-header__cartBtn">
+                  <button
+                    className="printer-header__cartBtn-btn red"
+                    onClick={() => {
+                      dispatch({
+                        type: 'DECREMENT_QUANTITY',
+                        payload: printer.id,
+                      });
+                    }}
+                  >
+                    -
+                  </button>
+                  <span>{showQuantity()}</span>
+                  <button
+                    className="printer-header__cartBtn-btn"
+                    onClick={() => {
+                      dispatch({
+                        type: 'INCREMENT_QUANTITY',
+                        payload: printer.id,
+                      });
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    dispatch({
+                      type: 'ADD_TO_CART',
+                      payload: { ...printer, quantity: 1 },
+                    });
+                    toggleOverlay();
+                  }}
+                  className="printer-header__cta"
+                >
+                  Add To Cart
+                </button>
+              )}
             </div>
           </div>
           <hr />

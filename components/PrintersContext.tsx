@@ -6,13 +6,13 @@ import {
   useState,
 } from 'react';
 
-interface PrinterState {
+export interface PrinterState {
   printers: Printer[];
   loading: boolean;
   error: null | string;
 }
 
-interface CartState {
+export interface CartState {
   cart: CartItem[];
 }
 
@@ -93,6 +93,11 @@ const handleQuantity = (
     return state.cart.map((printer: CartItem) => {
       if (printer.id === action.payload) {
         printer.quantity -= 1;
+        if (printer.quantity < 0) {
+          // return null;
+          // const dispatch = useDispatchCart();
+          // return dispatch({ type: 'REMOVE_FROM_CART', payload: printer.id });
+        }
         return { ...printer };
       }
       return { ...printer };
@@ -121,7 +126,7 @@ const cartReducer: Reducer<CartState, ActionCart> = (
         }),
       };
     case 'CLEAR_CART':
-      return { ...state };
+      return { ...state, cart: [] };
     default:
       return state;
   }
@@ -137,6 +142,7 @@ export const PrinterProvider: React.FC = ({ children }) => {
 
   function toggleOverlay() {
     setOverlayActive((prevOverlay) => !prevOverlay);
+    console.log('iamhere');
   }
 
   return (
