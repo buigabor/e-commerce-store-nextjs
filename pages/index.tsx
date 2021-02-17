@@ -1,7 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Layout from '../components/Layout';
 
@@ -28,10 +26,16 @@ const homeStyles = css`
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      padding: 50px;
+      padding: 6rem 3rem 3rem 3rem;
       &__icon {
         color: #000;
         font-size: 60px;
+        display: flex;
+        align-items: center;
+        span {
+          transform: translateY(-12px);
+          font-family: 'Syncopate', sans-serif;
+        }
       }
       &__text {
         max-width: 420px;
@@ -39,6 +43,7 @@ const homeStyles = css`
           color: #000;
           font-size: 42px;
           margin: 0 0 40px 0;
+          font-family: 'Syncopate', sans-serif;
         }
 
         p {
@@ -59,6 +64,7 @@ const homeStyles = css`
           outline: none;
           cursor: pointer;
           transition: all 0.2s ease-in-out;
+          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
           &:hover {
             background-color: #3535f5;
@@ -90,23 +96,10 @@ export default function Home() {
         <div className="front-wrapper">
           <div className="front-wrapper__icon">
             <Image src="/3Dlogo.svg" width={120} height={120} />
+            <span>3D BUIG</span>
           </div>
           <div className="front-wrapper__text">
             <h2>Order custom parts online</h2>
-            <ul className="front-wrapper__list">
-              <li>
-                <FontAwesomeIcon icon={faArrowRight} /> FDM
-              </li>
-              <li>
-                <FontAwesomeIcon icon={faArrowRight} /> SLA
-              </li>
-              <li>
-                <FontAwesomeIcon icon={faArrowRight} /> SLS
-              </li>
-              <li>
-                <FontAwesomeIcon icon={faArrowRight} /> DMLS
-              </li>
-            </ul>
             <p>
               On-demand manufacturing and rapid prototyping. Get your quote in
               seconds, parts delivered in days.

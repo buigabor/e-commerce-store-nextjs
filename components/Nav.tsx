@@ -15,6 +15,10 @@ const navStyles = css`
   color: #fff;
   height: 10vh;
 
+  .logo {
+    cursor: pointer;
+  }
+
   .links {
     display: flex;
     align-items: center;
@@ -45,6 +49,7 @@ const navStyles = css`
     margin-left: 10px;
     span {
       font-weight: 600;
+      font-family: 'Syncopate', sans-serif;
     }
   }
 
@@ -85,12 +90,14 @@ export const Nav = () => {
 
   return (
     <div css={navStyles}>
-      <div className="logo">
-        <div className="logo-img">
-          <Image width={60} height={60} src="/3Dlogo.svg" />
+      <Link href="/">
+        <div className="logo">
+          <div className="logo-img">
+            <Image width={60} height={60} src="/3Dlogo.svg" />
+          </div>
+          <span>3D BUIG</span>
         </div>
-        <span>3D BUIG</span>
-      </div>
+      </Link>
       <div className="links">
         <div>
           <Link href="/printers">

@@ -114,11 +114,38 @@ const overlayStyles = css`
     text-transform: uppercase;
     outline: none;
     pointer-events: all;
+    transition: all 0.2s linear;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     &:hover {
       background-color: #fb706e;
     }
   }
 
+  .checkout {
+    color: #fff;
+    border-radius: 4px;
+    background-color: #5252f2;
+    font-weight: 500;
+    margin-top: 13px;
+    border: none;
+    padding: 1rem 2.6rem;
+    font-size: 1.1em;
+    max-width: 250px;
+    cursor: pointer;
+    text-transform: uppercase;
+    outline: none;
+    pointer-events: all;
+    transition: all 0.2s linear;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    &:hover {
+      background-color: #3535f5;
+    }
+  }
+  .cart-btn-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   .cart-footer {
     pointer-events: none;
   }

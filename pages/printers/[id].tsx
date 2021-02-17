@@ -58,6 +58,7 @@ const printerStyles = css`
       transition: all 0.2s ease-in-out;
       margin-top: 1.5rem;
       align-self: flex-end;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
       &:hover {
         background-color: #3535f5;
@@ -91,6 +92,7 @@ const printerStyles = css`
         cursor: pointer;
         transition: all 0.1s ease-in-out;
         border: 2px solid transparent;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         &:hover {
           background-color: transparent;
           border: 2px solid #5252f2;

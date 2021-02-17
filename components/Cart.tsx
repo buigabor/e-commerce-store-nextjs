@@ -4,7 +4,9 @@ import {
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Link from 'next/link';
 import React from 'react';
+import slugify from 'slugify';
 import {
   useCart,
   useDispatchCart,
@@ -48,7 +50,10 @@ export const Cart: React.FC = () => {
           {cartState.cart.map((cartItem) => {
             return (
               <div key={cartItem.id} className="cart-item">
-                <img src={cartItem.imgUrl} alt={cartItem.name} />
+                <img
+                  src={`/printerImages/${slugify(cartItem.name)}.jpg`}
+                  alt={cartItem.name}
+                />
                 <div>
                   <h4>{cartItem.name}</h4>
                   <h5>{cartItem.price * cartItem.quantity} €</h5>
@@ -98,17 +103,29 @@ export const Cart: React.FC = () => {
           <h3>
             your total: <span className="cart-total">{calculateTotal()} €</span>
           </h3>
-          <button
-            className="clear-cart banner-btn"
-            onClick={() => {
-              dispatch({
-                type: 'CLEAR_CART',
-                payload: null,
-              });
-            }}
-          >
-            clear cart
-          </button>
+          <div className="cart-btn-wrapper">
+            <Link href="/checkout">
+              <button
+                onClick={() => {
+                  toggleOverlay();
+                }}
+                className="checkout"
+              >
+                Checkout
+              </button>
+            </Link>
+            <button
+              className="clear-cart"
+              onClick={() => {
+                dispatch({
+                  type: 'CLEAR_CART',
+                  payload: null,
+                });
+              }}
+            >
+              clear cart
+            </button>
+          </div>
         </div>
       </div>
     </>

@@ -14,13 +14,13 @@ import {
   useDispatchPrinters,
   useOverlay,
   usePrinters,
-  useUpdateOverlay
+  useUpdateOverlay,
 } from '../../components/PrintersContext';
 import { getPrinters } from '../api/database';
 
 const printersStyle = css`
   display: grid;
-  padding: 4rem;
+  padding: 3rem;
   grid-template-columns: 1fr 2fr;
   grid-template-rows: 1fr;
   grid-template-areas: 'filter catalog';
@@ -33,7 +33,7 @@ const printersStyle = css`
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     column-gap: 2rem;
     row-gap: 3rem;
-    padding: 3rem;
+    padding: 2rem;
   }
 
   .product {
@@ -104,7 +104,7 @@ const printersStyle = css`
 
   .filter {
     grid-area: filter;
-    width: 12rem;
+    width: 14rem;
     height: auto;
     display: flex;
     flex-direction: column;
@@ -229,27 +229,52 @@ const Printers = ({ printersFetched }: PrintersProps) => {
               >
                 <p>
                   <Checkbox
-                    defaultChecked
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                   />
-                  Link 1
+                  Metal
                 </p>
                 <p>
                   <Checkbox
-                    defaultChecked
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                   />
-                  Link 2
+                  Wood
                 </p>
                 <p>
                   <Checkbox
-                    defaultChecked
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                   />
-                  Link 3
+                  Polyamide Nylon
+                </p>
+                <p>
+                  <Checkbox
+                    color="primary"
+                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                  />
+                  TPU
+                </p>
+                <p>
+                  <Checkbox
+                    color="primary"
+                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                  />
+                  ABS
+                </p>
+                <p>
+                  <Checkbox
+                    color="primary"
+                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                  />
+                  Polyamide Nylon
+                </p>
+                <p>
+                  <Checkbox
+                    color="primary"
+                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                  />
+                  Carbon Fiber
                 </p>
               </div>
             </div>
@@ -273,27 +298,31 @@ const Printers = ({ printersFetched }: PrintersProps) => {
               >
                 <p>
                   <Checkbox
-                    defaultChecked
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                   />
-                  Link 1
+                  FDM
                 </p>
                 <p>
                   <Checkbox
-                    defaultChecked
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                   />
-                  Link 2
+                  SLS
                 </p>
                 <p>
                   <Checkbox
-                    defaultChecked
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                   />
-                  Link 3
+                  Polyjet
+                </p>
+                <p>
+                  <Checkbox
+                    color="primary"
+                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                  />
+                  SLA
                 </p>
               </div>
             </div>
