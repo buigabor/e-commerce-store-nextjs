@@ -90,18 +90,17 @@ const handleQuantity = (
       return { ...printer };
     });
   } else if (mode === 'subtract') {
-    return state.cart.map((printer: CartItem) => {
-      if (printer.id === action.payload) {
-        printer.quantity -= 1;
-        if (printer.quantity < 0) {
-          // return null;
-          // const dispatch = useDispatchCart();
-          // return dispatch({ type: 'REMOVE_FROM_CART', payload: printer.id });
+    return state.cart
+      .map((printer: CartItem) => {
+        if (printer.id === action.payload) {
+          printer.quantity -= 1;
+          return { ...printer };
         }
         return { ...printer };
-      }
-      return { ...printer };
-    });
+      })
+      .filter((printer) => {
+        return printer.quantity >= 0;
+      });
   } else {
     return { ...state, ...state.cart };
   }
