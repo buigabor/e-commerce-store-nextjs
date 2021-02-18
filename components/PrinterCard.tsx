@@ -25,7 +25,6 @@ export const PrinterCard = ({ printer }: PrinterProps) => {
       return cartItem.id === printer.id;
     });
   }
-  console.log(slugify(printer.name));
 
   return (
     <>

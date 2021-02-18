@@ -4,17 +4,19 @@ import Image from 'next/image';
 import Layout from '../components/Layout';
 
 const homeStyles = css`
-  height: 90vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr;
-  grid-template-areas: 'printer page-text';
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    'printer page-text'
+    'choose choose';
   .front {
     &-image {
       grid-area: printer;
       display: flex;
       justify-content: center;
       align-items: center;
+      transform: translateY(-2rem);
     }
     &-wrapper {
       grid-area: page-text;
@@ -83,6 +85,42 @@ const homeStyles = css`
         }
       }
     }
+    &-choose-us {
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 1) 62%,
+        rgba(82, 82, 242, 0.85) 100%
+      );
+      grid-area: choose;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      &__text {
+        font-size: 2.8em;
+        margin-bottom: 5rem;
+      }
+      &__row {
+        display: flex;
+        align-items: center;
+        gap: 20rem;
+        &-box {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 15rem;
+          margin-bottom: 3rem;
+
+          h5 {
+            margin: 5px 0;
+            font-size: 1.8em;
+          }
+          p {
+            margin: 5px 0;
+            font-size: 1em;
+          }
+        }
+      }
+    }
   }
 `;
 
@@ -105,6 +143,47 @@ export default function Home() {
               seconds, parts delivered in days.
             </p>
             <button>Go To Products</button>
+          </div>
+        </div>
+        <div className="front-choose-us">
+          <span className="front-choose-us__text">
+            Our experience in numbers
+          </span>
+          <div className="front-choose-us__row">
+            <div className="front-choose-us__row-box">
+              <Image width={60} height={60} src="/icons/engineers.svg" />
+              <h5>145,000</h5>
+              <p>engineers served</p>
+            </div>
+            <div className="front-choose-us__row-box">
+              <Image width={60} height={60} src="/icons/businesses.svg" />
+              <h5>30,000</h5>
+              <p>business</p>
+            </div>
+          </div>
+          <div className="front-choose-us__row">
+            <div className="front-choose-us__row-box">
+              <Image width={60} height={60} src="/icons/mps.svg" />
+              <h5>200</h5>
+              <p>manufacturing partners</p>
+            </div>
+            <div className="front-choose-us__row-box">
+              <Image width={60} height={60} src="/icons/parts.svg" />
+              <h5>5M+</h5>
+              <p>parts &amp; prototypes produced</p>
+            </div>
+          </div>
+          <div className="front-choose-us__row">
+            <div className="front-choose-us__row-box">
+              <Image width={60} height={60} src="/icons/fortune500.svg" />
+              <h5>27%</h5>
+              <p>of Fortune 500 companies</p>
+            </div>
+            <div className="front-choose-us__row-box">
+              <Image width={60} height={60} src="/icons/machines.svg" />
+              <h5>4200+</h5>
+              <p>machines</p>
+            </div>
           </div>
         </div>
       </div>

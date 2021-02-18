@@ -5,16 +5,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Checkbox from '@material-ui/core/Checkbox';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import { PrinterCard } from '../../components/PrinterCard';
 import {
   Printer,
-  useDispatchCart,
   useDispatchPrinters,
-  useOverlay,
   usePrinters,
-  useUpdateOverlay,
 } from '../../components/PrintersContext';
 import { getPrinters } from '../api/database';
 
@@ -28,9 +25,10 @@ const printersStyle = css`
   .catalog {
     grid-area: catalog;
     margin: 0 auto;
-    max-width: 1170px;
+    width: 970px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 280px));
+    grid-template-rows: repeat(auto-fit, minmax(370px, 370px));
     column-gap: 2rem;
     row-gap: 3rem;
     padding: 2rem;
@@ -164,10 +162,50 @@ const printersStyle = css`
   .slider {
     padding: 0.5rem 1rem;
   }
+
+  .reset-filter-btn {
+    align-self: center;
+    color: #fff;
+    border-radius: 4px;
+    background-color: #5252f2;
+    font-weight: 500;
+    margin-top: 13px;
+    border: none;
+    padding: 1rem 2.1rem;
+    font-size: 1em;
+    max-width: 190px;
+    cursor: pointer;
+    text-transform: uppercase;
+    outline: none;
+    pointer-events: all;
+    transition: all 0.2s linear;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border: 2px solid transparent;
+    &:hover {
+      background-color: #fff;
+      color: #5252f2;
+      border: 2px solid #5252f2;
+    }
+  }
+
+  .active {
+    background-color: #5252f2;
+    color: #fff;
+  }
 `;
 
 interface PrintersProps {
   printersFetched: Printer[];
+}
+
+interface CheckboxesChecked {
+  Metal: boolean;
+  Wood: boolean;
+  Nylon: boolean;
+  TPU: boolean;
+  ABS: boolean;
+  Resin: boolean;
+  Carbon: boolean;
 }
 
 const Printers = ({ printersFetched }: PrintersProps) => {
@@ -176,34 +214,149 @@ const Printers = ({ printersFetched }: PrintersProps) => {
   const [matFilterActive, setMatFilterActive] = useState<boolean>(false);
   const [techFilterActive, setTechFilterActive] = useState<boolean>(false);
   const [priceFilterActive, setPriceFilterActive] = useState<boolean>(false);
-  const [price, setPrice] = useState<number[] | number>([300, 1200]);
-  const [btnClicked, setBtnClicked] = useState(false);
-  const cartBtnEl = useRef<HTMLButtonElement>(null);
-  const dispatchCart = useDispatchCart();
-  const overlayActive = useOverlay();
-  const toggleOverlay = useUpdateOverlay();
+  const [price, setPrice] = useState<number[] | number>([0, 3000]);
+  const [matFilterTags, setMatFilterTags] = useState<string[]>([]);
+  const [techFilterTags, setTechFilterTags] = useState<string[]>([]);
+
+  const allMatTags = [
+    'Metal',
+    'Wood',
+    'Nylon',
+    'TPU',
+    'ABS',
+    'Resin',
+    'Carbon',
+  ];
+  const allTechTags = ['FDM', 'SLS', 'SLA', 'Polyjet'];
+
+  const [checkboxesChecked, setCheckboxesChecked] = useState({
+    Metal: false,
+    Wood: false,
+    Nylon: false,
+    TPU: false,
+    ABS: false,
+    Resin: false,
+    Carbon: false,
+    FDM: false,
+    SLS: false,
+    SLA: false,
+    Polyjet: false,
+  });
 
   useEffect(() => {
-    // Remove last 2 elements
-    printersFetched.splice(printersFetched.length - 2, 2);
-    // Set printers in PrintersContext
     dispatch({
       type: 'GET_PRINTERS',
       payload: printersFetched,
     });
+    if (!printersFetched) {
+      return dispatch({
+        type: 'GET_PRINTERS_FAIL',
+        payload: 'An error occured while fetching the printers.',
+      });
+    } else {
+      // Remove last 2 elements
+      printersFetched.splice(printersFetched.length - 2, 2);
+      // Set printers in PrintersContext
+      return dispatch({
+        type: 'GET_PRINTERS_SUCCESS',
+        payload: printersFetched,
+      });
+    }
   }, []);
 
-  const handleChange = (event: any, newValue: number | number[]) => {
-    setPrice(newValue);
+  useEffect(() => {
+    // console.log(printersState.filteredPrinters);
+
+    const filterOptions = {
+      matFilterTags,
+      techFilterTags,
+      priceFilterTags: price,
+    };
+
+    dispatch({
+      type: 'FILTER',
+      payload: filterOptions,
+    });
+  }, [matFilterTags, techFilterTags, price]);
+
+  const isThereAFilter = () => {
+    let result = false;
+
+    for (let key in checkboxesChecked) {
+      if ((checkboxesChecked as any)[key] === true) {
+        result = true;
+        break;
+      }
+    }
+    return result;
+  };
+
+  const handleResetFilter = () => {
+    setCheckboxesChecked({
+      ...checkboxesChecked,
+      Metal: false,
+      Wood: false,
+      Nylon: false,
+      TPU: false,
+      ABS: false,
+      Resin: false,
+      Carbon: false,
+      FDM: false,
+      SLS: false,
+      SLA: false,
+      Polyjet: false,
+    });
+    setMatFilterActive(false);
+    setTechFilterActive(false);
+    setPriceFilterActive(false);
+    setPrice([0, 3000]);
+    setMatFilterTags([]);
+    setTechFilterTags([]);
+  };
+
+  const handlePriceChange = (event: any, newValue: number | number[]) => {
+    setPrice(newValue as number[]);
+  };
+
+  const handleTechCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setCheckboxesChecked({
+      ...checkboxesChecked,
+      [event.target.name]: event.target.checked,
+    });
+    if (event.target.checked && allTechTags.includes(event.target.name)) {
+      return setTechFilterTags([...techFilterTags, event.target.name]);
+    } else if (
+      !event.target.checked &&
+      allTechTags.includes(event.target.name)
+    ) {
+      return setTechFilterTags(
+        techFilterTags.filter((filterTag) => filterTag !== event.target.name),
+      );
+    }
+  };
+
+  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setCheckboxesChecked({
+      ...checkboxesChecked,
+      [event.target.name]: event.target.checked,
+    });
+    if (event.target.checked && allMatTags.includes(event.target.name)) {
+      return setMatFilterTags([...matFilterTags, event.target.name]);
+    } else if (
+      !event.target.checked &&
+      allMatTags.includes(event.target.name)
+    ) {
+      return setMatFilterTags(
+        matFilterTags.filter((filterTag) => filterTag !== event.target.name),
+      );
+    }
   };
 
   function valuetext(value: number) {
     return `${value} €`;
   }
 
-  if (printersState.printers.length > 0) {
-    console.log(printersState);
-
+  if (!printersState.error) {
     return (
       <Layout>
         <div css={printersStyle}>
@@ -212,7 +365,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
             <div className="filter-row">
               <div
                 className={`filter-row__header ${
-                  matFilterActive ? 'border-bottom' : ''
+                  matFilterActive ? 'border-bottom active' : ''
                 }`}
                 onClick={() => {
                   setMatFilterActive(!matFilterActive);
@@ -229,50 +382,71 @@ const Printers = ({ printersFetched }: PrintersProps) => {
               >
                 <p>
                   <Checkbox
+                    checked={checkboxesChecked.Metal}
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    name="Metal"
+                    onChange={handleCheckboxChange}
                   />
                   Metal
                 </p>
                 <p>
                   <Checkbox
+                    checked={checkboxesChecked.Wood}
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    name="Wood"
+                    onChange={handleCheckboxChange}
                   />
                   Wood
                 </p>
                 <p>
                   <Checkbox
+                    checked={checkboxesChecked.Nylon}
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    name="Nylon"
+                    onChange={handleCheckboxChange}
                   />
                   Polyamide Nylon
                 </p>
                 <p>
                   <Checkbox
+                    checked={checkboxesChecked.TPU}
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    name="TPU"
+                    onChange={handleCheckboxChange}
                   />
                   TPU
                 </p>
                 <p>
                   <Checkbox
+                    checked={checkboxesChecked.ABS}
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    name="ABS"
+                    onChange={handleCheckboxChange}
                   />
                   ABS
                 </p>
                 <p>
                   <Checkbox
+                    checked={checkboxesChecked.Resin}
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    name="Resin"
+                    onChange={handleCheckboxChange}
                   />
-                  Polyamide Nylon
+                  Resin
                 </p>
                 <p>
                   <Checkbox
+                    checked={checkboxesChecked.Carbon}
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    name="Carbon"
+                    onChange={handleCheckboxChange}
                   />
                   Carbon Fiber
                 </p>
@@ -281,7 +455,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
             <div className="filter-row">
               <div
                 className={`filter-row__header ${
-                  techFilterActive ? 'border-bottom' : ''
+                  techFilterActive ? 'border-bottom active' : ''
                 }`}
                 onClick={() => {
                   setTechFilterActive(!techFilterActive);
@@ -298,29 +472,41 @@ const Printers = ({ printersFetched }: PrintersProps) => {
               >
                 <p>
                   <Checkbox
+                    checked={checkboxesChecked.FDM}
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    name="FDM"
+                    onChange={handleTechCheckboxChange}
                   />
                   FDM
                 </p>
                 <p>
                   <Checkbox
+                    checked={checkboxesChecked.SLS}
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    name="SLS"
+                    onChange={handleTechCheckboxChange}
                   />
                   SLS
                 </p>
                 <p>
                   <Checkbox
+                    checked={checkboxesChecked.Polyjet}
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    name="Polyjet"
+                    onChange={handleTechCheckboxChange}
                   />
                   Polyjet
                 </p>
                 <p>
                   <Checkbox
+                    checked={checkboxesChecked.SLA}
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    name="SLA"
+                    onChange={handleTechCheckboxChange}
                   />
                   SLA
                 </p>
@@ -329,7 +515,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
             <div className="filter-row">
               <div
                 className={`filter-row__header ${
-                  priceFilterActive ? 'border-bottom' : ''
+                  priceFilterActive ? 'border-bottom active' : ''
                 }`}
                 onClick={() => {
                   setPriceFilterActive(!priceFilterActive);
@@ -349,9 +535,10 @@ const Printers = ({ printersFetched }: PrintersProps) => {
                 </Typography>
                 <div className="slider">
                   <Slider
+                    step={50}
                     max={3000}
                     value={price}
-                    onChange={handleChange}
+                    onChange={handlePriceChange}
                     valueLabelDisplay="auto"
                     aria-labelledby="range-slider"
                     getAriaValueText={valuetext}
@@ -359,11 +546,21 @@ const Printers = ({ printersFetched }: PrintersProps) => {
                 </div>
               </div>
             </div>
+            <button onClick={handleResetFilter} className="reset-filter-btn">
+              Reset Filter
+            </button>
           </div>
           <div className="catalog">
-            {printersState.printers.map((printer) => {
-              return <PrinterCard key={printer.id} printer={printer} />;
-            })}
+            {
+              printersState.filteredPrinters.map((printer) => {
+                return <PrinterCard key={printer.id} printer={printer} />;
+              })
+
+              //  : (
+              //   printersState.printers.map((printer) => {
+              //     return <PrinterCard key={printer.id} printer={printer} />;
+              //   })
+            }
           </div>
         </div>
       </Layout>

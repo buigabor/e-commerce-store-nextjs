@@ -8,6 +8,7 @@ import {
 
 export interface PrinterState {
   printers: Printer[];
+  filteredPrinters: Printer[];
   loading: boolean;
   error: null | string;
 }
@@ -18,6 +19,7 @@ export interface CartState {
 
 const initialPrinterState = {
   printers: [],
+  filteredPrinters: [],
   loading: false,
   error: null,
 };
@@ -54,7 +56,16 @@ export interface Printer {
 }
 interface ActionPrinters {
   type: string;
-  payload: Printer[];
+  payload: any;
+}
+
+interface ActionFilter {
+  type: string;
+  payload: {
+    matFilterTags: string[];
+    techFilterTags: string[];
+    priceFilterTags: number[];
+  };
 }
 
 interface ActionCart {
@@ -64,13 +75,42 @@ interface ActionCart {
 
 type Reducer<S, A> = (prevState: S, action: A) => S;
 
-const printersReducer: Reducer<PrinterState, ActionPrinters> = (
+const handleFilterByMaterial = (state: PrinterState, action: ActionFilter) => {
+  return state.printers
+    .filter((printer) => {
+      return action.payload.matFilterTags.every((mat: string) => {
+        return printer.compatibleMaterial.includes(mat);
+      });
+    })
+    .filter((printer) => {
+      return action.payload.techFilterTags.every((mat: string) => {
+        return printer.technology.includes(mat);
+      });
+    })
+    .filter((printer) => {
+      return (
+        printer.price >= action.payload.priceFilterTags[0] &&
+        printer.price <= action.payload.priceFilterTags[1]
+      );
+    });
+};
+
+const printersReducer: Reducer<PrinterState, ActionPrinters | ActionFilter> = (
   state: PrinterState,
-  action: ActionPrinters,
+  action: ActionPrinters | ActionFilter,
 ) => {
   switch (action.type) {
     case 'GET_PRINTERS':
-      return { ...state, printers: [...action.payload] };
+      return { ...state, loading: true };
+    case 'GET_PRINTERS_SUCCESS':
+      return { ...state, printers: [...action.payload], loading: false };
+    case 'GET_PRINTERS_FAIL':
+      return { ...state, error: action.payload, loading: false };
+    case 'FILTER':
+      return {
+        ...state,
+        filteredPrinters: handleFilterByMaterial(state, action),
+      };
     default:
       return state;
   }
@@ -141,7 +181,6 @@ export const PrinterProvider: React.FC = ({ children }) => {
 
   function toggleOverlay() {
     setOverlayActive((prevOverlay) => !prevOverlay);
-    console.log('iamhere');
   }
 
   return (

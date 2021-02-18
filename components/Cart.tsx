@@ -19,7 +19,6 @@ export const Cart: React.FC = () => {
   const toggleOverlay = useUpdateOverlay();
   const cartState = useCart();
   const dispatch = useDispatchCart();
-  console.log(cartState);
 
   function calculateTotal() {
     const sumPrice = cartState.cart.reduce((sum, cartItem) => {
