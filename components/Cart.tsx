@@ -50,7 +50,7 @@ export const Cart: React.FC = () => {
             return (
               <div key={cartItem.id} className="cart-item">
                 <img
-                  src={`/printerImages/${slugify(cartItem.name)}.jpg`}
+                  src={`/productImages/${slugify(cartItem.name)}.jpg`}
                   alt={cartItem.name}
                 />
                 <div>

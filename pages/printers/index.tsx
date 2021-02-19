@@ -198,25 +198,16 @@ interface PrintersProps {
   printersFetched: Printer[];
 }
 
-interface CheckboxesChecked {
-  Metal: boolean;
-  Wood: boolean;
-  Nylon: boolean;
-  TPU: boolean;
-  ABS: boolean;
-  Resin: boolean;
-  Carbon: boolean;
-}
-
 const Printers = ({ printersFetched }: PrintersProps) => {
   const dispatch = useDispatchPrinters();
   const printersState = usePrinters();
   const [matFilterActive, setMatFilterActive] = useState<boolean>(false);
   const [techFilterActive, setTechFilterActive] = useState<boolean>(false);
   const [priceFilterActive, setPriceFilterActive] = useState<boolean>(false);
-  const [price, setPrice] = useState<number[] | number>([0, 3000]);
+  const [price, setPrice] = useState<number[]>([0, 3000]);
   const [matFilterTags, setMatFilterTags] = useState<string[]>([]);
   const [techFilterTags, setTechFilterTags] = useState<string[]>([]);
+  console.log(printersState.filteredPrinters);
 
   const allMatTags = [
     'Metal',
@@ -279,18 +270,6 @@ const Printers = ({ printersFetched }: PrintersProps) => {
     });
   }, [matFilterTags, techFilterTags, price]);
 
-  const isThereAFilter = () => {
-    let result = false;
-
-    for (let key in checkboxesChecked) {
-      if ((checkboxesChecked as any)[key] === true) {
-        result = true;
-        break;
-      }
-    }
-    return result;
-  };
-
   const handleResetFilter = () => {
     setCheckboxesChecked({
       ...checkboxesChecked,
@@ -314,6 +293,20 @@ const Printers = ({ printersFetched }: PrintersProps) => {
     setTechFilterTags([]);
   };
 
+  const filterActive = () => {
+    let result = false;
+    for (let key in checkboxesChecked) {
+      if ((checkboxesChecked as any)[key] === true) {
+        result = true;
+        break;
+      }
+    }
+    if (price[0] !== 0 || price[1] !== 3000) {
+      result = true;
+    }
+    return result;
+  };
+
   const handlePriceChange = (event: any, newValue: number | number[]) => {
     setPrice(newValue as number[]);
   };
@@ -335,7 +328,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
     }
   };
 
-  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleMatCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCheckboxesChecked({
       ...checkboxesChecked,
       [event.target.name]: event.target.checked,
@@ -386,7 +379,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                     name="Metal"
-                    onChange={handleCheckboxChange}
+                    onChange={handleMatCheckboxChange}
                   />
                   Metal
                 </p>
@@ -396,7 +389,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                     name="Wood"
-                    onChange={handleCheckboxChange}
+                    onChange={handleMatCheckboxChange}
                   />
                   Wood
                 </p>
@@ -406,7 +399,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                     name="Nylon"
-                    onChange={handleCheckboxChange}
+                    onChange={handleMatCheckboxChange}
                   />
                   Polyamide Nylon
                 </p>
@@ -416,7 +409,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                     name="TPU"
-                    onChange={handleCheckboxChange}
+                    onChange={handleMatCheckboxChange}
                   />
                   TPU
                 </p>
@@ -426,7 +419,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                     name="ABS"
-                    onChange={handleCheckboxChange}
+                    onChange={handleMatCheckboxChange}
                   />
                   ABS
                 </p>
@@ -436,7 +429,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                     name="Resin"
-                    onChange={handleCheckboxChange}
+                    onChange={handleMatCheckboxChange}
                   />
                   Resin
                 </p>
@@ -446,7 +439,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
                     color="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                     name="Carbon"
-                    onChange={handleCheckboxChange}
+                    onChange={handleMatCheckboxChange}
                   />
                   Carbon Fiber
                 </p>
@@ -552,9 +545,13 @@ const Printers = ({ printersFetched }: PrintersProps) => {
           </div>
           <div className="catalog">
             {
-              printersState.filteredPrinters.map((printer) => {
-                return <PrinterCard key={printer.id} printer={printer} />;
-              })
+              filterActive()
+                ? printersState.filteredPrinters.map((printer) => {
+                    return <PrinterCard key={printer.id} printer={printer} />;
+                  })
+                : printersState.printers.map((printer) => {
+                    return <PrinterCard key={printer.id} printer={printer} />;
+                  })
 
               //  : (
               //   printersState.printers.map((printer) => {

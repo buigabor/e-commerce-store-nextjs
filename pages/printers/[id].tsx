@@ -15,6 +15,7 @@ import slugify from 'slugify';
 import Layout from '../../components/Layout';
 import {
   CartItem,
+  CartMaterialItem,
   Printer,
   useCart,
   useDispatchCart,
@@ -147,7 +148,7 @@ const PrinterComponent = ({ printerFetched }: PrinterProps) => {
   const cartState = useCart();
 
   function checkIfInCart() {
-    return cartState.cart.some((cartItem: CartItem) => {
+    return cartState.cart.some((cartItem: CartItem | CartMaterialItem) => {
       return cartItem.id === printerFetched.id;
     });
   }
@@ -186,7 +187,7 @@ const PrinterComponent = ({ printerFetched }: PrinterProps) => {
               <Image
                 width={400}
                 height={400}
-                src={`/printerImages/${slugify(printer.name)}.jpg`}
+                src={`/productImages/${slugify(printer.name)}.jpg`}
               />
             </div>
             <div className="printer-header__content">

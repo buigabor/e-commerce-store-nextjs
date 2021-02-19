@@ -4,36 +4,34 @@ import Link from 'next/link';
 import React from 'react';
 import slugify from 'slugify';
 import {
-  CartItem,
-  CartMaterialItem,
-  Printer,
+  Material,
   useCart,
   useDispatchCart,
   useUpdateOverlay,
 } from './PrintersContext';
 
-interface PrinterProps {
-  printer: Printer;
+interface MaterialProps {
+  material: Material;
 }
 
-export const PrinterCard = ({ printer }: PrinterProps) => {
+export const MaterialCard = ({ material }: MaterialProps) => {
   const dispatchCart = useDispatchCart();
   const toggleOverlay = useUpdateOverlay();
   const cartState = useCart();
 
   function checkIfInCart() {
-    return cartState.cart.some((cartItem: CartItem | CartMaterialItem) => {
-      return cartItem.id === printer.id;
+    return cartState.cart.some((cartItem) => {
+      return cartItem.id === material.id;
     });
   }
 
   return (
     <>
       <article className="product">
-        <Link href={'/printers/' + printer.id}>
+        <Link href={'/materials/' + material.id}>
           <div className="img-container">
             <img
-              src={`/productImages/${slugify(printer.name)}.jpg`}
+              src={`/productImages/${slugify(material.name)}.jpg`}
               alt="Product 1"
               className="product-img"
             />
@@ -43,7 +41,7 @@ export const PrinterCard = ({ printer }: PrinterProps) => {
                 toggleOverlay();
                 dispatchCart({
                   type: 'ADD_TO_CART',
-                  payload: { ...printer, quantity: 1 },
+                  payload: { ...material, quantity: 1 },
                 });
               }}
               className="bag-btn"
@@ -58,8 +56,8 @@ export const PrinterCard = ({ printer }: PrinterProps) => {
             </button>
           </div>
         </Link>
-        <h3>{printer.name}</h3>
-        <h4>{printer.price} €</h4>
+        <h3>{material.name}</h3>
+        <h4>{material.price} €</h4>
       </article>
     </>
   );

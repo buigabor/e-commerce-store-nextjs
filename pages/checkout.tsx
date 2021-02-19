@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import React from 'react';
+import slugify from 'slugify';
 import Layout from '../components/Layout';
 import { useCart } from '../components/PrintersContext';
 
@@ -102,9 +103,7 @@ const checkoutStyles = css`
 `;
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {},
-  },
+  root: {},
 }));
 
 const checkout = () => {
@@ -123,7 +122,7 @@ const checkout = () => {
     <Layout>
       <div css={checkoutStyles}>
         <div className="form-wrapper">
-          <form className={classes.root} noValidate autoComplete="off">
+          <form noValidate autoComplete="off">
             <TextField
               name="first-name"
               id="outlined-basic"
@@ -181,7 +180,10 @@ const checkout = () => {
           {cartState.cart.map((cartItem) => {
             return (
               <div key={cartItem.id} className="cart-item">
-                <img src={cartItem.imgUrl} alt={cartItem.name} />
+                <img
+                  src={`/productImages/${slugify(cartItem.name)}.jpg`}
+                  alt={cartItem.name}
+                />
                 <div>
                   <h4>{cartItem.name}</h4>
                   <h5>{cartItem.price * cartItem.quantity} €</h5>
