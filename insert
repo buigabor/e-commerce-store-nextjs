@@ -176,67 +176,16 @@ const materials = [
   { name: 'Metal' },
   { name: 'Wood' },
   { name: 'ABS' },
-  { name: 'PA' },
-  { name: 'Nylon' },
   { name: 'TPU' },
-  { name: 'PC' },
-  { name: 'Resin' },
-  { name: 'Acrylic' },
-  { name: 'Carbon' },
+  ,
 ];
-/* compatible_material: '{Metal, PA, Wood,TPU}',
- compatible_material: '{Metal,ABS, Polyethylene Terephthalate Glycol}',
-compatible_material: '{Metal, PA}',
-    compatible_material: '{ABS, PA, Nylon, Carbon, PC}',
-compatible_material: '{Resin}', 5
-    compatible_material: '{PA}', 6
-compatible_material: '{Acrylic, ABS, PA, TPU}',
-    compatible_material: '{PA}',8
-compatible_material: '{ABS, PA, Wood, PA, TPU}', 9
-    compatible_material: '{Metal, PA, ABS, Wood, TPU}',
-compatible_material: '{Resin}',
-    compatible_material: '{ABS, PA, Nylon, TPU, PC, Metal}',
-compatible_material: '{ABS, Metal, PA}', */
 
-const printer_combatible_materials_data = [
+const printer_combatible_materials = [
   { printer_id: 1, compatible_material_id: 1 },
   { printer_id: 1, compatible_material_id: 2 },
-  { printer_id: 1, compatible_material_id: 4 },
-  { printer_id: 1, compatible_material_id: 6 },
   { printer_id: 2, compatible_material_id: 1 },
-  { printer_id: 2, compatible_material_id: 3 },
-  { printer_id: 3, compatible_material_id: 1 },
-  { printer_id: 3, compatible_material_id: 4 },
-  { printer_id: 4, compatible_material_id: 3 },
-  { printer_id: 4, compatible_material_id: 4 },
-  { printer_id: 4, compatible_material_id: 5 },
-  { printer_id: 4, compatible_material_id: 7 },
-  { printer_id: 4, compatible_material_id: 10 },
-  { printer_id: 5, compatible_material_id: 8 },
-  { printer_id: 6, compatible_material_id: 4 },
-  { printer_id: 7, compatible_material_id: 3 },
-  { printer_id: 7, compatible_material_id: 4 },
-  { printer_id: 7, compatible_material_id: 6 },
-  { printer_id: 8, compatible_material_id: 4 },
-  { printer_id: 9, compatible_material_id: 2 },
-  { printer_id: 9, compatible_material_id: 3 },
-  { printer_id: 9, compatible_material_id: 4 },
-  { printer_id: 9, compatible_material_id: 6 },
-  { printer_id: 10, compatible_material_id: 2 },
-  { printer_id: 10, compatible_material_id: 3 },
-  { printer_id: 10, compatible_material_id: 4 },
-  { printer_id: 10, compatible_material_id: 1 },
-  { printer_id: 10, compatible_material_id: 6 },
-  { printer_id: 11, compatible_material_id: 8 },
-  { printer_id: 12, compatible_material_id: 3 },
-  { printer_id: 12, compatible_material_id: 4 },
-  { printer_id: 12, compatible_material_id: 5 },
-  { printer_id: 12, compatible_material_id: 6 },
-  { printer_id: 12, compatible_material_id: 7 },
-  { printer_id: 12, compatible_material_id: 1 },
-  { printer_id: 13, compatible_material_id: 1 },
-  { printer_id: 13, compatible_material_id: 3 },
-  { printer_id: 13, compatible_material_id: 4 },
+  { printer_id: 2, compatible_material_id: 2 },
+  ,
 ];
 
 exports.up = async (sql) => {
@@ -262,20 +211,16 @@ exports.up = async (sql) => {
 
   await sql`
   INSERT INTO printer_compatible_materials ${sql(
-    printer_combatible_materials_data,
+    printer_combatible_materials,
     'printer_id',
     'compatible_material_id',
   )}
   `;
+
+  // await sql`INSERT INTO test ${sql(test, 'name')}`;
 };
 
 exports.down = async (sql) => {
-  for (const el of printer_combatible_materials_data) {
-    await sql`
-  	DELETE FROM printer_compatible_materials WHERE printer_id=${el.printer_id} AND compatible_material_id=${el.compatible_material_id}
-  	`;
-  }
-
   for (const printer of printersData) {
     await sql`
   	DELETE FROM printers WHERE name=${printer.name} AND technology=${printer.technology} AND printing_speed=${printer.printing_speed} AND file_format=${printer.file_format} AND img_url=${printer.img_url} AND price=${printer.price} AND description=${printer.description} AND printing_size=${printer.printing_size} AND video_url=${printer.video_url}
@@ -284,6 +229,21 @@ exports.down = async (sql) => {
   for (const material of materials) {
     await sql`
   	DELETE FROM all_materials WHERE name=${material.name}
+  	`;
+  }
+  // await sql`
+  // 	DELETE FROM printer_compatible_materials WHERE printer_id=1 AND compatible_material_id=1
+  // 	`;
+  // await sql`
+  // 	DELETE FROM printer_compatible_materials WHERE printer_id=1 AND compatible_material_id=2
+  // 	`;
+  // await sql`
+  // 	DELETE FROM printer_compatible_materials WHERE printer_id=2 AND compatible_material_id=1
+  // 	`;
+  // AND compatible_material=${printer.compatible_material}
+  for (const el of printer_combatible_materials) {
+    await sql`
+  	DELETE FROM printer_compatible_materials WHERE printer_id=${el.printer_id} AND compatible_material_id=${el.compatible_material_id}
   	`;
   }
 };

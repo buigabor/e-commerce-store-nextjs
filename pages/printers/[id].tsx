@@ -21,7 +21,11 @@ import {
   useDispatchCart,
   useUpdateOverlay,
 } from '../../components/PrintersContext';
-import { getAllPrintersIds, getPrintersById } from '../api/database';
+import {
+  getAllPrintersIds,
+  getCompatibleMatsById,
+  getPrintersById,
+} from '../api/database';
 
 const printerStyles = css`
   display: flex;
@@ -325,5 +329,18 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   // Fetch necessary data for the blog post using params.id
   const printerFetched = await getPrintersById(params?.id);
 
-  return { props: { printerFetched } };
+  // Remove last 2 elements (count and SELECT)
+  let compatibleMaterial = await getCompatibleMatsById(printerFetched.id);
+  let modifiedCompatibleMaterial = compatibleMaterial.map(
+    (mat: any) => mat.name,
+  );
+
+  let printer = {
+    ...printerFetched,
+    compatibleMaterial: modifiedCompatibleMaterial,
+  };
+
+  // Insert compatibleMaterial property inside each printer
+
+  return { props: { printerFetched: printer } };
 };

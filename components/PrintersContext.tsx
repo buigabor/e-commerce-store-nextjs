@@ -124,6 +124,7 @@ const handleFilterPrinters = (
 ) => {
   return state.printers
     .filter((printer) => {
+      // SHOW IF ANY OF THE FILTER IS TRUE
       if (action.payload.matFilterTags.length === 0) {
         return true;
       }
@@ -133,19 +134,15 @@ const handleFilterPrinters = (
         index++
       ) {
         if (
-          printer.compatibleMaterial.includes(
+          printer.compatibleMaterial?.includes(
             action.payload.matFilterTags[index],
           )
         ) {
           return true;
         }
       }
-      // for (let mat of action.payload.matFilterTags) {
-      //   if (printer.compatibleMaterial.includes(mat)) {
-      //     return true;
-      //   }
-      // }
       return false;
+      // SHOW IF EVERY FILTER IS TRUE FOR THAT PRINTER
       // return action.payload.matFilterTags.some((mat: string) => {
       //   return printer.compatibleMaterial.includes(mat);
       // });
@@ -163,11 +160,6 @@ const handleFilterPrinters = (
           return true;
         }
       }
-      // for (const tech of action.payload.techFilterTags) {
-      //   if (printer.technology.includes(tech)) {
-      //     return true;
-      //   }
-      // }
       return false;
       // return action.payload.techFilterTags.some((mat: string) => {
       //   return printer.technology.includes(mat);
@@ -187,9 +179,23 @@ const handleFilterMaterials = (
 ) => {
   return state.materials
     .filter((material) => {
-      return action.payload.typeFilterTags.every((type: string) => {
-        return material.type.includes(type);
-      });
+      // SHOW IF SOME FILTER IS TRUE
+      if (action.payload.typeFilterTags.length === 0) {
+        return true;
+      }
+      for (
+        let index = 0;
+        index < action.payload.typeFilterTags.length;
+        index++
+      ) {
+        if (material.type.includes(action.payload.typeFilterTags[index])) {
+          return true;
+        }
+      }
+      // SHOW IF EVERY FILTER IS TRUE
+      // return action.payload.typeFilterTags.every((type: string) => {
+      //   return material.type.includes(type);
+      // });
     })
     .filter((material) => {
       return (

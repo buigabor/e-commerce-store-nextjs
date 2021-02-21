@@ -54,3 +54,14 @@ export async function getAllmaterialsIds() {
   const materials = await sql`SELECT id FROM materials`;
   return camelcaseKeys(materials);
 }
+
+// GET COMPATIBLE MATERIALS FROM JUNCTION TABLE
+
+export async function getCompatibleMatsById(id) {
+  const materials = await sql` SELECT all_materials.name
+   FROM printer_compatible_materials
+     JOIN printers ON printers.id = printer_compatible_materials.printer_id
+     JOIN all_materials ON printer_compatible_materials.compatible_material_id = all_materials.id
+  WHERE printers.id = ${id};`;
+  return materials;
+}

@@ -19,6 +19,7 @@
     "babel-plugin-styled-components": "^1.12.0",
     "camelcase-keys": "^6.2.2",
     "dotenv-safe": "^8.2.0",
+    "material-ui-search-bar": "^1.0.0",
     "next": "10.0.6",
     "next-redux-wrapper": "^6.0.2",
     "postgres": "^1.0.2",

@@ -203,7 +203,7 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
   const materialsState = useMaterials();
   const [typeFilterActive, setTypeFilterActive] = useState<boolean>(false);
   const [priceFilterActive, setPriceFilterActive] = useState<boolean>(false);
-  const [price, setPrice] = useState<number[]>([0, 3000]);
+  const [price, setPrice] = useState<number[]>([0, 1000]);
   const [typeFilterTags, setTypeFilterTags] = useState<string[]>([]);
   const [checkboxesChecked, setCheckboxesChecked] = useState({
     Filament: false,
@@ -219,7 +219,7 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
         break;
       }
     }
-    if (price[0] !== 0 || price[1] !== 3000) {
+    if (price[0] !== 0 || price[1] !== 1000) {
       result = true;
     }
     return result;
@@ -271,7 +271,13 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
     return `${value} €`;
   }
 
-  const handleResetFilter = () => {};
+  const handleResetFilter = () => {
+    setTypeFilterActive(false);
+    setPriceFilterActive(false);
+    setTypeFilterTags([]);
+    setCheckboxesChecked({ Filament: false, Powder: false, Liquid: false });
+    setPrice([0, 1000]);
+  };
   if (!materialsState.error) {
     return (
       <Layout>
@@ -352,7 +358,7 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
                 <div className="slider">
                   <Slider
                     step={50}
-                    max={3000}
+                    max={1000}
                     value={price}
                     onChange={handlePriceChange}
                     valueLabelDisplay="auto"
