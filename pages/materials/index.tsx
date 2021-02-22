@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Checkbox from '@material-ui/core/Checkbox';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
+import SearchBar from 'material-ui-search-bar';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import { MaterialCard } from '../../components/MaterialCard';
@@ -13,11 +14,11 @@ import {
   useDispatchMaterials,
   useMaterials,
 } from '../../components/PrintersContext';
-import { getMaterials } from '../api/database';
+import { getMaterials } from '../../utils/database';
 
 const materialsStyle = css`
   display: grid;
-  padding: 3rem;
+  padding: 0 3rem 3rem 3rem;
   grid-template-columns: 1fr 2fr;
   grid-template-rows: 1fr;
   grid-template-areas: 'filter catalog';
@@ -194,6 +195,16 @@ const materialsStyle = css`
   }
 `;
 
+const searchBarStyles = css`
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  div {
+    min-width: 575px;
+  }
+`;
+
 interface MaterialsProps {
   materialsFetched: Material[];
 }
@@ -205,6 +216,7 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
   const [priceFilterActive, setPriceFilterActive] = useState<boolean>(false);
   const [price, setPrice] = useState<number[]>([0, 1000]);
   const [typeFilterTags, setTypeFilterTags] = useState<string[]>([]);
+  const [searchText, setSearchText] = useState<string>('');
   const [checkboxesChecked, setCheckboxesChecked] = useState({
     Filament: false,
     Powder: false,
@@ -222,6 +234,9 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
     if (price[0] !== 0 || price[1] !== 1000) {
       result = true;
     }
+    if (searchText) {
+      result = true;
+    }
     return result;
   };
 
@@ -237,7 +252,6 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
       type: 'FILTER',
       payload: filterOptions,
     });
-    console.log('dispatched filter');
   }, [typeFilterTags, price]);
 
   useEffect(() => {
@@ -267,9 +281,14 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
     setPrice(newValue as number[]);
   };
 
-  function valuetext(value: number) {
+  const valuetext = (value: number) => {
     return `${value} €`;
-  }
+  };
+
+  const handleSearch = (newValue: string) => {
+    setSearchText(newValue);
+    dispatch({ type: 'SEARCH', payload: newValue });
+  };
 
   const handleResetFilter = () => {
     setTypeFilterActive(false);
@@ -281,6 +300,16 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
   if (!materialsState.error) {
     return (
       <Layout>
+        <div css={searchBarStyles}>
+          <SearchBar
+            onCancelSearch={() => {
+              setSearchText('');
+            }}
+            value={searchText}
+            onChange={handleSearch}
+            onRequestSearch={() => () => console.log('onRequestSearch')}
+          />
+        </div>
         <div css={materialsStyle}>
           <div className="filter">
             <h2>CATEGORIES</h2>

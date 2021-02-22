@@ -79,9 +79,16 @@ const navStyles = css`
 export const Nav = () => {
   const cartState = useCart();
   const toggleOverlay = useUpdateOverlay();
+  // const [cartState, setCartState] = useState<CartState>();
+  // useEffect(() => {
+  //   let cart = localStorage.getItem('cart');
+  //   if (cart) {
+  //     setCartState(JSON.parse(cart));
+  //   }
+  // }, []);
 
   function calcTotalNumberOfItems() {
-    const sumPrice = cartState.cart.reduce((quantity, cartItem) => {
+    const sumPrice = cartState?.cart?.reduce((quantity, cartItem) => {
       return quantity + cartItem.quantity;
     }, 0);
 

@@ -1,11 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import { GetServerSidePropsContext } from 'next';
+import nextCookies from 'next-cookies';
 import React from 'react';
 import slugify from 'slugify';
 import Layout from '../components/Layout';
 import { useCart } from '../components/PrintersContext';
+import { isSessionTokenValid } from '../utils/auth';
 
 const checkoutStyles = css`
   display: flex;
@@ -102,13 +104,8 @@ const checkoutStyles = css`
   }
 `;
 
-const useStyles = makeStyles((theme) => ({
-  root: {},
-}));
-
 const checkout = () => {
   const cartState = useCart();
-  const classes = useStyles();
 
   function calculateTotal() {
     const sumPrice = cartState.cart.reduce((sum, cartItem) => {
@@ -206,5 +203,22 @@ const checkout = () => {
     </Layout>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const token = nextCookies(context).token;
+  const validToken = await isSessionTokenValid(token);
+  console.log(validToken);
+
+  if (!validToken) {
+    return {
+      redirect: {
+        destination: '/login?returnTo=/checkout',
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+}
 
 export default checkout;

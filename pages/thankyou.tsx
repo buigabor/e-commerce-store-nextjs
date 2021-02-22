@@ -90,7 +90,7 @@ const thankYouStyles = css`
   }
 `;
 
-const thankyou = () => {
+const thankyou: React.FC = () => {
   return (
     <Layout>
       <div css={thankYouStyles}>

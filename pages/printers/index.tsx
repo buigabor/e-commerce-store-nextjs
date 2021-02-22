@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Checkbox from '@material-ui/core/Checkbox';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
+import SearchBar from 'material-ui-search-bar';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import { PrinterCard } from '../../components/PrinterCard';
@@ -13,11 +14,11 @@ import {
   useDispatchPrinters,
   usePrinters,
 } from '../../components/PrintersContext';
-import { getCompatibleMatsById, getPrinters } from '../api/database';
+import { getCompatibleMatsById, getPrinters } from '../../utils/database';
 
 const printersStyle = css`
   display: grid;
-  padding: 3rem;
+  padding: 0rem 3rem 3rem 3rem;
   grid-template-columns: 1fr 2fr;
   grid-template-rows: 1fr;
   grid-template-areas: 'filter catalog';
@@ -194,6 +195,16 @@ const printersStyle = css`
   }
 `;
 
+const searchBarStyles = css`
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  div {
+    min-width: 575px;
+  }
+`;
+
 interface PrintersProps {
   printersFetched: Printer[];
   // compatibleMaterialsFetched: string[];
@@ -208,6 +219,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
   const [price, setPrice] = useState<number[]>([0, 3000]);
   const [matFilterTags, setMatFilterTags] = useState<string[]>([]);
   const [techFilterTags, setTechFilterTags] = useState<string[]>([]);
+  const [searchText, setSearchText] = useState<string>('');
 
   const allMatTags = [
     'Metal',
@@ -254,8 +266,6 @@ const Printers = ({ printersFetched }: PrintersProps) => {
   }, []);
 
   useEffect(() => {
-    // console.log(printersState.filteredPrinters);
-
     const filterOptions = {
       matFilterTags,
       techFilterTags,
@@ -302,6 +312,9 @@ const Printers = ({ printersFetched }: PrintersProps) => {
     if (price[0] !== 0 || price[1] !== 3000) {
       result = true;
     }
+    if (searchText) {
+      result = true;
+    }
     return result;
   };
 
@@ -343,6 +356,11 @@ const Printers = ({ printersFetched }: PrintersProps) => {
     }
   };
 
+  const handleSearch = (newValue: string) => {
+    setSearchText(newValue);
+    dispatch({ type: 'SEARCH', payload: newValue });
+  };
+
   function valuetext(value: number) {
     return `${value} €`;
   }
@@ -350,6 +368,16 @@ const Printers = ({ printersFetched }: PrintersProps) => {
   if (!printersState.error) {
     return (
       <Layout>
+        <div css={searchBarStyles}>
+          <SearchBar
+            onCancelSearch={() => {
+              setSearchText('');
+            }}
+            value={searchText}
+            onChange={handleSearch}
+            onRequestSearch={() => () => console.log('onRequestSearch')}
+          />
+        </div>
         <div css={printersStyle}>
           <div className="filter">
             <h2>CATEGORIES</h2>

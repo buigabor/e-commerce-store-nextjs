@@ -25,7 +25,7 @@ import {
   getAllPrintersIds,
   getCompatibleMatsById,
   getPrintersById,
-} from '../api/database';
+} from '../../utils/database';
 
 const printerStyles = css`
   display: flex;

@@ -1,9 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Cart } from './Cart';
 import { Nav } from './Nav';
-import { useOverlay, useUpdateOverlay } from './PrintersContext';
+import {
+  useDispatchCart,
+  useOverlay,
+  useUpdateOverlay,
+} from './PrintersContext';
 
 const overlayStyles = css`
   position: fixed;
@@ -162,6 +166,20 @@ const overlayStyles = css`
 const Layout: React.FC = ({ children }) => {
   const overlayActive = useOverlay();
   const toggleOverlay = useUpdateOverlay();
+  const dispatch = useDispatchCart();
+
+  useEffect(() => {
+    let cart = localStorage.getItem('cart');
+
+    if (cart) {
+      dispatch({ type: 'SET_INITIAL_CART', payload: JSON.parse(cart) });
+    }
+  }, []);
+  useEffect(() => {
+    if (!localStorage.cart) {
+      localStorage.setItem('cart', JSON.stringify([]));
+    }
+  }, []);
   return (
     <>
       <Nav />

@@ -18,10 +18,11 @@ export const Cart: React.FC = () => {
   const overlayActive = useOverlay();
   const toggleOverlay = useUpdateOverlay();
   const cartState = useCart();
+
   const dispatch = useDispatchCart();
 
   function calculateTotal() {
-    const sumPrice = cartState.cart.reduce((sum, cartItem) => {
+    const sumPrice = cartState?.cart?.reduce((sum, cartItem) => {
       return sum + cartItem.price * cartItem.quantity;
     }, 0);
 
@@ -46,7 +47,7 @@ export const Cart: React.FC = () => {
         </span>
         <h2>Your Cart</h2>
         <div className="cart-content">
-          {cartState.cart.map((cartItem) => {
+          {cartState?.cart?.map((cartItem) => {
             return (
               <div key={cartItem.id} className="cart-item">
                 <img

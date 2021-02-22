@@ -73,7 +73,10 @@ const PrinterDispatchContext = createContext<Dispatch<ActionPrinters>>(
 );
 const OverlayContext = createContext<boolean>(false);
 const UpdateOverlayContext = createContext(() => {});
-const CartStateContext = createContext<CartState>(initialCartState);
+const CartStateContext = createContext<CartState>(
+  // localStorage.cart ? localStorage.cart : initialCartState,
+  initialCartState,
+);
 const CartDispatchContext = createContext<Dispatch<ActionCart>>(() => null);
 
 export interface CartItem extends Printer {
@@ -217,6 +220,18 @@ const materialsReducer: Reducer<MaterialState, ActionMaterials> = (
         ...state,
         filteredMaterials: handleFilterMaterials(state, action),
       };
+    case 'SEARCH':
+      return {
+        ...state,
+        filteredMaterials: state.materials.filter((material) => {
+          if (
+            material.name.toLowerCase().includes(action.payload.toLowerCase())
+          ) {
+            return true;
+          }
+          return false;
+        }),
+      };
     default:
       return state;
   }
@@ -237,6 +252,18 @@ const printersReducer: Reducer<
       return {
         ...state,
         filteredPrinters: handleFilterPrinters(state, action),
+      };
+    case 'SEARCH':
+      return {
+        ...state,
+        filteredPrinters: state.printers.filter((printer) => {
+          if (
+            printer.name.toLowerCase().includes(action.payload.toLowerCase())
+          ) {
+            return true;
+          }
+          return false;
+        }),
       };
     default:
       return state;
@@ -277,14 +304,32 @@ const cartReducer: Reducer<CartState, ActionCart> = (
   state: CartState,
   action: ActionCart,
 ): CartState => {
+  let cart = JSON.parse(localStorage.cart);
   switch (action.type) {
+    case 'SET_INITIAL_CART':
+      return { ...state, ...action.payload };
     case 'ADD_TO_CART':
+      cart = { ...state, cart: [...state.cart, action.payload] };
+      localStorage.setItem('cart', JSON.stringify(cart));
       return { ...state, cart: [...state.cart, action.payload] };
     case 'INCREMENT_QUANTITY':
-      return { ...state, cart: handleQuantity(state, action, 'add') };
+      let cartQtyIncremented = handleQuantity(state, action, 'add');
+      cart = { ...state, cart: cartQtyIncremented };
+      localStorage.setItem('cart', JSON.stringify(cart));
+      return { ...state, cart: cartQtyIncremented };
     case 'DECREMENT_QUANTITY':
-      return { ...state, cart: handleQuantity(state, action, 'subtract') };
+      let cartQtyDecremented = handleQuantity(state, action, 'subtract');
+      cart = { ...state, cart: cartQtyDecremented };
+      localStorage.setItem('cart', JSON.stringify(cart));
+      return { ...state, cart: cartQtyDecremented };
     case 'REMOVE_FROM_CART':
+      cart = {
+        ...state,
+        cart: state.cart.filter((printer) => {
+          return printer.id !== action.payload;
+        }),
+      };
+      localStorage.setItem('cart', JSON.stringify(cart));
       return {
         ...state,
         cart: state.cart.filter((printer) => {
@@ -292,6 +337,8 @@ const cartReducer: Reducer<CartState, ActionCart> = (
         }),
       };
     case 'CLEAR_CART':
+      cart = { ...state, cart: [] };
+      localStorage.setItem('cart', JSON.stringify(cart));
       return { ...state, cart: [] };
     default:
       return state;
@@ -307,8 +354,21 @@ export const PrinterProvider: React.FC = ({ children }) => {
     materialsReducer,
     initialMaterialState,
   );
-  const [cart, dispatchCart] = useReducer(cartReducer, initialCartState);
+  const [cart, dispatchCart] = useReducer(
+    cartReducer,
+    // localStorage.cart ? localStorage.cart : initialCartState,
+    initialCartState,
+  );
   const [overlayActive, setOverlayActive] = useState<boolean>(false);
+
+  // useEffect(() => {
+  //   let cart = localStorage.getItem('cart');
+  //   if (cart) {
+  //     return JSON.parse(cart);
+  //   }
+
+  //   return initialCartState;
+  // }, []);
 
   function toggleOverlay() {
     setOverlayActive((prevOverlay) => !prevOverlay);

@@ -21,7 +21,7 @@ function connectOneTimeToDB() {
 
 const sql = connectOneTimeToDB();
 
-// PRINTERS
+// PRINTERS TABLE
 
 export async function getPrinters() {
   const printers = await sql`SELECT * FROM printers`;
@@ -38,7 +38,7 @@ export async function getAllPrintersIds() {
   return camelcaseKeys(printers);
 }
 
-// MATERIALS
+// MATERIALS TABLE
 
 export async function getMaterials() {
   const materials = await sql`SELECT * FROM materials`;
@@ -64,4 +64,41 @@ export async function getCompatibleMatsById(id) {
      JOIN all_materials ON printer_compatible_materials.compatible_material_id = all_materials.id
   WHERE printers.id = ${id};`;
   return materials;
+}
+
+// USERS TABLE
+
+export async function saveUser({ username, password, email }) {
+  await sql`INSERT INTO users (username, password, email) VALUES(${username},${password}, ${email})`;
+}
+
+export async function getUserByName(username) {
+  const currentUser = await sql`SELECT * from users WHERE username=${username}`;
+  return currentUser[0];
+}
+
+// SESSIONS TABLE
+
+export async function getSessionByToken(token) {
+  const sessions = await sql`
+    SELECT * FROM sessions WHERE token = ${token};
+  `;
+
+  return sessions.map((s) => camelcaseKeys(s))[0];
+}
+
+export async function insertSession(token, userId) {
+  await sql`
+    INSERT INTO sessions
+      (token, user_id)
+    VALUES
+      (${token}, ${userId})
+    RETURNING *;
+  `;
+}
+
+export async function deleteExpiredSessions() {
+  await sql`
+    DELETE FROM sessions WHERE expiry_timestamp < NOW();
+  `;
 }
