@@ -4,7 +4,7 @@ const materials = [
   { id: 'm-3', name: 'ANYCUBIC 3D Printer Resin', type: 'Liquid', price: 40 },
   { id: 'm-4', name: 'ELEGOO 3D Rapid Resin', type: 'Liquid', price: 30 },
   { id: 'm-5', name: 'iSANMATE Wood Filament', type: 'Filament', price: 35 },
-  { id: 'm-6', name: 'ELEGOO 3D Rapid Resin', type: 'Liquid', price: 25 },
+  { id: 'm-6', name: 'Rich OPTO Water Washable ', type: 'Liquid', price: 32 },
   { id: 'm-7', name: 'Sinterit PA12', type: 'Powder', price: 160 },
 ];
 

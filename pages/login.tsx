@@ -23,7 +23,7 @@ const loginStyles = css`
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 50vw;
+    width: 45vw;
     padding: 1rem 0 3rem 0;
     border-radius: 14px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;

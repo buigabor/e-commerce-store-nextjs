@@ -257,7 +257,7 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
   useEffect(() => {
     // Remove last 2 elements
     materialsFetched.splice(materialsFetched.length - 2, 2);
-    dispatch({ type: 'GET_MATERIALS', payload: materialsFetched });
+    dispatch({ type: 'SET_MATERIALS', payload: materialsFetched });
   }, []);
 
   const handleTypeCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {

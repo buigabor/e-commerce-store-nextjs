@@ -1,4 +1,9 @@
 exports.up = async (sql) => {
+  await sql`CREATE TABLE all_materials (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+		name character varying(50) NOT NULL
+	)`;
+
   await sql`CREATE TABLE printers (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name character varying(50) NOT NULL,
@@ -8,14 +13,10 @@ exports.up = async (sql) => {
     img_url text,
     price numeric NOT NULL,
     description text NOT NULL,
-    -- compatible_material text[] NOT NULL,
+    -- compatible_material INT[] REFERENCES all_materials (id),
     printing_size character varying(50) NOT NULL,
     video_url text
 )`;
-  await sql`CREATE TABLE all_materials (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-		name character varying(50) NOT NULL
-	)`;
 
   await sql`CREATE TABLE printer_compatible_materials (
     -- id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

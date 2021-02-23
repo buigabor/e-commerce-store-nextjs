@@ -213,7 +213,7 @@ const materialsReducer: Reducer<MaterialState, ActionMaterials> = (
   action: ActionMaterials,
 ) => {
   switch (action.type) {
-    case 'GET_MATERIALS':
+    case 'SET_MATERIALS':
       return { ...state, materials: [...action.payload] };
     case 'FILTER':
       return {
@@ -242,12 +242,8 @@ const printersReducer: Reducer<
   ActionPrinters | ActionPrinterFilter
 > = (state: PrinterState, action: ActionPrinters | ActionPrinterFilter) => {
   switch (action.type) {
-    case 'GET_PRINTERS':
-      return { ...state, loading: true };
-    case 'GET_PRINTERS_SUCCESS':
+    case 'SET_PRINTERS':
       return { ...state, printers: [...action.payload], loading: false };
-    case 'GET_PRINTERS_FAIL':
-      return { ...state, error: action.payload, loading: false };
     case 'FILTER':
       return {
         ...state,

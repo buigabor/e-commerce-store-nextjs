@@ -14,7 +14,7 @@ import {
   useDispatchPrinters,
   usePrinters,
 } from '../../components/PrintersContext';
-import { getCompatibleMatsById, getPrinters } from '../../utils/database';
+import { getAllPrintersWithCompatibleMaterials } from '../../utils/database';
 
 const printersStyle = css`
   display: grid;
@@ -248,21 +248,9 @@ const Printers = ({ printersFetched }: PrintersProps) => {
 
   useEffect(() => {
     dispatch({
-      type: 'GET_PRINTERS',
+      type: 'SET_PRINTERS',
       payload: printersFetched,
     });
-    if (!printersFetched) {
-      return dispatch({
-        type: 'GET_PRINTERS_FAIL',
-        payload: 'An error occured while fetching the printers.',
-      });
-    } else {
-      // Set printers in PrintersContext
-      return dispatch({
-        type: 'GET_PRINTERS_SUCCESS',
-        payload: printersFetched,
-      });
-    }
   }, []);
 
   useEffect(() => {
@@ -598,33 +586,9 @@ const Printers = ({ printersFetched }: PrintersProps) => {
 };
 
 export async function getStaticProps() {
-  // Get printers from PG database
-  let printersFetched = await getPrinters();
+  let printersWithCompatibleMats = await getAllPrintersWithCompatibleMaterials();
 
-  // Remove last 2 elements (count and SELECT)
-  printersFetched.splice(printersFetched.length - 2, 2);
-
-  // Insert compatibleMaterial property inside each printer
-  let printers: Printer[] = await Promise.all(
-    printersFetched.map(async (printer: any) => {
-      return {
-        ...printer,
-        compatibleMaterial: await getCompatibleMatsById(printer.id),
-      };
-    }),
-  );
-
-  // Get all the name of mats
-  let printerWithCompatibleMats = printers.map((printer) => {
-    return {
-      ...printer,
-      compatibleMaterial: printer.compatibleMaterial?.map(
-        (mat: any) => mat.name,
-      ),
-    };
-  });
-
-  return { props: { printersFetched: printerWithCompatibleMats } };
+  return { props: { printersFetched: printersWithCompatibleMats } };
 }
 
 export default Printers;

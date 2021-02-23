@@ -102,3 +102,33 @@ export async function deleteExpiredSessions() {
     DELETE FROM sessions WHERE expiry_timestamp < NOW();
   `;
 }
+
+// GET ALL PRINTERS WITH MATCHED COMPATIBLE MATERIALS
+
+export async function getAllPrintersWithCompatibleMaterials() {
+  // Get printers from PG database
+  let printersFetched = await getPrinters();
+
+  // Remove last 2 elements (count and SELECT)
+  printersFetched.splice(printersFetched.length - 2, 2);
+
+  // Insert compatibleMaterial property inside each printer
+  let printers = await Promise.all(
+    printersFetched.map(async (printer) => {
+      return {
+        ...printer,
+        compatibleMaterial: await getCompatibleMatsById(printer.id),
+      };
+    }),
+  );
+
+  // Get all the name of mats
+  let printersWithCompatibleMats = printers.map((printer) => {
+    return {
+      ...printer,
+      compatibleMaterial: printer.compatibleMaterial?.map((mat) => mat.name),
+    };
+  });
+
+  return printersWithCompatibleMats;
+}

@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import Layout from '../components/Layout';
 
 const homeStyles = css`
@@ -29,6 +30,49 @@ const homeStyles = css`
       flex-direction: column;
       justify-content: flex-start;
       padding: 6rem 3rem 3rem 3rem;
+      &__sign-up {
+        margin-right: 10px;
+        background-color: #3535f5;
+        box-shadow: none;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 0.8rem 2rem;
+        font-size: 16px;
+        font-weight: 600;
+        outline: none;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+        &:hover {
+          background-color: #5151f1;
+        }
+      }
+      &__btn-wrapper {
+        position: relative;
+        bottom: 4.5rem;
+        display: flex;
+        justify-content: flex-end;
+      }
+      &__login {
+        background-color: rgba(255, 255, 255, 0.75);
+        box-shadow: none;
+        color: #3535f5;
+        border: none;
+        border-radius: 5px;
+        padding: 0.8rem 2rem;
+        font-size: 16px;
+        font-weight: 600;
+        outline: none;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.952);
+        }
+      }
       &__icon {
         color: #000;
         font-size: 60px;
@@ -39,6 +83,7 @@ const homeStyles = css`
           font-family: 'Syncopate', sans-serif;
         }
       }
+
       &__text {
         max-width: 420px;
         h2 {
@@ -132,6 +177,14 @@ export default function Home() {
           <Image width={500} height={500} src="/3D-front-page.jpg" />
         </div>
         <div className="front-wrapper">
+          <div className="front-wrapper__btn-wrapper">
+            <Link href="/register">
+              <button className="front-wrapper__sign-up">Sign Up</button>
+            </Link>
+            <Link href="/login">
+              <button className="front-wrapper__login"> Login</button>
+            </Link>
+          </div>
           <div className="front-wrapper__icon">
             <Image src="/3Dlogo.svg" width={120} height={120} />
             <span>3D BUIG</span>
@@ -142,7 +195,9 @@ export default function Home() {
               On-demand manufacturing and rapid prototyping. Get your quote in
               seconds, parts delivered in days.
             </p>
-            <button>Go To Products</button>
+            <Link href="/printers">
+              <button>Go To Products</button>
+            </Link>
           </div>
         </div>
         <div className="front-choose-us">

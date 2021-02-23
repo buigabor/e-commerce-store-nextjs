@@ -1,5 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
@@ -28,7 +30,7 @@ const registerStyles = css`
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
     h1 {
-      padding-bottom: 3rem;
+      padding-bottom: 1.5rem;
       font-size: 2.5em;
     }
 
@@ -47,7 +49,7 @@ const registerStyles = css`
         font-weight: 500;
         margin-top: 13px;
         border: none;
-        padding: 0.8rem 2rem;
+        padding: 0.8rem 1.7rem;
         font-size: 1.1em;
         max-width: 250px;
         cursor: pointer;
@@ -82,6 +84,7 @@ const register = ({ token }: RegisterProps) => {
     <Layout>
       <div css={registerStyles}>
         <div className="form-wrapper">
+          <h1>Create Your Account</h1>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -113,14 +116,6 @@ const register = ({ token }: RegisterProps) => {
               value={user.username}
             />
             <TextField
-              name="password"
-              id="outlined-basic"
-              label="Password"
-              variant="outlined"
-              onChange={onChange}
-              value={user.password}
-            />
-            <TextField
               name="email"
               id="outlined-basic"
               label="Email"
@@ -128,7 +123,18 @@ const register = ({ token }: RegisterProps) => {
               onChange={onChange}
               value={user.email}
             />
-            <button>Submit</button>
+            <TextField
+              name="password"
+              id="outlined-basic"
+              label="Password"
+              variant="outlined"
+              onChange={onChange}
+              value={user.password}
+            />
+
+            <button>
+              Sign Up <FontAwesomeIcon icon={faSignInAlt} />
+            </button>
           </form>
         </div>
       </div>
