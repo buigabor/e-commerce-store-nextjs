@@ -38,10 +38,15 @@ export async function getAllPrintersIds() {
   return camelcaseKeys(printers);
 }
 
+export async function deletePrinterById(id) {
+  const printer = await sql`DELETE FROM printers WHERE id=${id}`;
+  return camelcaseKeys(printer);
+}
+
 // MATERIALS TABLE
 
 export async function getMaterials() {
-  const materials = await sql`SELECT * FROM materials`;
+  let materials = await sql`SELECT * FROM materials`;
   return camelcaseKeys(materials);
 }
 
@@ -53,6 +58,11 @@ export async function getMaterialsById(id) {
 export async function getAllmaterialsIds() {
   const materials = await sql`SELECT id FROM materials`;
   return camelcaseKeys(materials);
+}
+
+export async function deleteMaterialById(id) {
+  const material = await sql`DELETE FROM materials WHERE id=${id}`;
+  return camelcaseKeys(material);
 }
 
 // GET COMPATIBLE MATERIALS FROM JUNCTION TABLE
