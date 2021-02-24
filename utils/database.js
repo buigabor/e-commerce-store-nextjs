@@ -218,6 +218,12 @@ export async function deleteExpiredSessions() {
   `;
 }
 
+export async function deleteSessionByToken(token) {
+  await sql`
+    DELETE FROM sessions WHERE token = ${token};
+  `;
+}
+
 // GET ALL PRINTERS WITH MATCHED COMPATIBLE MATERIALS
 
 export async function getAllPrintersWithCompatibleMaterials() {

@@ -1,13 +1,21 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { faShoppingCart, faUser } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCog,
+  faShoppingCart,
+  faSignOutAlt,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { useCart, useUpdateOverlay } from './PrintersContext';
 
 const navStyles = css`
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -74,18 +82,37 @@ const navStyles = css`
       font-size: 0.85em;
     }
   }
+  .nav-dropdown {
+    position: absolute;
+    z-index: 50;
+    width: 12rem;
+    top: 2rem;
+    right: 1rem;
+    background-color: #fff;
+    color: rgb(66, 66, 66);
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 5px;
+    &__row {
+      font-size: 0.8em;
+      padding: 0.8rem 0 0.8rem 1rem;
+      border-bottom: 1px solid gray;
+      span {
+        width: 100%;
+      }
+      svg {
+        margin: 0;
+        margin-right: 8px;
+      }
+    }
+  }
 `;
 
 export const Nav = () => {
   const cartState = useCart();
   const toggleOverlay = useUpdateOverlay();
-  // const [cartState, setCartState] = useState<CartState>();
-  // useEffect(() => {
-  //   let cart = localStorage.getItem('cart');
-  //   if (cart) {
-  //     setCartState(JSON.parse(cart));
-  //   }
-  // }, []);
+  const [profileClicked, setProfileClicked] = useState<boolean>(false);
+
+  const router = useRouter();
 
   function calcTotalNumberOfItems() {
     const sumPrice = cartState?.cart?.reduce((quantity, cartItem) => {
@@ -96,51 +123,80 @@ export const Nav = () => {
   }
 
   return (
-    <div css={navStyles}>
-      <Link href="/">
-        <div className="logo">
-          <div className="logo-img">
-            <Image width={60} height={60} src="/3Dlogo.svg" />
+    <>
+      <div css={navStyles}>
+        <Link href="/">
+          <div className="logo">
+            <div className="logo-img">
+              <Image width={60} height={60} src="/3Dlogo.svg" />
+            </div>
+            <span>3D BUIG</span>
           </div>
-          <span>3D BUIG</span>
+        </Link>
+        <div className="links">
+          <div>
+            <Link href="/printers">
+              <a> 3D Printers</a>
+            </Link>
+          </div>
+          <div>
+            <Link href="/materials">
+              <a>Materials</a>
+            </Link>
+          </div>
+          <div>
+            <Link href="/about">
+              <a>About</a>
+            </Link>
+          </div>
         </div>
-      </Link>
-      <div className="links">
-        <div>
-          <Link href="/printers">
-            <a> 3D Printers</a>
-          </Link>
-        </div>
-        <div>
-          <Link href="/materials">
-            <a>Materials</a>
-          </Link>
-        </div>
-        <div>
-          <Link href="/about">
-            <a>About</a>
-          </Link>
-        </div>
-      </div>
-      <div className="cart">
-        <div>
+        <div className="cart">
+          <div>
+            <FontAwesomeIcon
+              icon={faShoppingCart}
+              onClick={() => {
+                toggleOverlay();
+              }}
+            />
+            <div
+              onClick={() => {
+                toggleOverlay();
+              }}
+              className="cart-items"
+            >
+              {calcTotalNumberOfItems()}
+            </div>
+          </div>
           <FontAwesomeIcon
-            icon={faShoppingCart}
+            icon={faUser}
             onClick={() => {
-              toggleOverlay();
+              setProfileClicked(!profileClicked);
             }}
           />
           <div
-            onClick={() => {
-              toggleOverlay();
-            }}
-            className="cart-items"
+            className="nav-dropdown"
+            style={{ display: profileClicked ? 'inline-block' : 'none' }}
           >
-            {calcTotalNumberOfItems()}
+            <div className="nav-dropdown__row">
+              <span>
+                <FontAwesomeIcon icon={faCog} /> Manage Products
+              </span>
+            </div>
+            <div
+              className="nav-dropdown__row"
+              onClick={() => {
+                setProfileClicked(false);
+                alert('Logged out!');
+                router.push('/logout');
+              }}
+            >
+              <span>
+                <FontAwesomeIcon icon={faSignOutAlt} /> Logout
+              </span>
+            </div>
           </div>
         </div>
-        <FontAwesomeIcon icon={faUser} />
       </div>
-    </div>
+    </>
   );
 };

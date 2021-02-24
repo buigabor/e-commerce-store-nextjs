@@ -17,7 +17,6 @@ const homeStyles = css`
       display: flex;
       justify-content: center;
       align-items: center;
-      transform: translateY(-2rem);
     }
     &-wrapper {
       grid-area: page-text;
