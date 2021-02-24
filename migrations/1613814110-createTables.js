@@ -20,8 +20,8 @@ exports.up = async (sql) => {
 
   await sql`CREATE TABLE printer_compatible_materials (
     -- id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-		printer_id INT NOT NULL REFERENCES printers (id),
-		compatible_material_id INT NOT NULL REFERENCES all_materials (id),
+		printer_id INT NOT NULL REFERENCES printers (id) ON DELETE CASCADE,
+		compatible_material_id INT NOT NULL REFERENCES all_materials (id) ON DELETE CASCADE,
 		PRIMARY KEY(printer_id,compatible_material_id)
 	)`;
 };

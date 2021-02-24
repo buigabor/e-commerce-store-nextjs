@@ -214,6 +214,8 @@ const materialsReducer: Reducer<MaterialState, ActionMaterials> = (
 ) => {
   switch (action.type) {
     case 'SET_MATERIALS':
+      console.log('set');
+
       return { ...state, materials: [...action.payload] };
     case 'FILTER':
       return {

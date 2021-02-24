@@ -25,17 +25,17 @@ const sql = connectOneTimeToDB();
 
 export async function getPrinters() {
   const printers = await sql`SELECT * FROM printers`;
-  return camelcaseKeys(printers);
+  return printers.map((p) => camelcaseKeys(p));
 }
 
 export async function getPrintersById(id) {
   const printers = await sql`SELECT * FROM printers WHERE id = ${id}`;
-  return camelcaseKeys(printers[0]);
+  return printers.map((p) => camelcaseKeys(p))[0];
 }
 
 export async function getAllPrintersIds() {
   const printers = await sql`SELECT id FROM printers`;
-  return camelcaseKeys(printers);
+  return printers.map((p) => camelcaseKeys(p));
 }
 
 export async function deletePrinterById(id) {
@@ -43,26 +43,131 @@ export async function deletePrinterById(id) {
   return camelcaseKeys(printer);
 }
 
+export async function updatePrinterById(id, printer) {
+  const printerProperties = Object.keys(printer);
+
+  if (printerProperties.length < 1) {
+    return undefined;
+  }
+
+  let printers = [];
+
+  if ('printingSize' in printer) {
+    printers = await sql`
+      UPDATE printers
+        SET printing_size = ${printer.printingSize}
+        WHERE id = ${id}
+        RETURNING *;
+    `;
+  }
+
+  if ('technology' in printer) {
+    printers = await sql`
+      UPDATE printers
+        SET technology = ${printer.technology}
+        WHERE id = ${id}
+        RETURNING *;
+    `;
+  }
+
+  if ('printingSpeed' in printer) {
+    printers = await sql`
+      UPDATE printers
+        SET printing_speed = ${printer.printingSpeed}
+        WHERE id = ${id}
+        RETURNING *;
+    `;
+  }
+
+  if ('fileFormat' in printer) {
+    printers = await sql`
+      UPDATE printers
+        SET file_format = ${printer.fileFormat}
+        WHERE id = ${id}
+        RETURNING *;
+    `;
+  }
+
+  if ('price' in printer) {
+    printers = await sql`
+      UPDATE printers
+        SET price = ${printer.price}
+        WHERE id = ${id}
+        RETURNING *;
+    `;
+  }
+
+  if ('description' in printer) {
+    printers = await sql`
+      UPDATE printers
+        SET description = ${printer.description}
+        WHERE id = ${id}
+        RETURNING *;
+    `;
+  }
+
+  if ('videoUrl' in printer) {
+    printers = await sql`
+      UPDATE printers
+        SET video_url = ${printer.videoUrl}
+        WHERE id = ${id}
+        RETURNING *;
+    `;
+  }
+
+  return printers.map((p) => camelcaseKeys(p))[0];
+}
+
 // MATERIALS TABLE
 
 export async function getMaterials() {
   let materials = await sql`SELECT * FROM materials`;
-  return camelcaseKeys(materials);
+  return materials.map((m) => camelcaseKeys(m));
 }
 
 export async function getMaterialsById(id) {
   const materials = await sql`SELECT * FROM materials WHERE id = ${id}`;
-  return camelcaseKeys(materials[0]);
+  return materials.map((m) => camelcaseKeys(m))[0];
 }
 
 export async function getAllmaterialsIds() {
   const materials = await sql`SELECT id FROM materials`;
-  return camelcaseKeys(materials);
+  return materials.map((m) => camelcaseKeys(m));
 }
 
 export async function deleteMaterialById(id) {
   const material = await sql`DELETE FROM materials WHERE id=${id}`;
   return camelcaseKeys(material);
+}
+
+export async function updateMaterialById(id, material) {
+  const materialProperties = Object.keys(material);
+
+  if (materialProperties.length < 1) {
+    return undefined;
+  }
+
+  let materials = [];
+
+  if ('type' in material) {
+    materials = await sql`
+      UPDATE materials
+        SET type = ${material.type}
+        WHERE id = ${id}
+        RETURNING *;
+    `;
+  }
+
+  if ('price' in material) {
+    materials = await sql`
+      UPDATE materials
+        SET price = ${material.price}
+        WHERE id = ${id}
+        RETURNING *;
+    `;
+  }
+
+  return materials.map((m) => camelcaseKeys(m))[0];
 }
 
 // GET COMPATIBLE MATERIALS FROM JUNCTION TABLE
@@ -84,7 +189,7 @@ export async function saveUser({ username, password, email }) {
 
 export async function getUserByName(username) {
   const currentUser = await sql`SELECT * from users WHERE username=${username}`;
-  return currentUser[0];
+  return currentUser.map((c) => camelcaseKeys(c))[0];
 }
 
 // SESSIONS TABLE

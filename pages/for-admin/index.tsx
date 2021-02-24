@@ -10,6 +10,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import axios from 'axios';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import {
@@ -64,6 +65,7 @@ const tableStyles = css`
       background-color: transparent;
       border: none;
       cursor: pointer;
+      outline: none;
     }
   }
 `;
@@ -74,28 +76,35 @@ const Admin = ({ printersFetched, materialsFetched }: AdminProps) => {
   const dispatchMaterials = useDispatchMaterials();
   const dispatchPrinters = useDispatchPrinters();
   const [rows, setRows] = useState<RowItem[]>([]);
-  const [deleted, setDeleted] = useState(false);
+  const [printers, setPrinters] = useState<Printer[]>();
+  const [materials, setMaterials] = useState<Material[]>();
+
+  const router = useRouter();
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
 
   useEffect(() => {
-    let printersRows: RowItem[] = printersState.printers.map((printer) => {
-      return { id: printer.id, name: printer.name, price: printer.price };
-    });
+    if (printers && materials) {
+      let printersRows: RowItem[] = printers.map((printer) => {
+        return { id: printer.id, name: printer.name, price: printer.price };
+      });
 
-    let materialsRows: RowItem[] = materialsState.materials.map((material) => {
-      return { id: material.id, name: material.name, price: material.price };
-    });
-    setRows([...printersRows, ...materialsRows]);
-  }, [printersState]);
+      let materialsRows: RowItem[] = materials?.map((material) => {
+        return { id: material.id, name: material.name, price: material.price };
+      });
+      setRows([...printersRows, ...materialsRows]);
+    }
+  }, [printers]);
 
   useEffect(() => {
     dispatchMaterials({ type: 'SET_MATERIALS', payload: materialsFetched });
-    dispatchPrinters({
-      type: 'SET_PRINTERS',
-      payload: printersFetched,
-    });
+    dispatchPrinters({ type: 'SET_PRINTERS', payload: printersFetched });
+    setMaterials(materialsFetched);
+    setPrinters(printersFetched);
   }, []);
 
-  useEffect(() => {}, [deleted]);
   const classes = useStyles();
   if (rows.length > 0) {
     return (
@@ -134,17 +143,19 @@ const Admin = ({ printersFetched, materialsFetched }: AdminProps) => {
                         className="modify-delete"
                         onClick={() => {
                           axios
-                            .delete('/api/materials', {
+                            .delete('/api/products', {
                               data: { id: row.id },
                             })
                             .then((res) => {
-                              console.log(res);
-                              if (res.status === 200) {
-                                setDeleted(true);
+                              if (res.status < 300) {
+                                setRows(
+                                  rows.filter((currentRow) => {
+                                    return currentRow.id !== row.id;
+                                  }),
+                                );
                               }
-                              setDeleted(false);
                             })
-                            .catch();
+                            .catch((e) => console.log(e));
                         }}
                       >
                         Delete
@@ -167,10 +178,9 @@ const Admin = ({ printersFetched, materialsFetched }: AdminProps) => {
   }
 };
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const printersWithCompatibleMats = await getAllPrintersWithCompatibleMaterials();
-  let materialsFetched = await getMaterials();
-  materialsFetched.splice(materialsFetched.length - 2, 2);
+  const materialsFetched = await getMaterials();
   return {
     props: { printersFetched: printersWithCompatibleMats, materialsFetched },
   };

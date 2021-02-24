@@ -255,8 +255,6 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
   }, [typeFilterTags, price]);
 
   useEffect(() => {
-    // Remove last 2 elements
-    materialsFetched.splice(materialsFetched.length - 2, 2);
     dispatch({ type: 'SET_MATERIALS', payload: materialsFetched });
   }, []);
 
