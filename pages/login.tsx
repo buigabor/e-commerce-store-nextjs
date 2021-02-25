@@ -7,6 +7,7 @@ import axios from 'axios';
 import { GetServerSidePropsContext } from 'next';
 import nextCookies from 'next-cookies';
 import { useRouter } from 'next/dist/client/router';
+import Link from 'next/link';
 import React, { ChangeEvent, useState } from 'react';
 import Layout from '../components/Layout';
 import { isSessionTokenValid } from '../utils/auth';
@@ -62,6 +63,11 @@ const loginStyles = css`
         }
       }
     }
+    .login-text {
+      font-size: 0.85em;
+      color: #3535f5;
+      cursor: pointer;
+    }
   }
 `;
 
@@ -108,6 +114,7 @@ const login = ({ redirectDestination }: LoginProps) => {
               variant="outlined"
               onChange={onChange}
               value={user.username}
+              required
             />
             <TextField
               name="password"
@@ -116,7 +123,12 @@ const login = ({ redirectDestination }: LoginProps) => {
               variant="outlined"
               onChange={onChange}
               value={user.password}
+              type="password"
+              required
             />
+            <Link href="/register">
+              <a className="login-text">Don't have an account yet?</a>
+            </Link>
             <button>
               Login <FontAwesomeIcon icon={faSignInAlt} />
             </button>

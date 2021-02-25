@@ -1,7 +1,12 @@
 import React from 'react';
+import Layout from '../../components/Layout';
 
 const MaterialComponent = () => {
-  return <div></div>;
+  return (
+    <Layout>
+      <div></div>
+    </Layout>
+  );
 };
 
 export default MaterialComponent;

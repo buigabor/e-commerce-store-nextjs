@@ -125,7 +125,7 @@ export async function getMaterials() {
   return materials.map((m) => camelcaseKeys(m));
 }
 
-export async function getMaterialsById(id) {
+export async function getMaterialById(id) {
   const materials = await sql`SELECT * FROM materials WHERE id = ${id}`;
   return materials.map((m) => camelcaseKeys(m))[0];
 }

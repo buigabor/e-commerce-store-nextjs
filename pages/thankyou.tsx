@@ -75,15 +75,15 @@ const thankYouStyles = css`
         transform: scale(1.05);
       }
       &-printers {
-        background: url('/printerImages/thank-you-page-img.jpg');
+        background: url('/productImages/thank-you-page-img.jpg');
         background-size: cover;
       }
       &-materials {
-        background: url('/printerImages/thank-you-material.jpg');
+        background: url('/productImages/thank-you-material.jpg');
         background-size: cover;
       }
       &-about {
-        background: url('/printerImages/groot.jpg');
+        background: url('/productImages/groot.jpg');
         background-size: cover;
       }
     }
@@ -99,7 +99,7 @@ const thankyou: React.FC = () => {
             <Image
               width={500}
               height={300}
-              src="/printerImages/thank-you-page-img.jpg"
+              src="/productImages/thank-you-page-img.jpg"
             />
           </div>
           <div className="thank-you__header-text">

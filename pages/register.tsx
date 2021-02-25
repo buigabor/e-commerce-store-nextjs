@@ -74,6 +74,7 @@ const register = ({ token }: RegisterProps) => {
     password: '',
     email: '',
   });
+  const [passwordError, setPasswordError] = useState(false);
   const router = useRouter();
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -88,6 +89,9 @@ const register = ({ token }: RegisterProps) => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              if (user.password.length < 8) {
+                return setPasswordError(true);
+              }
               axios
                 .post('/api/register', { ...user, token })
                 .then((res) => {
@@ -114,6 +118,7 @@ const register = ({ token }: RegisterProps) => {
               variant="outlined"
               onChange={onChange}
               value={user.username}
+              required
             />
             <TextField
               name="email"
@@ -122,14 +127,19 @@ const register = ({ token }: RegisterProps) => {
               variant="outlined"
               onChange={onChange}
               value={user.email}
+              required
             />
             <TextField
+              error={passwordError ? true : false}
               name="password"
               id="outlined-basic"
               label="Password"
               variant="outlined"
               onChange={onChange}
               value={user.password}
+              type="password"
+              required
+              helperText="At least 8 characters."
             />
 
             <button>

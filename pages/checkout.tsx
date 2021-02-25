@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import TextField from '@material-ui/core/TextField';
 import { GetServerSidePropsContext } from 'next';
 import nextCookies from 'next-cookies';
+import { useRouter } from 'next/router';
 import React from 'react';
 import slugify from 'slugify';
 import Layout from '../components/Layout';
@@ -106,6 +107,7 @@ const checkoutStyles = css`
 
 const checkout = () => {
   const cartState = useCart();
+  const router = useRouter();
 
   function calculateTotal() {
     const sumPrice = cartState.cart.reduce((sum, cartItem) => {
@@ -119,20 +121,29 @@ const checkout = () => {
     <Layout>
       <div css={checkoutStyles}>
         <div className="form-wrapper">
-          <form noValidate autoComplete="off">
+          <form
+            autoComplete="off"
+            onSubmit={(e) => {
+              e.preventDefault();
+              router.push('/thankyou');
+            }}
+          >
             <TextField
+              required
               name="first-name"
               id="outlined-basic"
               label="First Name"
               variant="outlined"
             />
             <TextField
+              required
               name="last-name"
               id="outlined-basic"
               label="Last Name"
               variant="outlined"
             />
             <TextField
+              required
               name="email"
               id="outlined-basic"
               label="E-mail"
