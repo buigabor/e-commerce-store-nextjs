@@ -134,6 +134,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const redirectDestination = context?.query?.returnTo ?? '/';
 
   if (validToken) {
+    // alert('Already logged in!');
     return {
       redirect: {
         destination: redirectDestination,

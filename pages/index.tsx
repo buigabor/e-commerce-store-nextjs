@@ -181,7 +181,7 @@ export default function Home() {
               <button className="front-wrapper__sign-up">Sign Up</button>
             </Link>
             <Link href="/login">
-              <button className="front-wrapper__login"> Login</button>
+              <button className="front-wrapper__login">Login</button>
             </Link>
           </div>
           <div className="front-wrapper__icon">

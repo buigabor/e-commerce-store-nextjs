@@ -7,10 +7,11 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCart, useUpdateOverlay } from './PrintersContext';
 
 const navStyles = css`
@@ -92,10 +93,12 @@ const navStyles = css`
     color: rgb(66, 66, 66);
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     border-radius: 5px;
+    &__row:not(:first-of-type) {
+      border-top: 1px solid gray;
+    }
     &__row {
       font-size: 0.8em;
       padding: 0.8rem 0 0.8rem 1rem;
-      border-bottom: 1px solid gray;
       span {
         width: 100%;
       }
@@ -107,12 +110,44 @@ const navStyles = css`
   }
 `;
 
+export interface User {
+  id: number;
+  name: string;
+  password: string;
+  email: string;
+  admin: boolean;
+}
+
 export const Nav = () => {
   const cartState = useCart();
   const toggleOverlay = useUpdateOverlay();
   const [profileClicked, setProfileClicked] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [hasMounted, setHasMounted] = useState<boolean>(false);
+  const [logoutClicked, setLogoutClicked] = useState(false);
 
   const router = useRouter();
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get('/api/user')
+      .then((res) => {
+        const { user } = res.data;
+        console.log('fetched');
+
+        if (user) {
+          return setCurrentUser(user);
+        }
+        if (res.status === 404) {
+          alert('User or session not found');
+        }
+      })
+      .catch((e) => console.log(e));
+  }, [logoutClicked]);
 
   function calcTotalNumberOfItems() {
     const sumPrice = cartState?.cart?.reduce((quantity, cartItem) => {
@@ -123,80 +158,104 @@ export const Nav = () => {
   }
 
   return (
-    <>
-      <div css={navStyles}>
-        <Link href="/">
-          <div className="logo">
-            <div className="logo-img">
-              <Image width={60} height={60} src="/3Dlogo.svg" />
-            </div>
-            <span>3D BUIG</span>
+    <div css={navStyles}>
+      <Link href="/">
+        <div className="logo">
+          <div className="logo-img">
+            <Image width={60} height={60} src="/3Dlogo.svg" />
           </div>
-        </Link>
-        <div className="links">
-          <div>
-            <Link href="/printers">
-              <a> 3D Printers</a>
-            </Link>
-          </div>
-          <div>
-            <Link href="/materials">
-              <a>Materials</a>
-            </Link>
-          </div>
-          <div>
-            <Link href="/about">
-              <a>About</a>
-            </Link>
-          </div>
+          <span>3D BUIG</span>
         </div>
-        <div className="cart">
-          <div>
-            <FontAwesomeIcon
-              icon={faShoppingCart}
-              onClick={() => {
-                toggleOverlay();
-              }}
-            />
-            <div
-              onClick={() => {
-                toggleOverlay();
-              }}
-              className="cart-items"
-            >
-              {calcTotalNumberOfItems()}
-            </div>
-          </div>
+      </Link>
+      <div className="links">
+        <div>
+          <Link href="/printers">
+            <a> 3D Printers</a>
+          </Link>
+        </div>
+        <div>
+          <Link href="/materials">
+            <a>Materials</a>
+          </Link>
+        </div>
+        <div>
+          <Link href="/about">
+            <a>About</a>
+          </Link>
+        </div>
+      </div>
+      <div className="cart">
+        <div>
           <FontAwesomeIcon
-            icon={faUser}
+            icon={faShoppingCart}
             onClick={() => {
-              setProfileClicked(!profileClicked);
+              toggleOverlay();
             }}
           />
           <div
-            className="nav-dropdown"
-            style={{ display: profileClicked ? 'inline-block' : 'none' }}
+            onClick={() => {
+              toggleOverlay();
+            }}
+            className="cart-items"
           >
-            <div className="nav-dropdown__row">
-              <span>
-                <FontAwesomeIcon icon={faCog} /> Manage Products
-              </span>
-            </div>
-            <div
-              className="nav-dropdown__row"
-              onClick={() => {
-                setProfileClicked(false);
-                alert('Logged out!');
-                router.push('/logout');
-              }}
-            >
-              <span>
-                <FontAwesomeIcon icon={faSignOutAlt} /> Logout
-              </span>
-            </div>
+            {calcTotalNumberOfItems()}
           </div>
         </div>
+        {hasMounted ? (
+          currentUser ? (
+            <>
+              <div>
+                <FontAwesomeIcon
+                  icon={faUser}
+                  onClick={() => {
+                    setProfileClicked(!profileClicked);
+                  }}
+                />
+                <span>{currentUser.name}</span>
+              </div>
+              <div
+                className="nav-dropdown"
+                style={{ display: profileClicked ? 'inline-block' : 'none' }}
+              >
+                <div
+                  className="nav-dropdown__row"
+                  style={{
+                    display: currentUser?.admin ? 'inline-block' : 'none',
+                  }}
+                >
+                  <Link href="/for-admin">
+                    <span>
+                      <FontAwesomeIcon icon={faCog} /> Manage Products
+                    </span>
+                  </Link>
+                </div>
+                <div
+                  className="nav-dropdown__row"
+                  onClick={() => {
+                    setProfileClicked(false);
+                    alert('Logged out!');
+                    router.push('/logout');
+                  }}
+                >
+                  <span>
+                    <FontAwesomeIcon icon={faSignOutAlt} />
+                    Logout
+                  </span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <FontAwesomeIcon
+                icon={faUser}
+                onClick={() => {
+                  router.push('/login');
+                }}
+              />
+            </>
+          )
+        ) : null}
       </div>
-    </>
+    </div>
   );
 };

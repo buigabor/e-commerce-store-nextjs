@@ -9,6 +9,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import axios from 'axios';
+import { GetServerSidePropsContext } from 'next';
+import nextCookies from 'next-cookies';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -21,9 +23,12 @@ import {
   useMaterials,
   usePrinters,
 } from '../../components/PrintersContext';
+import { isSessionTokenValid } from '../../utils/auth';
 import {
   getAllPrintersWithCompatibleMaterials,
   getMaterials,
+  getSessionByToken,
+  getUserById,
 } from '../../utils/database';
 
 const useStyles = makeStyles({
@@ -39,6 +44,7 @@ function createData(id: number | string, name: string, price: number) {
 interface AdminProps {
   printersFetched: Printer[];
   materialsFetched: Material[];
+  isAdmin: boolean;
 }
 
 interface RowItem {
@@ -70,7 +76,7 @@ const tableStyles = css`
   }
 `;
 
-const Admin = ({ printersFetched, materialsFetched }: AdminProps) => {
+const Admin = ({ printersFetched, materialsFetched, isAdmin }: AdminProps) => {
   const printersState = usePrinters();
   const materialsState = useMaterials();
   const dispatchMaterials = useDispatchMaterials();
@@ -78,12 +84,14 @@ const Admin = ({ printersFetched, materialsFetched }: AdminProps) => {
   const [rows, setRows] = useState<RowItem[]>([]);
   const [printers, setPrinters] = useState<Printer[]>();
   const [materials, setMaterials] = useState<Material[]>();
-
   const router = useRouter();
 
-  const refreshData = () => {
-    router.replace(router.asPath);
-  };
+  useEffect(() => {
+    if (!isAdmin) {
+      alert('Permission denied');
+      router.push('/');
+    }
+  }, []);
 
   useEffect(() => {
     if (printers && materials) {
@@ -106,6 +114,13 @@ const Admin = ({ printersFetched, materialsFetched }: AdminProps) => {
   }, []);
 
   const classes = useStyles();
+  if (!isAdmin) {
+    return (
+      <Layout>
+        <div></div>
+      </Layout>
+    );
+  }
   if (rows.length > 0) {
     return (
       <Layout>
@@ -178,11 +193,34 @@ const Admin = ({ printersFetched, materialsFetched }: AdminProps) => {
   }
 };
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const token = nextCookies(context).token;
   const printersWithCompatibleMats = await getAllPrintersWithCompatibleMaterials();
   const materialsFetched = await getMaterials();
+
+  const validToken = await isSessionTokenValid(token);
+
+  if (!validToken) {
+    return {
+      redirect: {
+        destination: '/login?returnTo=/for-admin',
+        permanent: false,
+      },
+    };
+  }
+
+  const session = await getSessionByToken(token);
+  const { userId } = session;
+  const currentUser = await getUserById(userId);
+
+  const isAdmin = currentUser.admin;
+
   return {
-    props: { printersFetched: printersWithCompatibleMats, materialsFetched },
+    props: {
+      printersFetched: printersWithCompatibleMats,
+      materialsFetched,
+      isAdmin,
+    },
   };
 }
 

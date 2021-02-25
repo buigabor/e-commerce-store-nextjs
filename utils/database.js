@@ -192,6 +192,11 @@ export async function getUserByName(username) {
   return currentUser.map((c) => camelcaseKeys(c))[0];
 }
 
+export async function getUserById(id) {
+  const currentUser = await sql`SELECT * from users WHERE id=${id}`;
+  return currentUser.map((c) => camelcaseKeys(c))[0];
+}
+
 // SESSIONS TABLE
 
 export async function getSessionByToken(token) {

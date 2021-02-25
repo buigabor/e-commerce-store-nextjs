@@ -400,24 +400,13 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
             </button>
           </div>
           <div className="catalog">
-            {
-              filterActive()
-                ? materialsState.filteredMaterials.map((material) => {
-                    return (
-                      <MaterialCard key={material.id} material={material} />
-                    );
-                  })
-                : materialsState.materials.map((material) => {
-                    return (
-                      <MaterialCard key={material.id} material={material} />
-                    );
-                  })
-
-              //  : (
-              //   printersState.printers.map((printer) => {
-              //     return <PrinterCard key={printer.id} printer={printer} />;
-              //   })
-            }
+            {filterActive()
+              ? materialsState.filteredMaterials.map((material) => {
+                  return <MaterialCard key={material.id} material={material} />;
+                })
+              : materialsState.materials.map((material) => {
+                  return <MaterialCard key={material.id} material={material} />;
+                })}
           </div>
         </div>
       </Layout>

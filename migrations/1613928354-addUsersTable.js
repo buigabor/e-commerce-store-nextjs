@@ -3,7 +3,8 @@ exports.up = async (sql) => {
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 		username character varying(100) NOT NULL,
 		password text NOT NULL,
-		email character varying(300) NOT NULL
+		email character varying(300) NOT NULL,
+		admin BOOLEAN DEFAULT FALSE
 	)`;
 };
 

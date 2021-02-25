@@ -170,16 +170,17 @@ const Layout: React.FC = ({ children }) => {
 
   useEffect(() => {
     let cart = localStorage.getItem('cart');
-
     if (cart) {
       dispatch({ type: 'SET_INITIAL_CART', payload: JSON.parse(cart) });
     }
   }, []);
+
   useEffect(() => {
     if (!localStorage.cart) {
       localStorage.setItem('cart', JSON.stringify([]));
     }
   }, []);
+
   return (
     <>
       <Nav />
