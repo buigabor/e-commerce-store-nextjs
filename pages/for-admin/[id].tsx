@@ -85,14 +85,6 @@ const product = () => {
 
   const router = useRouter();
 
-  // function isProductPrinterOrMaterial(product: Product) {
-  //   if (typeof product?.id === 'number') {
-  //     return 'printer';
-  //   } else if (typeof product?.id === 'string') {
-  //     return 'material';
-  //   }
-  // }
-
   useEffect(() => {
     const { id } = router.query;
     setProductId(id);
@@ -109,7 +101,6 @@ const product = () => {
     }
     setProduct(product);
   }, [productId]);
-  console.log(product);
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

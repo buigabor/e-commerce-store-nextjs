@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Checkbox from '@material-ui/core/Checkbox';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
+import axios from 'axios';
 import SearchBar from 'material-ui-search-bar';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
@@ -14,7 +15,7 @@ import {
   useDispatchMaterials,
   useMaterials,
 } from '../../components/PrintersContext';
-import { getMaterials } from '../../utils/database';
+import { server } from '../../config';
 
 const materialsStyle = css`
   display: grid;
@@ -424,7 +425,8 @@ export default Materials;
 
 export async function getStaticProps() {
   // Get materials from PG database
-  const materialsFetched = await getMaterials();
+  const materialsFetched = (await axios.get(`${server}/api/materials`)).data
+    .materials;
 
   return { props: { materialsFetched } };
 }

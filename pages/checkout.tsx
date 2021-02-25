@@ -217,8 +217,8 @@ const checkout = () => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const token = nextCookies(context).token;
+  if (!token) return null;
   const validToken = await isSessionTokenValid(token);
-  console.log(validToken);
 
   if (!validToken) {
     return {

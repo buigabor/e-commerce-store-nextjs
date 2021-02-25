@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
+import { User } from '../../components/Nav';
 import {
   Material,
   Printer,
@@ -23,13 +24,9 @@ import {
   useMaterials,
   usePrinters,
 } from '../../components/PrintersContext';
+import { server } from '../../config';
 import { isSessionTokenValid } from '../../utils/auth';
-import {
-  getAllPrintersWithCompatibleMaterials,
-  getMaterials,
-  getSessionByToken,
-  getUserById,
-} from '../../utils/database';
+import { getSessionByToken } from '../../utils/database';
 
 const useStyles = makeStyles({
   table: {
@@ -44,7 +41,7 @@ function createData(id: number | string, name: string, price: number) {
 interface AdminProps {
   printersFetched: Printer[];
   materialsFetched: Material[];
-  isAdmin: boolean;
+  currentUser: User;
 }
 
 interface RowItem {
@@ -76,7 +73,11 @@ const tableStyles = css`
   }
 `;
 
-const Admin = ({ printersFetched, materialsFetched, isAdmin }: AdminProps) => {
+const Admin = ({
+  printersFetched,
+  materialsFetched,
+  currentUser,
+}: AdminProps) => {
   const printersState = usePrinters();
   const materialsState = useMaterials();
   const dispatchMaterials = useDispatchMaterials();
@@ -87,7 +88,7 @@ const Admin = ({ printersFetched, materialsFetched, isAdmin }: AdminProps) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (currentUser.admin === false) {
       alert('Permission denied');
       router.push('/');
     }
@@ -114,7 +115,7 @@ const Admin = ({ printersFetched, materialsFetched, isAdmin }: AdminProps) => {
   }, []);
 
   const classes = useStyles();
-  if (!isAdmin) {
+  if (currentUser.admin === false) {
     return (
       <Layout>
         <div></div>
@@ -195,8 +196,14 @@ const Admin = ({ printersFetched, materialsFetched, isAdmin }: AdminProps) => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const token = nextCookies(context).token;
-  const printersWithCompatibleMats = await getAllPrintersWithCompatibleMaterials();
-  const materialsFetched = await getMaterials();
+  if (!token) {
+    return null;
+  }
+  const printersWithCompatibleMats = (await axios.get(`${server}/api/printers`))
+    .data.printers;
+
+  const materialsFetched = (await axios.get(`${server}/api/materials`)).data
+    .materials;
 
   const validToken = await isSessionTokenValid(token);
 
@@ -211,15 +218,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const session = await getSessionByToken(token);
   const { userId } = session;
-  const currentUser = await getUserById(userId);
-
-  const isAdmin = currentUser.admin;
+  const currentUser = (await axios.get(`${server}/api/users/${userId}`)).data
+    .user;
 
   return {
     props: {
       printersFetched: printersWithCompatibleMats,
       materialsFetched,
-      isAdmin,
+      currentUser,
     },
   };
 }

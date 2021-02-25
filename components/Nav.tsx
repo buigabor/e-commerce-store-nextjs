@@ -123,21 +123,20 @@ export const Nav = () => {
   const toggleOverlay = useUpdateOverlay();
   const [profileClicked, setProfileClicked] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [hasMounted, setHasMounted] = useState<boolean>(false);
+  // const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [logoutClicked, setLogoutClicked] = useState(false);
 
   const router = useRouter();
 
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
+  // useEffect(() => {
+  //   setHasMounted(true);
+  // }, []);
 
   useEffect(() => {
     axios
       .get('/api/user')
       .then((res) => {
         const { user } = res.data;
-        console.log('fetched');
 
         if (user) {
           return setCurrentUser(user);
@@ -201,60 +200,58 @@ export const Nav = () => {
             {calcTotalNumberOfItems()}
           </div>
         </div>
-        {hasMounted ? (
-          currentUser ? (
-            <>
-              <div>
-                <FontAwesomeIcon
-                  icon={faUser}
-                  onClick={() => {
-                    setProfileClicked(!profileClicked);
-                  }}
-                />
-                <span>{currentUser.name}</span>
-              </div>
-              <div
-                className="nav-dropdown"
-                style={{ display: profileClicked ? 'inline-block' : 'none' }}
-              >
-                <div
-                  className="nav-dropdown__row"
-                  style={{
-                    display: currentUser?.admin ? 'inline-block' : 'none',
-                  }}
-                >
-                  <Link href="/for-admin">
-                    <span>
-                      <FontAwesomeIcon icon={faCog} /> Manage Products
-                    </span>
-                  </Link>
-                </div>
-                <div
-                  className="nav-dropdown__row"
-                  onClick={() => {
-                    setProfileClicked(false);
-                    alert('Logged out!');
-                    router.push('/logout');
-                  }}
-                >
-                  <span>
-                    <FontAwesomeIcon icon={faSignOutAlt} />
-                    Logout
-                  </span>
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
+        {currentUser ? (
+          <>
+            <div>
               <FontAwesomeIcon
                 icon={faUser}
                 onClick={() => {
-                  router.push('/login');
+                  setProfileClicked(!profileClicked);
                 }}
               />
-            </>
-          )
-        ) : null}
+              <span>{currentUser.name}</span>
+            </div>
+            <div
+              className="nav-dropdown"
+              style={{ display: profileClicked ? 'inline-block' : 'none' }}
+            >
+              <div
+                className="nav-dropdown__row"
+                style={{
+                  display: currentUser?.admin ? 'inline-block' : 'none',
+                }}
+              >
+                <Link href="/for-admin">
+                  <span>
+                    <FontAwesomeIcon icon={faCog} /> Manage Products
+                  </span>
+                </Link>
+              </div>
+              <div
+                className="nav-dropdown__row"
+                onClick={() => {
+                  setProfileClicked(false);
+                  alert('Logged out!');
+                  router.push('/logout');
+                }}
+              >
+                <span>
+                  <FontAwesomeIcon icon={faSignOutAlt} />
+                  Logout
+                </span>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <FontAwesomeIcon
+              icon={faUser}
+              onClick={() => {
+                router.push('/login');
+              }}
+            />
+          </>
+        )}
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Checkbox from '@material-ui/core/Checkbox';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
+import axios from 'axios';
 import SearchBar from 'material-ui-search-bar';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
@@ -14,7 +15,7 @@ import {
   useDispatchPrinters,
   usePrinters,
 } from '../../components/PrintersContext';
-import { getAllPrintersWithCompatibleMaterials } from '../../utils/database';
+import { server } from '../../config';
 
 const printersStyle = css`
   display: grid;
@@ -586,7 +587,8 @@ const Printers = ({ printersFetched }: PrintersProps) => {
 };
 
 export async function getStaticProps() {
-  let printersWithCompatibleMats = await getAllPrintersWithCompatibleMaterials();
+  const printersWithCompatibleMats = (await axios.get(`${server}/api/printers`))
+    .data.printers;
 
   return { props: { printersFetched: printersWithCompatibleMats } };
 }

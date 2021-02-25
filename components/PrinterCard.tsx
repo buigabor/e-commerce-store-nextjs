@@ -4,8 +4,8 @@ import Link from 'next/link';
 import React from 'react';
 import slugify from 'slugify';
 import {
-  CartItem,
   CartMaterialItem,
+  CartPrinterItem,
   Printer,
   useCart,
   useDispatchCart,
@@ -22,9 +22,11 @@ export const PrinterCard = ({ printer }: PrinterProps) => {
   const cartState = useCart();
 
   function checkIfInCart() {
-    return cartState.cart.some((cartItem: CartItem | CartMaterialItem) => {
-      return cartItem.id === printer.id;
-    });
+    return cartState.cart.some(
+      (cartItem: CartPrinterItem | CartMaterialItem) => {
+        return cartItem.id === printer.id;
+      },
+    );
   }
 
   return (

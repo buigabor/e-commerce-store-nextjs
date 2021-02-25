@@ -42,7 +42,7 @@ export interface MaterialState {
 }
 
 export interface CartState {
-  cart: (CartItem | CartMaterialItem)[];
+  cart: (CartPrinterItem | CartMaterialItem)[];
 }
 
 const initialPrinterState = {
@@ -79,7 +79,7 @@ const CartStateContext = createContext<CartState>(
 );
 const CartDispatchContext = createContext<Dispatch<ActionCart>>(() => null);
 
-export interface CartItem extends Printer {
+export interface CartPrinterItem extends Printer {
   quantity: number;
 }
 
@@ -272,7 +272,7 @@ const handleQuantity = (
   state: CartState,
   action: ActionCart,
   mode: string,
-): (CartItem | CartMaterialItem)[] => {
+): (CartPrinterItem | CartMaterialItem)[] => {
   if (mode === 'add') {
     return state.cart.map((printer) => {
       if (printer.id === action.payload) {

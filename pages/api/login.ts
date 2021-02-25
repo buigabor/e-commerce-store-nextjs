@@ -1,4 +1,5 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { NextApiRequest, NextApiResponse } from 'next';
+
 const {
   getUserByName,
   insertSession,
@@ -8,7 +9,7 @@ const cookie = require('cookie');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-export default async (req, res) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     try {
       const { username, password } = req.body;

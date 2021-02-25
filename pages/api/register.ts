@@ -1,3 +1,5 @@
+import { NextApiRequest, NextApiResponse } from 'next';
+
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 const {
   saveUser,
@@ -11,7 +13,7 @@ const Tokens = require('csrf');
 
 const tokens = new Tokens();
 
-export default async (req, res) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     try {
       const { username, email, token, password } = req.body;
@@ -19,7 +21,7 @@ export default async (req, res) => {
       const secret = process.env.CSRF_TOKEN_SECRET;
 
       if (typeof secret === 'undefined') {
-        response.status(500).send({ success: false });
+        res.status(500).send({ success: false });
         throw new Error(
           'CSRF_TOKEN_SECRET environment variable not configured!',
         );
@@ -28,7 +30,7 @@ export default async (req, res) => {
       const verified = tokens.verify(secret, token);
 
       if (!verified) {
-        return response.status(401).send({ success: false });
+        return res.status(401).send({ success: false });
       }
 
       // Check if username is already taken
@@ -49,11 +51,8 @@ export default async (req, res) => {
       // Create JWT and send it back in a cookie
       const jsonwebtoken = jwt.sign(username, process.env.JWT_SECRET);
       const currentUser = await getUserByName(username);
-      console.log(currentUser.id);
-      console.log(jsonwebtoken);
       // Save session
       await insertSession(jsonwebtoken, currentUser.id);
-      console.log('After insert');
       res.setHeader(
         'Set-Cookie',
         cookie.serialize('token', jsonwebtoken, {

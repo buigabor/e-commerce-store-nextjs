@@ -95,7 +95,6 @@ const register = ({ token }: RegisterProps) => {
               axios
                 .post('/api/register', { ...user, token })
                 .then((res) => {
-                  console.log(res);
                   alert('Registration successful');
                   router.push('/');
                 })
@@ -105,8 +104,6 @@ const register = ({ token }: RegisterProps) => {
                       return alert('Username is already taken!');
                     }
                   }
-                  console.log(error.response);
-
                   return alert('Registration failed!');
                 });
             }}

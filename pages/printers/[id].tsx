@@ -7,6 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import axios from 'axios';
 import { GetStaticProps } from 'next';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -14,18 +15,15 @@ import ReactPlayer from 'react-player';
 import slugify from 'slugify';
 import Layout from '../../components/Layout';
 import {
-  CartItem,
   CartMaterialItem,
+  CartPrinterItem,
   Printer,
   useCart,
   useDispatchCart,
   useUpdateOverlay,
 } from '../../components/PrintersContext';
-import {
-  getAllPrintersIds,
-  getCompatibleMatsById,
-  getPrintersById,
-} from '../../utils/database';
+import { server } from '../../config';
+import { getAllPrintersIds, getCompatibleMatsById } from '../../utils/database';
 
 const printerStyles = css`
   display: flex;
@@ -152,9 +150,11 @@ const PrinterComponent = ({ printerFetched }: PrinterProps) => {
   const cartState = useCart();
 
   function checkIfInCart() {
-    return cartState.cart.some((cartItem: CartItem | CartMaterialItem) => {
-      return cartItem.id === printerFetched.id;
-    });
+    return cartState.cart.some(
+      (cartItem: CartPrinterItem | CartMaterialItem) => {
+        return cartItem.id === printerFetched.id;
+      },
+    );
   }
 
   function showQuantity() {
@@ -326,11 +326,14 @@ export async function getStaticPaths() {
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  // Fetch necessary data for the blog post using params.id
-  const printerFetched = await getPrintersById(params?.id);
+  // const printerFetched = await getPrintersById(Number(params?.id));
+  const printerFetched = (await axios(`${server}/api/printers/${params?.id}`))
+    .data.printer;
+  console.log(printerFetched);
 
-  // Remove last 2 elements (count and SELECT)
   let compatibleMaterial = await getCompatibleMatsById(printerFetched.id);
+
+  // Combine the compatible materials with the printer...
   let modifiedCompatibleMaterial = compatibleMaterial.map(
     (mat: any) => mat.name,
   );

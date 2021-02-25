@@ -1,3 +1,5 @@
+import { NextApiRequest, NextApiResponse } from 'next';
+
 const {
   deletePrinterById,
   deleteMaterialById,
@@ -5,7 +7,7 @@ const {
   updatePrinterById,
 } = require('../../utils/database');
 
-export default async (req, res) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'DELETE') {
     const { id } = req.body;
     if (typeof id === 'number') {
@@ -24,11 +26,9 @@ export default async (req, res) => {
   }
 
   if (req.method === 'PATCH') {
-    console.log(req.body);
     const { id } = req.body;
     if (typeof id === 'number') {
       const updatedPrinter = await updatePrinterById(id, req.body);
-      console.log(updatedPrinter);
       if (!updatedPrinter) {
         return res.status(404).json({ success: false });
       }

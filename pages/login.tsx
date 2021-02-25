@@ -93,8 +93,6 @@ const login = ({ redirectDestination }: LoginProps) => {
               axios
                 .post('/api/login', user)
                 .then((res) => {
-                  console.log(res);
-
                   const { success } = res.data;
                   if (!success) {
                     throw new Error();
@@ -141,6 +139,7 @@ const login = ({ redirectDestination }: LoginProps) => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const token = nextCookies(context).token;
+  if (!token) return null;
   const validToken = await isSessionTokenValid(token);
 
   const redirectDestination = context?.query?.returnTo ?? '/';

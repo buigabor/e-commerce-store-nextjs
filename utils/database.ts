@@ -1,49 +1,69 @@
 import camelcaseKeys from 'camelcase-keys';
-// import { createRequire } from 'module';
 import postgres from 'postgres';
+import { Material, Printer } from '../components/PrintersContext';
 // const require = createRequire(import.meta.url);
 require('dotenv-safe').config();
 
-function connectOneTimeToDB() {
-  let sql;
-  if (process.env.NODE_ENV === 'production') {
-    sql = postgres({ ssl: true });
-  } else {
-    if (!globalThis.__postgresSqlClient) {
-      globalThis.__postgresSqlClient = postgres();
-    }
-    sql = globalThis.__postgresSqlClient;
-  }
-  return sql;
-}
+// function connectOneTimeToDB() {
+//   let sql;
+//   if (process.env.NODE_ENV === 'production') {
+//     sql = postgres({ ssl: true });
+//   } else {
+//     if (!globalThis.__postgresSqlClient) {
+//       globalThis.__postgresSqlClient = postgres();
+//     }
+//     sql = globalThis.__postgresSqlClient;
+//   }
+//   return sql;
+// }
 
 // Connect To PostgreSQL
 
-const sql = connectOneTimeToDB();
+// const sql = connectOneTimeToDB();
 
 // PRINTERS TABLE
 
-export async function getPrinters() {
-  const printers = await sql`SELECT * FROM printers`;
-  return printers.map((p) => camelcaseKeys(p));
+interface UserInDB {
+  username: string;
+  password: string;
+  email: string;
 }
 
-export async function getPrintersById(id) {
+interface Session {
+  id: number;
+  token: string;
+  expiryTimestamp: Date;
+  userId: number;
+}
+
+const sql =
+  process.env.NODE_ENV === 'production'
+    ? postgres({ ssl: { rejectUnauthorized: false } })
+    : postgres({
+        idle_timeout: 5,
+      });
+
+export async function getPrinters() {
+  const printers = await sql`SELECT * FROM printers`;
+  return printers.map((p: Printer) => camelcaseKeys(p));
+}
+
+export async function getPrintersById(id: number) {
   const printers = await sql`SELECT * FROM printers WHERE id = ${id}`;
-  return printers.map((p) => camelcaseKeys(p))[0];
+  return printers.map((p: Printer) => camelcaseKeys(p))[0];
 }
 
 export async function getAllPrintersIds() {
   const printers = await sql`SELECT id FROM printers`;
-  return printers.map((p) => camelcaseKeys(p));
+  return printers.map((p: Printer) => camelcaseKeys(p));
 }
 
-export async function deletePrinterById(id) {
+export async function deletePrinterById(id: number) {
   const printer = await sql`DELETE FROM printers WHERE id=${id}`;
   return camelcaseKeys(printer);
 }
 
-export async function updatePrinterById(id, printer) {
+export async function updatePrinterById(id: number, printer: Printer) {
   const printerProperties = Object.keys(printer);
 
   if (printerProperties.length < 1) {
@@ -115,32 +135,32 @@ export async function updatePrinterById(id, printer) {
     `;
   }
 
-  return printers.map((p) => camelcaseKeys(p))[0];
+  return printers.map((p: Printer) => camelcaseKeys(p))[0];
 }
 
 // MATERIALS TABLE
 
 export async function getMaterials() {
   let materials = await sql`SELECT * FROM materials`;
-  return materials.map((m) => camelcaseKeys(m));
+  return materials.map((m: Material) => camelcaseKeys(m));
 }
 
-export async function getMaterialById(id) {
+export async function getMaterialById(id: string | string[]) {
   const materials = await sql`SELECT * FROM materials WHERE id = ${id}`;
-  return materials.map((m) => camelcaseKeys(m))[0];
+  return materials.map((m: Material) => camelcaseKeys(m))[0];
 }
 
 export async function getAllmaterialsIds() {
   const materials = await sql`SELECT id FROM materials`;
-  return materials.map((m) => camelcaseKeys(m));
+  return materials.map((m: Material) => camelcaseKeys(m));
 }
 
-export async function deleteMaterialById(id) {
+export async function deleteMaterialById(id: string) {
   const material = await sql`DELETE FROM materials WHERE id=${id}`;
   return camelcaseKeys(material);
 }
 
-export async function updateMaterialById(id, material) {
+export async function updateMaterialById(id: string, material: Material) {
   const materialProperties = Object.keys(material);
 
   if (materialProperties.length < 1) {
@@ -167,47 +187,48 @@ export async function updateMaterialById(id, material) {
     `;
   }
 
-  return materials.map((m) => camelcaseKeys(m))[0];
+  return materials.map((m: Material) => camelcaseKeys(m))[0];
 }
 
 // GET COMPATIBLE MATERIALS FROM JUNCTION TABLE
 
-export async function getCompatibleMatsById(id) {
+export async function getCompatibleMatsById(id: number) {
   const materials = await sql` SELECT all_materials.name
    FROM printer_compatible_materials
      JOIN printers ON printers.id = printer_compatible_materials.printer_id
      JOIN all_materials ON printer_compatible_materials.compatible_material_id = all_materials.id
   WHERE printers.id = ${id};`;
+
   return materials;
 }
 
 // USERS TABLE
 
-export async function saveUser({ username, password, email }) {
+export async function saveUser({ username, password, email }: UserInDB) {
   await sql`INSERT INTO users (username, password, email) VALUES(${username},${password}, ${email})`;
 }
 
-export async function getUserByName(username) {
+export async function getUserByName(username: string) {
   const currentUser = await sql`SELECT * from users WHERE username=${username}`;
-  return currentUser.map((c) => camelcaseKeys(c))[0];
+  return currentUser.map((c: UserInDB) => camelcaseKeys(c))[0];
 }
 
-export async function getUserById(id) {
+export async function getUserById(id: number) {
   const currentUser = await sql`SELECT * from users WHERE id=${id}`;
-  return currentUser.map((c) => camelcaseKeys(c))[0];
+  return currentUser.map((c: UserInDB) => camelcaseKeys(c))[0];
 }
 
 // SESSIONS TABLE
 
-export async function getSessionByToken(token) {
+export async function getSessionByToken(token: string) {
   const sessions = await sql`
     SELECT * FROM sessions WHERE token = ${token};
   `;
 
-  return sessions.map((s) => camelcaseKeys(s))[0];
+  return sessions.map((s: Session) => camelcaseKeys(s))[0];
 }
 
-export async function insertSession(token, userId) {
+export async function insertSession(token: string, userId: number) {
   await sql`
     INSERT INTO sessions
       (token, user_id)
@@ -223,7 +244,7 @@ export async function deleteExpiredSessions() {
   `;
 }
 
-export async function deleteSessionByToken(token) {
+export async function deleteSessionByToken(token: string) {
   await sql`
     DELETE FROM sessions WHERE token = ${token};
   `;
@@ -239,8 +260,8 @@ export async function getAllPrintersWithCompatibleMaterials() {
   printersFetched.splice(printersFetched.length - 2, 2);
 
   // Insert compatibleMaterial property inside each printer
-  let printers = await Promise.all(
-    printersFetched.map(async (printer) => {
+  let printers: Printer[] = await Promise.all(
+    printersFetched.map(async (printer: Printer) => {
       return {
         ...printer,
         compatibleMaterial: await getCompatibleMatsById(printer.id),
@@ -252,7 +273,9 @@ export async function getAllPrintersWithCompatibleMaterials() {
   let printersWithCompatibleMats = printers.map((printer) => {
     return {
       ...printer,
-      compatibleMaterial: printer.compatibleMaterial?.map((mat) => mat.name),
+      compatibleMaterial: printer.compatibleMaterial?.map(
+        (mat: any) => mat.name,
+      ),
     };
   });
 
