@@ -1,11 +1,11 @@
+import cookie from 'cookie';
 import { NextApiRequest, NextApiResponse } from 'next';
-
-const cookie = require('cookie');
-const { getSessionByToken, getUserById } = require('../../utils/database');
+import { getSessionByToken, getUserById } from '../../utils/database';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     const { token } = cookie.parse(req.headers.cookie || '');
+
     const session = await getSessionByToken(token);
     if (!session) {
       return res.status(404).json({ success: false });

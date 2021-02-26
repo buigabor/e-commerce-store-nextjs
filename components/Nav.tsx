@@ -12,7 +12,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { useCart, useUpdateOverlay } from './PrintersContext';
+import { useCart } from './CartContext';
+import { useUpdateOverlay } from './OverlayContext';
 
 const navStyles = css`
   position: relative;
@@ -123,20 +124,18 @@ export const Nav = () => {
   const toggleOverlay = useUpdateOverlay();
   const [profileClicked, setProfileClicked] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  // const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [logoutClicked, setLogoutClicked] = useState(false);
 
   const router = useRouter();
-
-  // useEffect(() => {
-  //   setHasMounted(true);
-  // }, []);
 
   useEffect(() => {
     axios
       .get('/api/user')
       .then((res) => {
+        console.log(res);
+
         const { user } = res.data;
+        console.log(user);
 
         if (user) {
           return setCurrentUser(user);
@@ -202,13 +201,12 @@ export const Nav = () => {
         </div>
         {currentUser ? (
           <>
-            <div>
-              <FontAwesomeIcon
-                icon={faUser}
-                onClick={() => {
-                  setProfileClicked(!profileClicked);
-                }}
-              />
+            <div
+              onClick={() => {
+                setProfileClicked(!profileClicked);
+              }}
+            >
+              <FontAwesomeIcon icon={faUser} />
               <span>{currentUser.name}</span>
             </div>
             <div

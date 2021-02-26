@@ -14,7 +14,7 @@ import {
   Material,
   useDispatchMaterials,
   useMaterials,
-} from '../../components/PrintersContext';
+} from '../../components/MaterialsContext';
 import { server } from '../../config';
 
 const materialsStyle = css`

@@ -559,20 +559,13 @@ const Printers = ({ printersFetched }: PrintersProps) => {
             </button>
           </div>
           <div className="catalog">
-            {
-              filterActive()
-                ? printersState.filteredPrinters.map((printer) => {
-                    return <PrinterCard key={printer.id} printer={printer} />;
-                  })
-                : printersState.printers.map((printer) => {
-                    return <PrinterCard key={printer.id} printer={printer} />;
-                  })
-
-              //  : (
-              //   printersState.printers.map((printer) => {
-              //     return <PrinterCard key={printer.id} printer={printer} />;
-              //   })
-            }
+            {filterActive()
+              ? printersState.filteredPrinters.map((printer) => {
+                  return <PrinterCard key={printer.id} printer={printer} />;
+                })
+              : printersState.printers.map((printer) => {
+                  return <PrinterCard key={printer.id} printer={printer} />;
+                })}
           </div>
         </div>
       </Layout>

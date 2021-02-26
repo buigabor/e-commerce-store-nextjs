@@ -2,12 +2,9 @@
 import { css } from '@emotion/react';
 import React, { useEffect } from 'react';
 import { Cart } from './Cart';
+import { useDispatchCart } from './CartContext';
 import { Nav } from './Nav';
-import {
-  useDispatchCart,
-  useOverlay,
-  useUpdateOverlay,
-} from './PrintersContext';
+import { useOverlay, useUpdateOverlay } from './OverlayContext';
 
 const overlayStyles = css`
   position: fixed;

@@ -7,12 +7,8 @@ import { useRouter } from 'next/router';
 import React, { FormEvent, useEffect, useState } from 'react';
 import slugify from 'slugify';
 import Layout from '../../components/Layout';
-import {
-  Material,
-  Printer,
-  useMaterials,
-  usePrinters,
-} from '../../components/PrintersContext';
+import { Material, useMaterials } from '../../components/MaterialsContext';
+import { Printer, usePrinters } from '../../components/PrintersContext';
 
 const editProductStyles = css`
   display: flex;

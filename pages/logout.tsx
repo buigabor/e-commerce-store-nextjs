@@ -10,7 +10,6 @@ const logout = () => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { session: token } = nextCookies(context);
-  if (!token) return null;
   await deleteSessionByToken(token);
 
   // Remove the cookie

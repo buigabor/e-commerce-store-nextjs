@@ -1,6 +1,7 @@
 import camelcaseKeys from 'camelcase-keys';
 import postgres from 'postgres';
-import { Material, Printer } from '../components/PrintersContext';
+import { Material } from '../components/MaterialsContext';
+import { Printer } from '../components/PrintersContext';
 // const require = createRequire(import.meta.url);
 require('dotenv-safe').config();
 
@@ -244,7 +245,7 @@ export async function deleteExpiredSessions() {
   `;
 }
 
-export async function deleteSessionByToken(token: string) {
+export async function deleteSessionByToken(token: string | undefined) {
   await sql`
     DELETE FROM sessions WHERE token = ${token};
   `;

@@ -3,12 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 import React from 'react';
 import slugify from 'slugify';
-import {
-  Material,
-  useCart,
-  useDispatchCart,
-  useUpdateOverlay,
-} from './PrintersContext';
+import { useCart, useDispatchCart } from './CartContext';
+import { Material } from './MaterialsContext';
+import { useUpdateOverlay } from './OverlayContext';
 
 interface MaterialProps {
   material: Material;

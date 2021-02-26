@@ -15,13 +15,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
-import { User } from '../../components/Nav';
 import {
   Material,
-  Printer,
   useDispatchMaterials,
-  useDispatchPrinters,
   useMaterials,
+} from '../../components/MaterialsContext';
+import { User } from '../../components/Nav';
+import {
+  Printer,
+  useDispatchPrinters,
   usePrinters,
 } from '../../components/PrintersContext';
 import { server } from '../../config';
@@ -33,10 +35,6 @@ const useStyles = makeStyles({
     minWidth: 650,
   },
 });
-
-function createData(id: number | string, name: string, price: number) {
-  return { id, name, price };
-}
 
 interface AdminProps {
   printersFetched: Printer[];

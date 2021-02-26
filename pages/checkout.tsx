@@ -6,8 +6,8 @@ import nextCookies from 'next-cookies';
 import { useRouter } from 'next/router';
 import React from 'react';
 import slugify from 'slugify';
+import { useCart } from '../components/CartContext';
 import Layout from '../components/Layout';
-import { useCart } from '../components/PrintersContext';
 import { isSessionTokenValid } from '../utils/auth';
 
 const checkoutStyles = css`
@@ -217,7 +217,6 @@ const checkout = () => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const token = nextCookies(context).token;
-  if (!token) return null;
   const validToken = await isSessionTokenValid(token);
 
   if (!validToken) {

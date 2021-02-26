@@ -13,15 +13,15 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
 import slugify from 'slugify';
-import Layout from '../../components/Layout';
 import {
   CartMaterialItem,
   CartPrinterItem,
-  Printer,
   useCart,
   useDispatchCart,
-  useUpdateOverlay,
-} from '../../components/PrintersContext';
+} from '../../components/CartContext';
+import Layout from '../../components/Layout';
+import { useUpdateOverlay } from '../../components/OverlayContext';
+import { Printer } from '../../components/PrintersContext';
 import { server } from '../../config';
 import { getAllPrintersIds, getCompatibleMatsById } from '../../utils/database';
 

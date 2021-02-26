@@ -1,12 +1,12 @@
 import type { AppProps } from 'next/app';
-import { PrinterProvider } from '../components/PrintersContext';
+import { Providers } from '../components/Providers';
 import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <PrinterProvider>
+    <Providers>
       <Component {...pageProps} />
-    </PrinterProvider>
+    </Providers>
   );
 }
 

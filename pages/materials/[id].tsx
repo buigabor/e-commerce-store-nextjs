@@ -12,15 +12,16 @@ import { GetServerSidePropsContext } from 'next';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import slugify from 'slugify';
-import Layout from '../../components/Layout';
 import {
   CartMaterialItem,
   CartPrinterItem,
-  Material,
   useCart,
   useDispatchCart,
-  useUpdateOverlay,
-} from '../../components/PrintersContext';
+} from '../../components/CartContext';
+import Layout from '../../components/Layout';
+import { Material } from '../../components/MaterialsContext';
+import { useUpdateOverlay } from '../../components/OverlayContext';
+import {} from '../../components/Providers';
 import { server } from '../../config';
 
 interface MaterialProps {

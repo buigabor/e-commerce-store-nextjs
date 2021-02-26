@@ -7,12 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 import React from 'react';
 import slugify from 'slugify';
-import {
-  useCart,
-  useDispatchCart,
-  useOverlay,
-  useUpdateOverlay,
-} from './PrintersContext';
+import { useCart, useDispatchCart } from './CartContext';
+import { useOverlay, useUpdateOverlay } from './OverlayContext';
 
 export const Cart: React.FC = () => {
   const overlayActive = useOverlay();

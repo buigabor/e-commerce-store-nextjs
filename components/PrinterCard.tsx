@@ -6,11 +6,11 @@ import slugify from 'slugify';
 import {
   CartMaterialItem,
   CartPrinterItem,
-  Printer,
   useCart,
   useDispatchCart,
-  useUpdateOverlay,
-} from './PrintersContext';
+} from './CartContext';
+import { useUpdateOverlay } from './OverlayContext';
+import { Printer } from './PrintersContext';
 
 interface PrinterProps {
   printer: Printer;
