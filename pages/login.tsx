@@ -113,6 +113,7 @@ const login = ({ redirectDestination }: LoginProps) => {
               onChange={onChange}
               value={user.username}
               required
+              data-cy="login-page-username-field"
             />
             <TextField
               name="password"
@@ -123,11 +124,14 @@ const login = ({ redirectDestination }: LoginProps) => {
               value={user.password}
               type="password"
               required
+              data-cy="login-page-password-field"
             />
             <Link href="/register">
-              <a className="login-text">Don't have an account yet?</a>
+              <a data-cy="login-page-register-link" className="login-text">
+                Don't have an account yet?
+              </a>
             </Link>
-            <button>
+            <button data-cy="login-page-sign-in-button">
               Login <FontAwesomeIcon icon={faSignInAlt} />
             </button>
           </form>

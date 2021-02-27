@@ -189,6 +189,7 @@ export const Nav = () => {
             onClick={() => {
               toggleOverlay();
             }}
+            data-cy="nav-cart-button"
           />
           <div
             onClick={() => {

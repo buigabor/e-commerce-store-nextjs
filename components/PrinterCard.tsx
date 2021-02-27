@@ -51,6 +51,7 @@ export const PrinterCard = ({ printer }: PrinterProps) => {
               className="bag-btn"
               disabled={checkIfInCart() ? true : false}
               style={{ cursor: checkIfInCart() ? 'not-allowed' : 'pointer' }}
+              data-cy="printers-card-add-to-cart-button"
             >
               <FontAwesomeIcon
                 style={{ display: checkIfInCart() ? 'none' : 'inline-block' }}

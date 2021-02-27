@@ -32,6 +32,7 @@ export const Cart: React.FC = () => {
           transform: overlayActive ? 'translateX(0%)' : 'translateX(100%)',
         }}
         className="cart"
+        data-cy="cart"
       >
         <span className="close-cart">
           <FontAwesomeIcon
@@ -54,6 +55,7 @@ export const Cart: React.FC = () => {
                   <h4>{cartItem.name}</h4>
                   <h5>{cartItem.price * cartItem.quantity} €</h5>
                   <span
+                    data-cy="cart-remove-btn"
                     className="remove-item"
                     onClick={() => {
                       dispatch({
@@ -67,6 +69,7 @@ export const Cart: React.FC = () => {
                 </div>
                 <div>
                   <FontAwesomeIcon
+                    data-cy="cart-increment-btn"
                     className="arrow"
                     icon={faChevronUp}
                     style={{ color: '#3030ec', cursor: 'pointer' }}
@@ -77,8 +80,14 @@ export const Cart: React.FC = () => {
                       });
                     }}
                   />
-                  <p className="item-amount">{cartItem.quantity}</p>
+                  <p
+                    data-cy="cart-product-quantity-text"
+                    className="item-amount"
+                  >
+                    {cartItem.quantity}
+                  </p>
                   <FontAwesomeIcon
+                    data-cy="cart-decrement-btn"
                     icon={faChevronDown}
                     style={{ color: '#3030ec', cursor: 'pointer' }}
                     onClick={() => {
@@ -102,6 +111,7 @@ export const Cart: React.FC = () => {
           <div className="cart-btn-wrapper">
             <Link href="/checkout">
               <button
+                data-cy="cart-checkout-btn"
                 onClick={() => {
                   toggleOverlay();
                 }}
@@ -111,6 +121,7 @@ export const Cart: React.FC = () => {
               </button>
             </Link>
             <button
+              data-cy="cart-clear-btn"
               className="clear-cart"
               onClick={() => {
                 dispatch({

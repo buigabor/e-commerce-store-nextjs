@@ -116,6 +116,7 @@ const register = ({ token }: RegisterProps) => {
               onChange={onChange}
               value={user.username}
               required
+              data-cy="register-page-username-field"
             />
             <TextField
               name="email"
@@ -125,6 +126,7 @@ const register = ({ token }: RegisterProps) => {
               onChange={onChange}
               value={user.email}
               required
+              data-cy="register-page-email-field"
             />
             <TextField
               error={passwordError ? true : false}
@@ -137,9 +139,10 @@ const register = ({ token }: RegisterProps) => {
               type="password"
               required
               helperText="At least 8 characters."
+              data-cy="register-page-password-field"
             />
 
-            <button>
+            <button data-cy="register-page-register-sign-up">
               Sign Up <FontAwesomeIcon icon={faSignInAlt} />
             </button>
           </form>

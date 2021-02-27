@@ -129,6 +129,7 @@ const checkout = () => {
             }}
           >
             <TextField
+              data-cy="checkout-page-first-name-field"
               required
               name="first-name"
               id="outlined-basic"
@@ -136,6 +137,7 @@ const checkout = () => {
               variant="outlined"
             />
             <TextField
+              data-cy="checkout-page-last-name-field"
               required
               name="last-name"
               id="outlined-basic"
@@ -143,6 +145,7 @@ const checkout = () => {
               variant="outlined"
             />
             <TextField
+              data-cy="checkout-page-email-field"
               required
               name="email"
               id="outlined-basic"
@@ -155,7 +158,11 @@ const checkout = () => {
                 label="Country"
                 variant="outlined"
               />
-              <TextField id="outlined-basic" label="State" variant="outlined" />
+              <TextField
+                id="outlined-basic"
+                label="Street"
+                variant="outlined"
+              />
             </div>
             <div className="form-wrapper__city">
               <TextField id="outlined-basic" label="City" variant="outlined" />
@@ -174,7 +181,9 @@ const checkout = () => {
               defaultValue=""
               variant="outlined"
             />
-            <button className="form-btn">Submit</button>
+            <button data-cy="checkout-page-submit-button" className="form-btn">
+              Submit
+            </button>
           </form>
         </div>
         <div className="cart-content">
