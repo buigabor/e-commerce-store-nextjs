@@ -12,6 +12,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import { calcTotalNumberOfItems } from '../utils/cart';
 import { useCart } from './CartContext';
 import { useUpdateOverlay } from './OverlayContext';
 
@@ -147,14 +148,6 @@ export const Nav = () => {
       .catch((e) => console.log(e));
   }, [logoutClicked]);
 
-  function calcTotalNumberOfItems() {
-    const sumPrice = cartState?.cart?.reduce((quantity, cartItem) => {
-      return quantity + cartItem.quantity;
-    }, 0);
-
-    return sumPrice;
-  }
-
   return (
     <div css={navStyles}>
       <Link href="/">
@@ -197,7 +190,7 @@ export const Nav = () => {
             }}
             className="cart-items"
           >
-            {calcTotalNumberOfItems()}
+            {calcTotalNumberOfItems(cartState)}
           </div>
         </div>
         {currentUser ? (

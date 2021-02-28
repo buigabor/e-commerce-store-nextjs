@@ -29,7 +29,7 @@ interface ActionCart {
   payload: any;
 }
 
-const handleQuantity = (
+export const handleQuantity = (
   state: CartState,
   action: ActionCart,
   mode: string,
@@ -59,7 +59,7 @@ const handleQuantity = (
   }
 };
 
-const cartReducer: Reducer<CartState, ActionCart> = (
+export const cartReducer: Reducer<CartState, ActionCart> = (
   state: CartState,
   action: ActionCart,
 ): CartState => {

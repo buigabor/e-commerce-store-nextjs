@@ -1,0 +1,17 @@
+{
+  "extends": "tsconfig.json",
+  "compilerOptions": {
+    "isolatedModules": false,
+    "strict": true,
+    "target": "es5",
+    "lib": ["es5", "dom"],
+    "types": ["cypress"],
+    "noEmit": false,
+    "baseUrl": "./node_modules"
+  },
+  "include": [
+    "./node_modules/cypress",
+    "cypress/**/*.spec.ts",
+    "cypress/**/*.spec.tsx"
+  ]
+}

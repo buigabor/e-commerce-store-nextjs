@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 import React from 'react';
 import slugify from 'slugify';
+import { calculateTotal } from '../utils/cart';
 import { useCart, useDispatchCart } from './CartContext';
 import { useOverlay, useUpdateOverlay } from './OverlayContext';
 
@@ -16,14 +17,6 @@ export const Cart: React.FC = () => {
   const cartState = useCart();
 
   const dispatch = useDispatchCart();
-
-  function calculateTotal() {
-    const sumPrice = cartState?.cart?.reduce((sum, cartItem) => {
-      return sum + cartItem.price * cartItem.quantity;
-    }, 0);
-
-    return sumPrice;
-  }
 
   return (
     <>
@@ -106,7 +99,8 @@ export const Cart: React.FC = () => {
 
         <div className="cart-footer">
           <h3>
-            your total: <span className="cart-total">{calculateTotal()} €</span>
+            your total:{' '}
+            <span className="cart-total">{calculateTotal(cartState)} €</span>
           </h3>
           <div className="cart-btn-wrapper">
             <Link href="/checkout">
