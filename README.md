@@ -13,14 +13,6 @@ I designed and developed an e-commerce website selling 3D printers and printing 
 - Edit and delete products for admins ✍️
 - REST API 🖥️ 
 
-## Technologies Used
-
-Frontend: Next.js, React, TypeScript, CSS, HTML5
-Backend: Node.js
-Database: PostgreSQL
-Testing: Cypress, Jest
-Miscellaneous: Emotion, Material UI
-
 ## Installation
 
 Use the package manager [yarn](https://yarnpkg.com/) to install the dependencies.
@@ -86,6 +78,14 @@ POST Register
  axios.post('/api/register', {username:'', password:'', email:'', token:''})
 ```
 
+## Technologies Used
+
+Frontend: Next.js, React, TypeScript, CSS, HTML5  
+Backend: Node.js  
+Database: PostgreSQL   
+Testing: Cypress, Jest   
+Miscellaneous: Emotion, Material UI 
+ 
 ## Preview
 
 <img src="/public/previews/preview1.png">
