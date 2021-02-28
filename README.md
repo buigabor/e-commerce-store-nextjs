@@ -80,13 +80,15 @@ POST Login
 
 POST Register
 ```bash
-/api/login
+/api/register
 ```
 ```bash
- axios.post('/api/login', {username:'', password:'', email:'', token:''})
+ axios.post('/api/register', {username:'', password:'', email:'', token:''})
 ```
 
 ## Preview
 
-
+<img src="/previews/preview1.png">
+<img src="/previews/preview2.png">
+<img src="/previews/preview3.png">
 
