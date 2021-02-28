@@ -88,7 +88,7 @@ POST Register
 
 ## Preview
 
-<img src="/previews/preview1.png">
-<img src="/previews/preview2.png">
-<img src="/previews/preview3.png">
+<img src="/public/previews/preview1.png">
+<img src="/public/previews/preview2.png">
+<img src="/public/previews/preview3.png">
 
