@@ -31,38 +31,37 @@ yarn dev
 
 ## API Routes
 
-GET all materials
+#### GET all materials
 ```bash
 /api/materials
 ```
 
-GET a material by id
+#### GET a material by id
 ```bash
 /api/materials/1
 ```
 
-GET all printers
+#### GET all printers
 ```bash
 /api/printers
 ```
 
-GET a material by id
+#### GET a material by id
 ```bash
 /api/printers/1
 ```
 
-GET user by id
+#### GET user by id
 ```bash
 /api/users/1
 ```
 
-GET user by cookie
+#### GET user by cookie
 ```bash
 /api/user
 ```
 
-
-POST Login
+#### POST Login
 ```bash
 /api/login
 ```
@@ -70,7 +69,7 @@ POST Login
  axios.post('/api/login', {username:'', password:'', email:''})
 ```
 
-POST Register
+#### POST Register
 ```bash
 /api/register
 ```
