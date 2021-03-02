@@ -196,7 +196,9 @@ const PrinterComponent = ({ printerFetched }: PrinterProps) => {
                 <Image
                   width={400}
                   height={400}
-                  src={`/productImages/${slugify(printer.name)}.jpg`}
+                  src={`/productImages/${slugify(
+                    printer.name.toLowerCase(),
+                  )}.jpg`}
                 />
               </div>
               <div className="printer-header__content">

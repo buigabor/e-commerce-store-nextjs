@@ -222,7 +222,9 @@ const ProductItem = () => {
               <Image
                 width={250}
                 height={250}
-                src={`/productImages/${slugify(product.name)}.jpg`}
+                src={`/productImages/${slugify(
+                  product.name.toLowerCase(),
+                )}.jpg`}
               />
             </div>
           </div>
@@ -269,7 +271,9 @@ const ProductItem = () => {
               <Image
                 width={250}
                 height={250}
-                src={`/productImages/${slugify(product.name)}.jpg`}
+                src={`/productImages/${slugify(
+                  product.name.toLowerCase(),
+                )}.jpg`}
               />
             </div>
           </div>

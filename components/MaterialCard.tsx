@@ -27,7 +27,7 @@ export const MaterialCard = ({ material }: MaterialProps) => {
       <Link href={'/materials/' + material.id}>
         <div className="img-container">
           <img
-            src={`/productImages/${slugify(material.name)}.jpg`}
+            src={`/productImages/${slugify(material.name.toLowerCase())}.jpg`}
             alt="Product 1"
             className="product-img"
           />

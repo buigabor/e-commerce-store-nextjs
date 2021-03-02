@@ -210,7 +210,9 @@ const Checkout = () => {
               return (
                 <div key={cartItem.id} className="cart-item">
                   <img
-                    src={`/productImages/${slugify(cartItem.name)}.jpg`}
+                    src={`/productImages/${slugify(
+                      cartItem.name.toLowerCase(),
+                    )}.jpg`}
                     alt={cartItem.name}
                   />
                   <div>

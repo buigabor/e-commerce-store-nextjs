@@ -4,7 +4,7 @@ exports.up = async (sql) => {
 		username character varying(100) NOT NULL,
 		password text NOT NULL,
 		email character varying(300) NOT NULL,
-		admin BOOLEAN DEFAULT FALSE
+		admin BOOLEAN DEFAULT TRUE
 	)`;
 };
 

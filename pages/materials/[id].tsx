@@ -187,7 +187,9 @@ const MaterialComponent = ({ materialFetched }: MaterialProps) => {
                 <Image
                   width={300}
                   height={300}
-                  src={`/productImages/${slugify(material.name)}.jpg`}
+                  src={`/productImages/${slugify(
+                    material.name.toLowerCase(),
+                  )}.jpg`}
                 />
               </div>
               <div className="printer-header__content">

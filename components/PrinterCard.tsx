@@ -34,7 +34,7 @@ export const PrinterCard = ({ printer }: PrinterProps) => {
       <Link href={'/printers/' + printer.id}>
         <div className="img-container">
           <img
-            src={`/productImages/${slugify(printer.name)}.jpg`}
+            src={`/productImages/${slugify(printer.name.toLowerCase())}.jpg`}
             alt="Product 1"
             className="product-img"
           />
