@@ -259,9 +259,6 @@ export async function getAllPrintersWithCompatibleMaterials() {
   // Get printers from PG database
   const printersFetched = await getPrinters();
 
-  // Remove last 2 elements (count and SELECT)
-  printersFetched.splice(printersFetched.length - 2, 2);
-
   // Insert compatibleMaterial property inside each printer
   const printers: Printer[] = await Promise.all(
     printersFetched.map(async (printer: Printer) => {
