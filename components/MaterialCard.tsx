@@ -21,6 +21,7 @@ export const MaterialCard = ({ material }: MaterialProps) => {
       return cartItem.id === material.id;
     });
   }
+  console.log(material.name.toLowerCase());
 
   return (
     <article className="product">
