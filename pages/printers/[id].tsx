@@ -8,7 +8,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import axios from 'axios';
-import { GetStaticProps } from 'next';
+import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -24,7 +24,7 @@ import Layout from '../../components/Layout';
 import { useUpdateOverlay } from '../../components/OverlayContext';
 import { Printer } from '../../components/PrintersContext';
 import { server } from '../../config';
-import { getAllPrintersIds, getCompatibleMatsById } from '../../utils/database';
+import { getCompatibleMatsById } from '../../utils/database';
 
 const printerStyles = css`
   display: flex;
@@ -187,7 +187,7 @@ const PrinterComponent = ({ printerFetched }: PrinterProps) => {
     return (
       <>
         <Head>
-          <title>{printer.name} | 3D BUIG </title>
+          <title>{printer.name} | 3D BUIG </title>
         </Head>
         <Layout>
           <div css={printerStyles}>
@@ -318,24 +318,23 @@ const PrinterComponent = ({ printerFetched }: PrinterProps) => {
 
 export default PrinterComponent;
 
-export async function getStaticPaths() {
-  // Return a list of possible value for id
-  const printersIdFetched = await getAllPrintersIds();
-  const printersId = printersIdFetched.map((printer: Printer) => {
-    return { params: { id: String(printer.id) } };
-  });
-  printersId.splice(printersId.length - 2, 2);
-  return {
-    paths: printersId,
-    fallback: false,
-  };
-}
+// export async function getStaticPaths() {
+//   // Return a list of possible value for id
+//   const printersIdFetched = await getAllPrintersIds();
+//   const printersId = printersIdFetched.map((printer: Printer) => {
+//     return { params: { id: String(printer.id) } };
+//   });
+//   printersId.splice(printersId.length - 2, 2);
+//   return {
+//     paths: printersId,
+//     fallback: false,
+//   };
+// }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  // const printerFetched = await getPrintersById(Number(params?.id));
-  const printerFetched = (await axios(`${server}/api/printers/${params?.id}`))
-    .data.printer;
-  console.log(printerFetched);
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { id } = context.query;
+  const printerFetched = (await axios(`${server}/api/printers/${id}`)).data
+    .printer;
 
   const compatibleMaterial = await getCompatibleMatsById(printerFetched.id);
 
@@ -352,4 +351,4 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   // Insert compatibleMaterial property inside each printer
 
   return { props: { printerFetched: printer } };
-};
+}

@@ -447,7 +447,7 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
 
 export default Materials;
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   // Get materials from PG database
   const materialsFetched = (await axios.get(`${server}/api/materials`)).data
     .materials;

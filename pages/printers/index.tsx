@@ -608,7 +608,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
   }
 };
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const printersWithCompatibleMats = (await axios.get(`${server}/api/printers`))
     .data.printers;
 
