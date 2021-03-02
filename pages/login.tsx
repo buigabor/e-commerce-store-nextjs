@@ -7,6 +7,7 @@ import axios from 'axios';
 import { GetServerSidePropsContext } from 'next';
 import nextCookies from 'next-cookies';
 import { useRouter } from 'next/dist/client/router';
+import Head from 'next/head';
 import Link from 'next/link';
 import React, { ChangeEvent, useState } from 'react';
 import Layout from '../components/Layout';
@@ -71,7 +72,7 @@ const loginStyles = css`
   }
 `;
 
-const login = ({ redirectDestination }: LoginProps) => {
+const Login = ({ redirectDestination }: LoginProps) => {
   const [user, setUser] = useState({
     username: '',
     password: '',
@@ -83,61 +84,68 @@ const login = ({ redirectDestination }: LoginProps) => {
   };
 
   return (
-    <Layout>
-      <div css={loginStyles}>
-        <div className="form-wrapper">
-          <h1>Sign In</h1>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              axios
-                .post('/api/login', user)
-                .then((res) => {
-                  const { success } = res.data;
-                  if (!success) {
-                    throw new Error();
-                  } else {
-                    router.push(redirectDestination);
-                  }
-                })
-                .catch((error) => {
-                  alert('Login failed!');
-                });
-            }}
-          >
-            <TextField
-              name="username"
-              id="outlined-basic"
-              label="Username"
-              variant="outlined"
-              onChange={onChange}
-              value={user.username}
-              required
-              data-cy="login-page-username-field"
-            />
-            <TextField
-              name="password"
-              id="outlined-basic"
-              label="Password"
-              variant="outlined"
-              onChange={onChange}
-              value={user.password}
-              type="password"
-              required
-              data-cy="login-page-password-field"
-            />
-            <Link href="/register">
-              <a data-cy="login-page-register-link" className="login-text">
-                Don't have an account yet?
-              </a>
-            </Link>
-            <button data-cy="login-page-sign-in-button">
-              Login <FontAwesomeIcon icon={faSignInAlt} />
-            </button>
-          </form>
+    <>
+      <Head>
+        <title>Login | 3D BUIG </title>
+      </Head>
+      <Layout>
+        <div css={loginStyles}>
+          <div className="form-wrapper">
+            <h1>Sign In</h1>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                axios
+                  .post('/api/login', user)
+                  .then((res) => {
+                    const { success } = res.data;
+                    if (!success) {
+                      throw new Error();
+                    } else {
+                      router.push(redirectDestination);
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+
+                    alert('Login failed!');
+                  });
+              }}
+            >
+              <TextField
+                name="username"
+                id="outlined-basic"
+                label="Username"
+                variant="outlined"
+                onChange={onChange}
+                value={user.username}
+                required
+                data-cy="login-page-username-field"
+              />
+              <TextField
+                name="password"
+                id="outlined-basic"
+                label="Password"
+                variant="outlined"
+                onChange={onChange}
+                value={user.password}
+                type="password"
+                required
+                data-cy="login-page-password-field"
+              />
+              <Link href="/register">
+                <a data-cy="login-page-register-link" className="login-text">
+                  Don't have an account yet?
+                </a>
+              </Link>
+              <button data-cy="login-page-sign-in-button">
+                Login <FontAwesomeIcon icon={faSignInAlt} />
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 
@@ -145,7 +153,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const token = nextCookies(context).token;
 
   const validToken = await isSessionTokenValid(token);
-  const redirectDestination = context?.query?.returnTo ?? '/';
+  const redirectDestination = context.query.returnTo ?? '/';
 
   if (validToken) {
     // alert('Already logged in!');
@@ -162,4 +170,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   };
 }
 
-export default login;
+export default Login;

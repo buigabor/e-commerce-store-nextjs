@@ -1,5 +1,3 @@
-const test = [{ name: 'test' }, { name: 'test2' }];
-
 const printersData = [
   {
     name: 'Original Prusa i3',
@@ -185,7 +183,7 @@ compatible_material: '{Resin}',
     compatible_material: '{ABS, PA, Nylon, TPU, PC, Metal}',
 compatible_material: '{ABS, Metal, PA}', */
 
-const printer_combatible_materials_data = [
+const printerCombatibleMaterialsData = [
   { printer_id: 1, compatible_material_id: 1 },
   { printer_id: 1, compatible_material_id: 2 },
   { printer_id: 1, compatible_material_id: 4 },
@@ -249,7 +247,7 @@ exports.up = async (sql) => {
 
   await sql`
   INSERT INTO printer_compatible_materials ${sql(
-    printer_combatible_materials_data,
+    printerCombatibleMaterialsData,
     'printer_id',
     'compatible_material_id',
   )}
@@ -263,7 +261,7 @@ exports.up = async (sql) => {
 };
 
 exports.down = async (sql) => {
-  for (const el of printer_combatible_materials_data) {
+  for (const el of printerCombatibleMaterialsData) {
     await sql`
   	DELETE FROM printer_compatible_materials WHERE printer_id=${el.printer_id} AND compatible_material_id=${el.compatible_material_id}
   	`;

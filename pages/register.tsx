@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
+import Head from 'next/head';
 import React, { ChangeEvent, useState } from 'react';
 import Layout from '../components/Layout';
 
@@ -68,7 +69,7 @@ const registerStyles = css`
 
 type RegisterProps = { token: string };
 
-const register = ({ token }: RegisterProps) => {
+const Register = ({ token }: RegisterProps) => {
   const [user, setUser] = useState<User>({
     username: '',
     password: '',
@@ -82,73 +83,80 @@ const register = ({ token }: RegisterProps) => {
   };
 
   return (
-    <Layout>
-      <div css={registerStyles}>
-        <div className="form-wrapper">
-          <h1>Create Your Account</h1>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (user.password.length < 8) {
-                return setPasswordError(true);
-              }
-              axios
-                .post('/api/register', { ...user, token })
-                .then((res) => {
-                  alert('Registration successful');
-                  router.push('/');
-                })
-                .catch((error) => {
-                  if (error.response) {
-                    if (error.response.status === 409) {
-                      return alert('Username is already taken!');
+    <>
+      <Head>
+        <title>Register | 3D BUIG</title>
+      </Head>
+      <Layout>
+        <div css={registerStyles}>
+          <div className="form-wrapper">
+            <h1>Create Your Account</h1>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (user.password.length < 8) {
+                  return setPasswordError(true);
+                }
+                axios
+                  .post('/api/register', { ...user, token })
+                  .then((res) => {
+                    if (res.status === 200) {
+                      alert('Registration successful');
+                      router.push('/');
                     }
-                  }
-                  return alert('Registration failed!');
-                });
-            }}
-          >
-            <TextField
-              name="username"
-              id="outlined-basic"
-              label="Username"
-              variant="outlined"
-              onChange={onChange}
-              value={user.username}
-              required
-              data-cy="register-page-username-field"
-            />
-            <TextField
-              name="email"
-              id="outlined-basic"
-              label="Email"
-              variant="outlined"
-              onChange={onChange}
-              value={user.email}
-              required
-              data-cy="register-page-email-field"
-            />
-            <TextField
-              error={passwordError ? true : false}
-              name="password"
-              id="outlined-basic"
-              label="Password"
-              variant="outlined"
-              onChange={onChange}
-              value={user.password}
-              type="password"
-              required
-              helperText="At least 8 characters."
-              data-cy="register-page-password-field"
-            />
+                  })
+                  .catch((error) => {
+                    if (error.response) {
+                      if (error.response.status === 409) {
+                        return alert('Username is already taken!');
+                      }
+                    }
+                    return alert('Registration failed!');
+                  });
+              }}
+            >
+              <TextField
+                name="username"
+                id="outlined-basic"
+                label="Username"
+                variant="outlined"
+                onChange={onChange}
+                value={user.username}
+                required
+                data-cy="register-page-username-field"
+              />
+              <TextField
+                name="email"
+                id="outlined-basic"
+                label="Email"
+                variant="outlined"
+                onChange={onChange}
+                value={user.email}
+                required
+                data-cy="register-page-email-field"
+              />
+              <TextField
+                error={passwordError ? true : false}
+                name="password"
+                id="outlined-basic"
+                label="Password"
+                variant="outlined"
+                onChange={onChange}
+                value={user.password}
+                type="password"
+                required
+                helperText="At least 8 characters."
+                data-cy="register-page-password-field"
+              />
 
-            <button data-cy="register-page-register-sign-up">
-              Sign Up <FontAwesomeIcon icon={faSignInAlt} />
-            </button>
-          </form>
+              <button data-cy="register-page-register-sign-up">
+                Sign Up <FontAwesomeIcon icon={faSignInAlt} />
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 
@@ -166,4 +174,4 @@ export async function getServerSideProps() {
   return { props: { token } };
 }
 
-export default register;
+export default Register;

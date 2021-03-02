@@ -9,6 +9,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import axios from 'axios';
 import { GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import slugify from 'slugify';
@@ -152,7 +153,7 @@ const MaterialComponent = ({ materialFetched }: MaterialProps) => {
   }
 
   function showQuantity() {
-    if (material && cartState) {
+    if (material) {
       const currentMaterial = cartState.cart.find((cartItem) => {
         return cartItem.id === material.id;
       });
@@ -167,7 +168,7 @@ const MaterialComponent = ({ materialFetched }: MaterialProps) => {
 
   useEffect(() => {
     setMaterial(materialFetched);
-  }, []);
+  }, [materialFetched]);
 
   if (material) {
     const rows = [
@@ -175,115 +176,120 @@ const MaterialComponent = ({ materialFetched }: MaterialProps) => {
       createData('Price', material.price + ' €'),
     ];
     return (
-      <Layout>
-        <div css={materialStyles}>
-          <div className="printer-header">
-            <div className="printer-header__img">
-              <Image
-                width={300}
-                height={300}
-                src={`/productImages/${slugify(material.name)}.jpg`}
-              />
-            </div>
-            <div className="printer-header__content">
-              <TableContainer component={Paper}>
-                <Table aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>{material.name}</TableCell>
-                      <TableCell align="right">Values</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row) => (
-                      <TableRow key={row.name}>
-                        <TableCell component="th" scope="row">
-                          {row.name}
-                        </TableCell>
-                        <TableCell align="right">{row.value}</TableCell>
+      <>
+        <Head>
+          <title>{material.name} | 3D BUIG </title>
+        </Head>
+        <Layout>
+          <div css={materialStyles}>
+            <div className="printer-header">
+              <div className="printer-header__img">
+                <Image
+                  width={300}
+                  height={300}
+                  src={`/productImages/${slugify(material.name)}.jpg`}
+                />
+              </div>
+              <div className="printer-header__content">
+                <TableContainer component={Paper}>
+                  <Table aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>{material.name}</TableCell>
+                        <TableCell align="right">Values</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              {checkIfInCart() ? (
-                <div className="printer-header__cartBtn">
+                    </TableHead>
+                    <TableBody>
+                      {rows.map((row) => (
+                        <TableRow key={row.name}>
+                          <TableCell component="th" scope="row">
+                            {row.name}
+                          </TableCell>
+                          <TableCell align="right">{row.value}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                {checkIfInCart() ? (
+                  <div className="printer-header__cartBtn">
+                    <button
+                      className="printer-header__cartBtn-btn red"
+                      onClick={() => {
+                        dispatch({
+                          type: 'DECREMENT_QUANTITY',
+                          payload: material.id,
+                        });
+                      }}
+                    >
+                      -
+                    </button>
+                    <span>{showQuantity()}</span>
+                    <button
+                      className="printer-header__cartBtn-btn"
+                      onClick={() => {
+                        dispatch({
+                          type: 'INCREMENT_QUANTITY',
+                          payload: material.id,
+                        });
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
+                ) : (
                   <button
-                    className="printer-header__cartBtn-btn red"
                     onClick={() => {
                       dispatch({
-                        type: 'DECREMENT_QUANTITY',
-                        payload: material.id,
+                        type: 'ADD_TO_CART',
+                        payload: { ...material, quantity: 1 },
                       });
+                      toggleOverlay();
                     }}
+                    className="printer-header__cta"
                   >
-                    -
+                    Add To Cart
                   </button>
-                  <span>{showQuantity()}</span>
-                  <button
-                    className="printer-header__cartBtn-btn"
-                    onClick={() => {
-                      dispatch({
-                        type: 'INCREMENT_QUANTITY',
-                        payload: material.id,
-                      });
-                    }}
-                  >
-                    +
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => {
-                    dispatch({
-                      type: 'ADD_TO_CART',
-                      payload: { ...material, quantity: 1 },
-                    });
-                    toggleOverlay();
-                  }}
-                  className="printer-header__cta"
-                >
-                  Add To Cart
-                </button>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-          <hr />
-          <div className="printer-trusted">
-            <div className="printer-trusted__text">
-              <p>Trusted by over 110,000 engineers worldwide</p>
-            </div>
-            <div className="printer-trusted__brands">
-              <Image
-                width={100}
-                height={100}
-                src="https://www.3dhubs.com/images/homev2/trusted_by/ABB.svg"
-              />
-              <Image
-                width={100}
-                height={100}
-                src="https://www.3dhubs.com/images/homev2/trusted_by/NASA.svg"
-              />
-              <Image
-                width={100}
-                height={100}
-                src="https://www.3dhubs.com/images/homev2/trusted_by/Audi.svg"
-              />
+            <hr />
+            <div className="printer-trusted">
+              <div className="printer-trusted__text">
+                <p>Trusted by over 110,000 engineers worldwide</p>
+              </div>
+              <div className="printer-trusted__brands">
+                <Image
+                  width={100}
+                  height={100}
+                  src="https://www.3dhubs.com/images/homev2/trusted_by/ABB.svg"
+                />
+                <Image
+                  width={100}
+                  height={100}
+                  src="https://www.3dhubs.com/images/homev2/trusted_by/NASA.svg"
+                />
+                <Image
+                  width={100}
+                  height={100}
+                  src="https://www.3dhubs.com/images/homev2/trusted_by/Audi.svg"
+                />
 
-              <Image
-                width={70}
-                height={70}
-                src="https://www.3dhubs.com/images/homev2/trusted_by/HP.svg"
-              />
-              <Image
-                width={100}
-                height={100}
-                src="https://www.3dhubs.com/images/homev2/trusted_by/fillauer.svg"
-              />
+                <Image
+                  width={70}
+                  height={70}
+                  src="https://www.3dhubs.com/images/homev2/trusted_by/HP.svg"
+                />
+                <Image
+                  width={100}
+                  height={100}
+                  src="https://www.3dhubs.com/images/homev2/trusted_by/fillauer.svg"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </Layout>
+        </Layout>
+      </>
     );
   } else {
     return (

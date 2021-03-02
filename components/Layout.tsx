@@ -166,11 +166,11 @@ const Layout: React.FC = ({ children }) => {
   const dispatch = useDispatchCart();
 
   useEffect(() => {
-    let cart = localStorage.getItem('cart');
+    const cart = localStorage.getItem('cart');
     if (cart) {
       dispatch({ type: 'SET_INITIAL_CART', payload: JSON.parse(cart) });
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!localStorage.cart) {
@@ -183,6 +183,13 @@ const Layout: React.FC = ({ children }) => {
       <Nav />
       <div>{children}</div>
       <div
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'o') {
+            return toggleOverlay();
+          }
+        }}
         css={overlayStyles}
         className="overlay"
         style={{ visibility: overlayActive ? 'visible' : 'hidden' }}

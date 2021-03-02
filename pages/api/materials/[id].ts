@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getMaterialById } from '../../../utils/database';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const materialId = req.query.id;
   if (req.method === 'GET') {
     const material = await getMaterialById(materialId);
@@ -11,3 +11,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json({ success: true, material });
   }
 };
+
+export default handler;

@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import TextField from '@material-ui/core/TextField';
 import { GetServerSidePropsContext } from 'next';
 import nextCookies from 'next-cookies';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
 import slugify from 'slugify';
@@ -105,7 +106,7 @@ const checkoutStyles = css`
   }
 `;
 
-const checkout = () => {
+const Checkout = () => {
   const cartState = useCart();
   const router = useRouter();
 
@@ -118,109 +119,121 @@ const checkout = () => {
   }
 
   return (
-    <Layout>
-      <div css={checkoutStyles}>
-        <div className="form-wrapper">
-          <form
-            autoComplete="off"
-            onSubmit={(e) => {
-              e.preventDefault();
-              router.push('/thankyou');
-            }}
-          >
-            <TextField
-              data-cy="checkout-page-first-name-field"
-              required
-              name="first-name"
-              id="outlined-basic"
-              label="First Name"
-              variant="outlined"
-            />
-            <TextField
-              data-cy="checkout-page-last-name-field"
-              required
-              name="last-name"
-              id="outlined-basic"
-              label="Last Name"
-              variant="outlined"
-            />
-            <TextField
-              data-cy="checkout-page-email-field"
-              required
-              name="email"
-              id="outlined-basic"
-              label="E-mail"
-              variant="outlined"
-            />
-            <div className="form-wrapper__country">
+    <>
+      <Head>
+        <title>Checkout | 3D BUIG </title>
+      </Head>
+      <Layout>
+        <div css={checkoutStyles}>
+          <div className="form-wrapper">
+            <form
+              autoComplete="off"
+              onSubmit={(e) => {
+                e.preventDefault();
+                router.push('/thankyou');
+              }}
+            >
               <TextField
+                data-cy="checkout-page-first-name-field"
+                required
+                name="first-name"
                 id="outlined-basic"
-                label="Country"
+                label="First Name"
                 variant="outlined"
               />
               <TextField
+                data-cy="checkout-page-last-name-field"
+                required
+                name="last-name"
                 id="outlined-basic"
-                label="Street"
+                label="Last Name"
                 variant="outlined"
               />
-            </div>
-            <div className="form-wrapper__city">
-              <TextField id="outlined-basic" label="City" variant="outlined" />
               <TextField
+                data-cy="checkout-page-email-field"
+                required
+                name="email"
                 id="outlined-basic"
-                label="Postcode"
+                label="E-mail"
                 variant="outlined"
               />
-            </div>
-
-            <TextField
-              id="outlined-multiline-static"
-              label="Comment"
-              multiline
-              rows={4}
-              defaultValue=""
-              variant="outlined"
-            />
-            <button data-cy="checkout-page-submit-button" className="form-btn">
-              Submit
-            </button>
-          </form>
-        </div>
-        <div className="cart-content">
-          <h2>PRODUCTS</h2>
-          <hr />
-          <div className="cart-content__header">
-            <span>NAME</span>
-            <span>QTY</span>
-          </div>
-          <hr />
-          {cartState.cart.map((cartItem) => {
-            return (
-              <div key={cartItem.id} className="cart-item">
-                <img
-                  src={`/productImages/${slugify(cartItem.name)}.jpg`}
-                  alt={cartItem.name}
+              <div className="form-wrapper__country">
+                <TextField
+                  id="outlined-basic"
+                  label="Country"
+                  variant="outlined"
                 />
-                <div>
-                  <h4>{cartItem.name}</h4>
-                  <h5>{cartItem.price * cartItem.quantity} €</h5>
-                </div>
-                <div>
-                  <p className="item-amount">{cartItem.quantity} pcs</p>
-                </div>
+                <TextField
+                  id="outlined-basic"
+                  label="Street"
+                  variant="outlined"
+                />
               </div>
-            );
-          })}
-          <hr />
-          <div className="cart-footer">
-            <h3>
-              Your Total:{' '}
-              <span className="cart-total">{calculateTotal()} €</span>
-            </h3>
+              <div className="form-wrapper__city">
+                <TextField
+                  id="outlined-basic"
+                  label="City"
+                  variant="outlined"
+                />
+                <TextField
+                  id="outlined-basic"
+                  label="Postcode"
+                  variant="outlined"
+                />
+              </div>
+
+              <TextField
+                id="outlined-multiline-static"
+                label="Comment"
+                multiline
+                rows={4}
+                defaultValue=""
+                variant="outlined"
+              />
+              <button
+                data-cy="checkout-page-submit-button"
+                className="form-btn"
+              >
+                Submit
+              </button>
+            </form>
+          </div>
+          <div className="cart-content">
+            <h2>PRODUCTS</h2>
+            <hr />
+            <div className="cart-content__header">
+              <span>NAME</span>
+              <span>QTY</span>
+            </div>
+            <hr />
+            {cartState.cart.map((cartItem) => {
+              return (
+                <div key={cartItem.id} className="cart-item">
+                  <img
+                    src={`/productImages/${slugify(cartItem.name)}.jpg`}
+                    alt={cartItem.name}
+                  />
+                  <div>
+                    <h4>{cartItem.name}</h4>
+                    <h5>{cartItem.price * cartItem.quantity} €</h5>
+                  </div>
+                  <div>
+                    <p className="item-amount">{cartItem.quantity} pcs</p>
+                  </div>
+                </div>
+              );
+            })}
+            <hr />
+            <div className="cart-footer">
+              <h3>
+                Your Total:{' '}
+                <span className="cart-total">{calculateTotal()} €</span>
+              </h3>
+            </div>
           </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 
@@ -240,4 +253,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return { props: {} };
 }
 
-export default checkout;
+export default Checkout;

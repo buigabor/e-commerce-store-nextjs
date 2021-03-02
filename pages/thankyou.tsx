@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -92,49 +93,54 @@ const thankYouStyles = css`
 
 const thankyou: React.FC = () => {
   return (
-    <Layout>
-      <div css={thankYouStyles}>
-        <div className="thank-you__header">
-          <div>
-            <Image
-              width={500}
-              height={300}
-              src="/productImages/thank-you-page-img.jpg"
-            />
+    <>
+      <Head>
+        <title>Thank You! | 3D BUIG </title>
+      </Head>
+      <Layout>
+        <div css={thankYouStyles}>
+          <div className="thank-you__header">
+            <div>
+              <Image
+                width={500}
+                height={300}
+                src="/productImages/thank-you-page-img.jpg"
+              />
+            </div>
+            <div className="thank-you__header-text">
+              <h1>Thank You!</h1>
+              <h4>
+                for choosing{' '}
+                <span className="thank-you__header-span"> 3D BUIG</span>
+              </h4>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                Obcaecati ea deleniti et quod repudiandae sit, vitae ad, commodi
+                debitis nisi reiciendis fuga omnis nam magni qui, nostrum
+                aliquam molestiae quasi.
+              </p>
+            </div>
           </div>
-          <div className="thank-you__header-text">
-            <h1>Thank You!</h1>
-            <h4>
-              for choosing{' '}
-              <span className="thank-you__header-span"> 3D BUIG</span>
-            </h4>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Obcaecati ea deleniti et quod repudiandae sit, vitae ad, commodi
-              debitis nisi reiciendis fuga omnis nam magni qui, nostrum aliquam
-              molestiae quasi.
-            </p>
+          <div className="thank-you__options">
+            <Link href="/printers">
+              <div className="thank-you__img thank-you__img-printers">
+                <h2>BROWSE PRINTERS</h2>
+              </div>
+            </Link>
+            <Link href="/materials">
+              <div className="thank-you__img thank-you__img-materials">
+                <h2>BROWSE MATERIALS</h2>
+              </div>
+            </Link>
+            <Link href="/about">
+              <div className="thank-you__img thank-you__img-about">
+                <h2>ABOUT</h2>
+              </div>
+            </Link>
           </div>
         </div>
-        <div className="thank-you__options">
-          <Link href="/printers">
-            <div className="thank-you__img thank-you__img-printers">
-              <h2>BROWSE PRINTERS</h2>
-            </div>
-          </Link>
-          <Link href="/materials">
-            <div className="thank-you__img thank-you__img-materials">
-              <h2>BROWSE MATERIALS</h2>
-            </div>
-          </Link>
-          <Link href="/about">
-            <div className="thank-you__img thank-you__img-about">
-              <h2>ABOUT</h2>
-            </div>
-          </Link>
-        </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 

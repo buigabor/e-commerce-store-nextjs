@@ -7,6 +7,7 @@ import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
 import axios from 'axios';
 import SearchBar from 'material-ui-search-bar';
+import Head from 'next/head';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import { MaterialCard } from '../../components/MaterialCard';
@@ -226,7 +227,7 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
 
   const filterActive = () => {
     let result = false;
-    for (let key in checkboxesChecked) {
+    for (const key in checkboxesChecked) {
       if ((checkboxesChecked as any)[key] === true) {
         result = true;
         break;
@@ -253,11 +254,11 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
       type: 'FILTER',
       payload: filterOptions,
     });
-  }, [typeFilterTags, price]);
+  }, [typeFilterTags, price, dispatch]);
 
   useEffect(() => {
     dispatch({ type: 'SET_MATERIALS', payload: materialsFetched });
-  }, []);
+  }, [dispatch, materialsFetched]);
 
   const handleTypeCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCheckboxesChecked({
@@ -298,119 +299,142 @@ const Materials = ({ materialsFetched }: MaterialsProps) => {
   };
   if (!materialsState.error) {
     return (
-      <Layout>
-        <div css={searchBarStyles}>
-          <SearchBar
-            onCancelSearch={() => {
-              setSearchText('');
-            }}
-            value={searchText}
-            onChange={handleSearch}
-            onRequestSearch={() => () => console.log('onRequestSearch')}
-          />
-        </div>
-        <div css={materialsStyle}>
-          <div className="filter">
-            <h2>CATEGORIES</h2>
-            <div className="filter-row">
-              <div
-                className={`filter-row__header ${
-                  typeFilterActive ? 'border-bottom active' : ''
-                }`}
-                onClick={() => {
-                  setTypeFilterActive(!typeFilterActive);
-                }}
-              >
-                {' '}
-                Type{' '}
-                <FontAwesomeIcon className="filter-icon" icon={faCaretDown} />
-              </div>
-              <div
-                className={`filter-dropdown-content ${
-                  typeFilterActive ? 'show' : ''
-                }`}
-              >
-                <p>
-                  <Checkbox
-                    checked={checkboxesChecked.Filament}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    name="Filament"
-                    onChange={handleTypeCheckboxChange}
-                  />
-                  Filament
-                </p>
-                <p>
-                  <Checkbox
-                    checked={checkboxesChecked.Liquid}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    name="Liquid"
-                    onChange={handleTypeCheckboxChange}
-                  />
-                  Liquid
-                </p>
-                <p>
-                  <Checkbox
-                    checked={checkboxesChecked.Powder}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    name="Powder"
-                    onChange={handleTypeCheckboxChange}
-                  />
-                  Powder
-                </p>
-              </div>
-            </div>
-            <div className="filter-row">
-              <div
-                className={`filter-row__header ${
-                  priceFilterActive ? 'border-bottom active' : ''
-                }`}
-                onClick={() => {
-                  setPriceFilterActive(!priceFilterActive);
-                }}
-              >
-                {' '}
-                Price{' '}
-                <FontAwesomeIcon className="filter-icon" icon={faCaretDown} />
-              </div>
-              <div
-                className={`filter-dropdown-content ${
-                  priceFilterActive ? 'show' : ''
-                }`}
-              >
-                <Typography id="range-slider" gutterBottom>
-                  Price range (€)
-                </Typography>
-                <div className="slider">
-                  <Slider
-                    step={50}
-                    max={1000}
-                    value={price}
-                    onChange={handlePriceChange}
-                    valueLabelDisplay="auto"
-                    aria-labelledby="range-slider"
-                    getAriaValueText={valuetext}
-                  />
+      <>
+        <Head>
+          <title>Materials | 3D BUIG </title>
+        </Head>
+        <Layout>
+          <div css={searchBarStyles}>
+            <SearchBar
+              onCancelSearch={() => {
+                setSearchText('');
+              }}
+              value={searchText}
+              onChange={handleSearch}
+              onRequestSearch={() => () => console.log('onRequestSearch')}
+            />
+          </div>
+          <div css={materialsStyle}>
+            <div className="filter">
+              <h2>CATEGORIES</h2>
+              <div className="filter-row">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 't') {
+                      setTypeFilterActive(!typeFilterActive);
+                    }
+                  }}
+                  className={`filter-row__header ${
+                    typeFilterActive ? 'border-bottom active' : ''
+                  }`}
+                  onClick={() => {
+                    setTypeFilterActive(!typeFilterActive);
+                  }}
+                >
+                  {' '}
+                  Type{' '}
+                  <FontAwesomeIcon className="filter-icon" icon={faCaretDown} />
+                </div>
+                <div
+                  className={`filter-dropdown-content ${
+                    typeFilterActive ? 'show' : ''
+                  }`}
+                >
+                  <p>
+                    <Checkbox
+                      checked={checkboxesChecked.Filament}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      name="Filament"
+                      onChange={handleTypeCheckboxChange}
+                    />
+                    Filament
+                  </p>
+                  <p>
+                    <Checkbox
+                      checked={checkboxesChecked.Liquid}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      name="Liquid"
+                      onChange={handleTypeCheckboxChange}
+                    />
+                    Liquid
+                  </p>
+                  <p>
+                    <Checkbox
+                      checked={checkboxesChecked.Powder}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      name="Powder"
+                      onChange={handleTypeCheckboxChange}
+                    />
+                    Powder
+                  </p>
                 </div>
               </div>
+              <div className="filter-row">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'p') {
+                      setPriceFilterActive(!priceFilterActive);
+                    }
+                  }}
+                  className={`filter-row__header ${
+                    priceFilterActive ? 'border-bottom active' : ''
+                  }`}
+                  onClick={() => {
+                    setPriceFilterActive(!priceFilterActive);
+                  }}
+                >
+                  {' '}
+                  Price{' '}
+                  <FontAwesomeIcon className="filter-icon" icon={faCaretDown} />
+                </div>
+                <div
+                  className={`filter-dropdown-content ${
+                    priceFilterActive ? 'show' : ''
+                  }`}
+                >
+                  <Typography id="range-slider" gutterBottom>
+                    Price range (€)
+                  </Typography>
+                  <div className="slider">
+                    <Slider
+                      step={50}
+                      max={1000}
+                      value={price}
+                      onChange={handlePriceChange}
+                      valueLabelDisplay="auto"
+                      aria-labelledby="range-slider"
+                      getAriaValueText={valuetext}
+                    />
+                  </div>
+                </div>
+              </div>
+              <button onClick={handleResetFilter} className="reset-filter-btn">
+                Reset Filter
+              </button>
             </div>
-            <button onClick={handleResetFilter} className="reset-filter-btn">
-              Reset Filter
-            </button>
+            <div className="catalog">
+              {filterActive()
+                ? materialsState.filteredMaterials.map((material) => {
+                    return (
+                      <MaterialCard key={material.id} material={material} />
+                    );
+                  })
+                : materialsState.materials.map((material) => {
+                    return (
+                      <MaterialCard key={material.id} material={material} />
+                    );
+                  })}
+            </div>
           </div>
-          <div className="catalog">
-            {filterActive()
-              ? materialsState.filteredMaterials.map((material) => {
-                  return <MaterialCard key={material.id} material={material} />;
-                })
-              : materialsState.materials.map((material) => {
-                  return <MaterialCard key={material.id} material={material} />;
-                })}
-          </div>
-        </div>
-      </Layout>
+        </Layout>
+      </>
     );
   } else {
     return (

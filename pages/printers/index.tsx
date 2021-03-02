@@ -7,6 +7,7 @@ import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
 import axios from 'axios';
 import SearchBar from 'material-ui-search-bar';
+import Head from 'next/head';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import { PrinterCard } from '../../components/PrinterCard';
@@ -252,7 +253,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
       type: 'SET_PRINTERS',
       payload: printersFetched,
     });
-  }, []);
+  }, [dispatch, printersFetched]);
 
   useEffect(() => {
     const filterOptions = {
@@ -265,7 +266,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
       type: 'FILTER',
       payload: filterOptions,
     });
-  }, [matFilterTags, techFilterTags, price]);
+  }, [matFilterTags, techFilterTags, price, dispatch]);
 
   const handleResetFilter = () => {
     setCheckboxesChecked({
@@ -292,7 +293,7 @@ const Printers = ({ printersFetched }: PrintersProps) => {
 
   const filterActive = () => {
     let result = false;
-    for (let key in checkboxesChecked) {
+    for (const key in checkboxesChecked) {
       if ((checkboxesChecked as any)[key] === true) {
         result = true;
         break;
@@ -356,219 +357,247 @@ const Printers = ({ printersFetched }: PrintersProps) => {
 
   if (!printersState.error) {
     return (
-      <Layout>
-        <div css={searchBarStyles}>
-          <SearchBar
-            onCancelSearch={() => {
-              setSearchText('');
-            }}
-            value={searchText}
-            onChange={handleSearch}
-            onRequestSearch={() => () => console.log('onRequestSearch')}
-          />
-        </div>
-        <div css={printersStyle}>
-          <div className="filter">
-            <h2>CATEGORIES</h2>
-            <div className="filter-row">
-              <div
-                className={`filter-row__header ${
-                  matFilterActive ? 'border-bottom active' : ''
-                }`}
-                onClick={() => {
-                  setMatFilterActive(!matFilterActive);
-                }}
-              >
-                {' '}
-                Material{' '}
-                <FontAwesomeIcon className="filter-icon" icon={faCaretDown} />
-              </div>
-              <div
-                className={`filter-dropdown-content ${
-                  matFilterActive ? 'show' : ''
-                }`}
-              >
-                <p>
-                  <Checkbox
-                    checked={checkboxesChecked.Metal}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    name="Metal"
-                    onChange={handleMatCheckboxChange}
-                  />
-                  Metal
-                </p>
-                <p>
-                  <Checkbox
-                    checked={checkboxesChecked.Wood}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    name="Wood"
-                    onChange={handleMatCheckboxChange}
-                  />
-                  Wood
-                </p>
-                <p>
-                  <Checkbox
-                    checked={checkboxesChecked.Nylon}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    name="Nylon"
-                    onChange={handleMatCheckboxChange}
-                  />
-                  Polyamide Nylon
-                </p>
-                <p>
-                  <Checkbox
-                    checked={checkboxesChecked.TPU}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    name="TPU"
-                    onChange={handleMatCheckboxChange}
-                  />
-                  TPU
-                </p>
-                <p>
-                  <Checkbox
-                    checked={checkboxesChecked.ABS}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    name="ABS"
-                    onChange={handleMatCheckboxChange}
-                  />
-                  ABS
-                </p>
-                <p>
-                  <Checkbox
-                    checked={checkboxesChecked.Resin}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    name="Resin"
-                    onChange={handleMatCheckboxChange}
-                  />
-                  Resin
-                </p>
-                <p>
-                  <Checkbox
-                    checked={checkboxesChecked.Carbon}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    name="Carbon"
-                    onChange={handleMatCheckboxChange}
-                  />
-                  Carbon Fiber
-                </p>
-              </div>
-            </div>
-            <div className="filter-row">
-              <div
-                className={`filter-row__header ${
-                  techFilterActive ? 'border-bottom active' : ''
-                }`}
-                onClick={() => {
-                  setTechFilterActive(!techFilterActive);
-                }}
-              >
-                {' '}
-                Technology{' '}
-                <FontAwesomeIcon className="filter-icon" icon={faCaretDown} />
-              </div>
-              <div
-                className={`filter-dropdown-content ${
-                  techFilterActive ? 'show' : ''
-                }`}
-              >
-                <p>
-                  <Checkbox
-                    checked={checkboxesChecked.FDM}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    name="FDM"
-                    onChange={handleTechCheckboxChange}
-                  />
-                  FDM
-                </p>
-                <p>
-                  <Checkbox
-                    checked={checkboxesChecked.SLS}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    name="SLS"
-                    onChange={handleTechCheckboxChange}
-                  />
-                  SLS
-                </p>
-                <p>
-                  <Checkbox
-                    checked={checkboxesChecked.Polyjet}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    name="Polyjet"
-                    onChange={handleTechCheckboxChange}
-                  />
-                  Polyjet
-                </p>
-                <p>
-                  <Checkbox
-                    checked={checkboxesChecked.SLA}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    name="SLA"
-                    onChange={handleTechCheckboxChange}
-                  />
-                  SLA
-                </p>
-              </div>
-            </div>
-            <div className="filter-row">
-              <div
-                className={`filter-row__header ${
-                  priceFilterActive ? 'border-bottom active' : ''
-                }`}
-                onClick={() => {
-                  setPriceFilterActive(!priceFilterActive);
-                }}
-              >
-                {' '}
-                Price{' '}
-                <FontAwesomeIcon className="filter-icon" icon={faCaretDown} />
-              </div>
-              <div
-                className={`filter-dropdown-content ${
-                  priceFilterActive ? 'show' : ''
-                }`}
-              >
-                <Typography id="range-slider" gutterBottom>
-                  Price range (€)
-                </Typography>
-                <div className="slider">
-                  <Slider
-                    step={50}
-                    max={3000}
-                    value={price}
-                    onChange={handlePriceChange}
-                    valueLabelDisplay="auto"
-                    aria-labelledby="range-slider"
-                    getAriaValueText={valuetext}
-                  />
+      <>
+        <Head>
+          <title>Printers | 3D BUIG </title>
+        </Head>
+        <Layout>
+          <div css={searchBarStyles}>
+            <SearchBar
+              onCancelSearch={() => {
+                setSearchText('');
+              }}
+              value={searchText}
+              onChange={handleSearch}
+              onRequestSearch={() => () => console.log('onRequestSearch')}
+            />
+          </div>
+          <div css={printersStyle}>
+            <div className="filter">
+              <h2>CATEGORIES</h2>
+              <div className="filter-row">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'm') {
+                      setMatFilterActive(!matFilterActive);
+                    }
+                  }}
+                  className={`filter-row__header ${
+                    matFilterActive ? 'border-bottom active' : ''
+                  }`}
+                  onClick={() => {
+                    setMatFilterActive(!matFilterActive);
+                  }}
+                >
+                  {' '}
+                  Material{' '}
+                  <FontAwesomeIcon className="filter-icon" icon={faCaretDown} />
+                </div>
+                <div
+                  className={`filter-dropdown-content ${
+                    matFilterActive ? 'show' : ''
+                  }`}
+                >
+                  <p>
+                    <Checkbox
+                      checked={checkboxesChecked.Metal}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      name="Metal"
+                      onChange={handleMatCheckboxChange}
+                    />
+                    Metal
+                  </p>
+                  <p>
+                    <Checkbox
+                      checked={checkboxesChecked.Wood}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      name="Wood"
+                      onChange={handleMatCheckboxChange}
+                    />
+                    Wood
+                  </p>
+                  <p>
+                    <Checkbox
+                      checked={checkboxesChecked.Nylon}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      name="Nylon"
+                      onChange={handleMatCheckboxChange}
+                    />
+                    Polyamide Nylon
+                  </p>
+                  <p>
+                    <Checkbox
+                      checked={checkboxesChecked.TPU}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      name="TPU"
+                      onChange={handleMatCheckboxChange}
+                    />
+                    TPU
+                  </p>
+                  <p>
+                    <Checkbox
+                      checked={checkboxesChecked.ABS}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      name="ABS"
+                      onChange={handleMatCheckboxChange}
+                    />
+                    ABS
+                  </p>
+                  <p>
+                    <Checkbox
+                      checked={checkboxesChecked.Resin}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      name="Resin"
+                      onChange={handleMatCheckboxChange}
+                    />
+                    Resin
+                  </p>
+                  <p>
+                    <Checkbox
+                      checked={checkboxesChecked.Carbon}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      name="Carbon"
+                      onChange={handleMatCheckboxChange}
+                    />
+                    Carbon Fiber
+                  </p>
                 </div>
               </div>
+              <div className="filter-row">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    console.log(e.key);
+                    if (e.key === 't') {
+                      setTechFilterActive(!techFilterActive);
+                    }
+                  }}
+                  className={`filter-row__header ${
+                    techFilterActive ? 'border-bottom active' : ''
+                  }`}
+                  onClick={() => {
+                    setTechFilterActive(!techFilterActive);
+                  }}
+                >
+                  {' '}
+                  Technology{' '}
+                  <FontAwesomeIcon className="filter-icon" icon={faCaretDown} />
+                </div>
+                <div
+                  className={`filter-dropdown-content ${
+                    techFilterActive ? 'show' : ''
+                  }`}
+                >
+                  <p>
+                    <Checkbox
+                      checked={checkboxesChecked.FDM}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      name="FDM"
+                      onChange={handleTechCheckboxChange}
+                    />
+                    FDM
+                  </p>
+                  <p>
+                    <Checkbox
+                      checked={checkboxesChecked.SLS}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      name="SLS"
+                      onChange={handleTechCheckboxChange}
+                    />
+                    SLS
+                  </p>
+                  <p>
+                    <Checkbox
+                      checked={checkboxesChecked.Polyjet}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      name="Polyjet"
+                      onChange={handleTechCheckboxChange}
+                    />
+                    Polyjet
+                  </p>
+                  <p>
+                    <Checkbox
+                      checked={checkboxesChecked.SLA}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      name="SLA"
+                      onChange={handleTechCheckboxChange}
+                    />
+                    SLA
+                  </p>
+                </div>
+              </div>
+              <div className="filter-row">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    console.log(e.key);
+                    if (e.key === 'p') {
+                      setPriceFilterActive(!priceFilterActive);
+                    }
+                  }}
+                  className={`filter-row__header ${
+                    priceFilterActive ? 'border-bottom active' : ''
+                  }`}
+                  onClick={() => {
+                    setPriceFilterActive(!priceFilterActive);
+                  }}
+                >
+                  {' '}
+                  Price{' '}
+                  <FontAwesomeIcon className="filter-icon" icon={faCaretDown} />
+                </div>
+                <div
+                  className={`filter-dropdown-content ${
+                    priceFilterActive ? 'show' : ''
+                  }`}
+                >
+                  <Typography id="range-slider" gutterBottom>
+                    Price range (€)
+                  </Typography>
+                  <div className="slider">
+                    <Slider
+                      step={50}
+                      max={3000}
+                      value={price}
+                      onChange={handlePriceChange}
+                      valueLabelDisplay="auto"
+                      aria-labelledby="range-slider"
+                      getAriaValueText={valuetext}
+                    />
+                  </div>
+                </div>
+              </div>
+              <button onClick={handleResetFilter} className="reset-filter-btn">
+                Reset Filter
+              </button>
             </div>
-            <button onClick={handleResetFilter} className="reset-filter-btn">
-              Reset Filter
-            </button>
+            <div className="catalog">
+              {filterActive()
+                ? printersState.filteredPrinters.map((printer) => {
+                    return <PrinterCard key={printer.id} printer={printer} />;
+                  })
+                : printersState.printers.map((printer) => {
+                    return <PrinterCard key={printer.id} printer={printer} />;
+                  })}
+            </div>
           </div>
-          <div className="catalog">
-            {filterActive()
-              ? printersState.filteredPrinters.map((printer) => {
-                  return <PrinterCard key={printer.id} printer={printer} />;
-                })
-              : printersState.printers.map((printer) => {
-                  return <PrinterCard key={printer.id} printer={printer} />;
-                })}
-          </div>
-        </div>
-      </Layout>
+        </Layout>
+      </>
     );
   } else {
     return (

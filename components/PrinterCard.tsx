@@ -30,40 +30,38 @@ export const PrinterCard = ({ printer }: PrinterProps) => {
   }
 
   return (
-    <>
-      <article className="product">
-        <Link href={'/printers/' + printer.id}>
-          <div className="img-container">
-            <img
-              src={`/productImages/${slugify(printer.name)}.jpg`}
-              alt="Product 1"
-              className="product-img"
-            />
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleOverlay();
-                dispatchCart({
-                  type: 'ADD_TO_CART',
-                  payload: { ...printer, quantity: 1 },
-                });
-              }}
-              className="bag-btn"
-              disabled={checkIfInCart() ? true : false}
-              style={{ cursor: checkIfInCart() ? 'not-allowed' : 'pointer' }}
-              data-cy="printers-card-add-to-cart-button"
-            >
-              <FontAwesomeIcon
-                style={{ display: checkIfInCart() ? 'none' : 'inline-block' }}
-                icon={faShoppingCart}
-              />{' '}
-              {checkIfInCart() ? 'In Cart' : 'Add To Cart'}
-            </button>
-          </div>
-        </Link>
-        <h3>{printer.name}</h3>
-        <h4>{printer.price} €</h4>
-      </article>
-    </>
+    <article className="product">
+      <Link href={'/printers/' + printer.id}>
+        <div className="img-container">
+          <img
+            src={`/productImages/${slugify(printer.name)}.jpg`}
+            alt="Product 1"
+            className="product-img"
+          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleOverlay();
+              dispatchCart({
+                type: 'ADD_TO_CART',
+                payload: { ...printer, quantity: 1 },
+              });
+            }}
+            className="bag-btn"
+            disabled={checkIfInCart() ? true : false}
+            style={{ cursor: checkIfInCart() ? 'not-allowed' : 'pointer' }}
+            data-cy="printers-card-add-to-cart-button"
+          >
+            <FontAwesomeIcon
+              style={{ display: checkIfInCart() ? 'none' : 'inline-block' }}
+              icon={faShoppingCart}
+            />{' '}
+            {checkIfInCart() ? 'In Cart' : 'Add To Cart'}
+          </button>
+        </div>
+      </Link>
+      <h3>{printer.name}</h3>
+      <h4>{printer.price} €</h4>
+    </article>
   );
 };

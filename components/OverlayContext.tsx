@@ -1,6 +1,8 @@
 import { createContext, useContext, useState } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const OverlayStateContext = createContext<boolean>(false);
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const UpdateOverlayContext = createContext(() => {});
 
 const OverlayProvider: React.FC = ({ children }) => {
@@ -11,7 +13,7 @@ const OverlayProvider: React.FC = ({ children }) => {
   return (
     <OverlayStateContext.Provider value={overlayActive}>
       <UpdateOverlayContext.Provider value={toggleOverlay}>
-        {children};
+        {children}
       </UpdateOverlayContext.Provider>
     </OverlayStateContext.Provider>
   );

@@ -40,7 +40,9 @@ interface ActionMaterialFilter {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const MaterialStateContext = createContext<MaterialState>(initialMaterialState);
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const MaterialDispatchContext = createContext<Dispatch<ActionMaterials>>(
   () => null,
 );
@@ -64,6 +66,7 @@ const handleFilterMaterials = (
           return true;
         }
       }
+      return false;
       // SHOW IF EVERY FILTER IS TRUE
       // return action.payload.typeFilterTags.every((type: string) => {
       //   return material.type.includes(type);
@@ -116,7 +119,7 @@ const MaterialProvider: React.FC = ({ children }) => {
   return (
     <MaterialStateContext.Provider value={materials}>
       <MaterialDispatchContext.Provider value={dispatchMaterials}>
-        {children};
+        {children}
       </MaterialDispatchContext.Provider>
     </MaterialStateContext.Provider>
   );

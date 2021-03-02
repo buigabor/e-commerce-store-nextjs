@@ -7,7 +7,7 @@ const {
   updatePrinterById,
 } = require('../../utils/database');
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'DELETE') {
     const { id } = req.body;
     if (typeof id === 'number') {
@@ -43,3 +43,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
 };
+
+export default handler;

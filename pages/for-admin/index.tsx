@@ -11,6 +11,7 @@ import TableRow from '@material-ui/core/TableRow';
 import axios from 'axios';
 import { GetServerSidePropsContext } from 'next';
 import nextCookies from 'next-cookies';
+import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -18,14 +19,9 @@ import Layout from '../../components/Layout';
 import {
   Material,
   useDispatchMaterials,
-  useMaterials,
 } from '../../components/MaterialsContext';
 import { User } from '../../components/Nav';
-import {
-  Printer,
-  useDispatchPrinters,
-  usePrinters,
-} from '../../components/PrintersContext';
+import { Printer, useDispatchPrinters } from '../../components/PrintersContext';
 import { server } from '../../config';
 import { isSessionTokenValid } from '../../utils/auth';
 import { getSessionByToken } from '../../utils/database';
@@ -76,8 +72,6 @@ const Admin = ({
   materialsFetched,
   currentUser,
 }: AdminProps) => {
-  const printersState = usePrinters();
-  const materialsState = useMaterials();
   const dispatchMaterials = useDispatchMaterials();
   const dispatchPrinters = useDispatchPrinters();
   const [rows, setRows] = useState<RowItem[]>([]);
@@ -90,98 +84,103 @@ const Admin = ({
       alert('Permission denied');
       router.push('/');
     }
-  }, []);
+  }, [currentUser.admin, router]);
 
   useEffect(() => {
     if (printers && materials) {
-      let printersRows: RowItem[] = printers.map((printer) => {
+      const printersRows: RowItem[] = printers.map((printer) => {
         return { id: printer.id, name: printer.name, price: printer.price };
       });
 
-      let materialsRows: RowItem[] = materials?.map((material) => {
+      const materialsRows: RowItem[] = materials.map((material) => {
         return { id: material.id, name: material.name, price: material.price };
       });
       setRows([...printersRows, ...materialsRows]);
     }
-  }, [printers]);
+  }, [materials, printers]);
 
   useEffect(() => {
     dispatchMaterials({ type: 'SET_MATERIALS', payload: materialsFetched });
     dispatchPrinters({ type: 'SET_PRINTERS', payload: printersFetched });
     setMaterials(materialsFetched);
     setPrinters(printersFetched);
-  }, []);
+  }, [dispatchMaterials, dispatchPrinters, materialsFetched, printersFetched]);
 
   const classes = useStyles();
   if (currentUser.admin === false) {
     return (
       <Layout>
-        <div></div>
+        <div />
       </Layout>
     );
   }
   if (rows.length > 0) {
     return (
-      <Layout>
-        <div css={tableStyles}>
-          <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell width="10%">ID</TableCell>
-                  <TableCell width="40%" align="right">
-                    Name
-                  </TableCell>
-                  <TableCell width="20%" align="right">
-                    Price (€)
-                  </TableCell>
-                  <TableCell width="10%" align="right"></TableCell>
-                  <TableCell width="10%" align="right"></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell component="th" scope="row">
-                      {row.id}
+      <>
+        <Head>
+          <title>Manage Products | 3D BUIG</title>
+        </Head>
+        <Layout>
+          <div css={tableStyles}>
+            <TableContainer component={Paper}>
+              <Table className={classes.table} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell width="10%">ID</TableCell>
+                    <TableCell width="40%" align="right">
+                      Name
                     </TableCell>
-                    <TableCell align="right">{row.name}</TableCell>
-                    <TableCell align="right">{row.price}</TableCell>
-                    <TableCell align="right">
-                      <Link href={'/for-admin/' + row.id}>
-                        <a className="modify-edit">Edit</a>
-                      </Link>
+                    <TableCell width="20%" align="right">
+                      Price (€)
                     </TableCell>
-                    <TableCell align="right">
-                      <button
-                        className="modify-delete"
-                        onClick={() => {
-                          axios
-                            .delete('/api/products', {
-                              data: { id: row.id },
-                            })
-                            .then((res) => {
-                              if (res.status < 300) {
-                                setRows(
-                                  rows.filter((currentRow) => {
-                                    return currentRow.id !== row.id;
-                                  }),
-                                );
-                              }
-                            })
-                            .catch((e) => console.log(e));
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </TableCell>
+                    <TableCell width="10%" align="right" />
+                    <TableCell width="10%" align="right" />
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-      </Layout>
+                </TableHead>
+                <TableBody>
+                  {rows.map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell component="th" scope="row">
+                        {row.id}
+                      </TableCell>
+                      <TableCell align="right">{row.name}</TableCell>
+                      <TableCell align="right">{row.price}</TableCell>
+                      <TableCell align="right">
+                        <Link href={'/for-admin/' + row.id}>
+                          <a className="modify-edit">Edit</a>
+                        </Link>
+                      </TableCell>
+                      <TableCell align="right">
+                        <button
+                          className="modify-delete"
+                          onClick={() => {
+                            axios
+                              .delete('/api/products', {
+                                data: { id: row.id },
+                              })
+                              .then((res) => {
+                                if (res.status < 300) {
+                                  setRows(
+                                    rows.filter((currentRow) => {
+                                      return currentRow.id !== row.id;
+                                    }),
+                                  );
+                                }
+                              })
+                              .catch((e) => console.log(e));
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+        </Layout>
+      </>
     );
   } else {
     return (

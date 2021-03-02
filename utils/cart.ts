@@ -1,7 +1,7 @@
 import { CartState } from '../components/CartContext';
 
 export function calculateTotal(cartStateArg: CartState) {
-  const sumPrice = cartStateArg?.cart?.reduce((sum, cartItem) => {
+  const sumPrice = cartStateArg.cart.reduce((sum, cartItem) => {
     return sum + cartItem.price * cartItem.quantity;
   }, 0);
 
@@ -9,7 +9,7 @@ export function calculateTotal(cartStateArg: CartState) {
 }
 
 export function calcTotalNumberOfItems(cartStateArg: CartState) {
-  const sumPrice = cartStateArg?.cart?.reduce((quantity, cartItem) => {
+  const sumPrice = cartStateArg.cart.reduce((quantity, cartItem) => {
     return quantity + cartItem.quantity;
   }, 0);
 

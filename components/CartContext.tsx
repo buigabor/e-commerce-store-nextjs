@@ -72,12 +72,12 @@ export const cartReducer: Reducer<CartState, ActionCart> = (
       localStorage.setItem('cart', JSON.stringify(cart));
       return { ...state, cart: [...state.cart, action.payload] };
     case 'INCREMENT_QUANTITY':
-      let cartQtyIncremented = handleQuantity(state, action, 'add');
+      const cartQtyIncremented = handleQuantity(state, action, 'add');
       cart = { ...state, cart: cartQtyIncremented };
       localStorage.setItem('cart', JSON.stringify(cart));
       return { ...state, cart: cartQtyIncremented };
     case 'DECREMENT_QUANTITY':
-      let cartQtyDecremented = handleQuantity(state, action, 'subtract');
+      const cartQtyDecremented = handleQuantity(state, action, 'subtract');
       cart = { ...state, cart: cartQtyDecremented };
       localStorage.setItem('cart', JSON.stringify(cart));
       return { ...state, cart: cartQtyDecremented };
@@ -104,7 +104,9 @@ export const cartReducer: Reducer<CartState, ActionCart> = (
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const CartStateContext = createContext<CartState>(initialCartState);
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const CartDispatchContext = createContext<Dispatch<ActionCart>>(() => null);
 
 const CartProvider: React.FC = ({ children }) => {

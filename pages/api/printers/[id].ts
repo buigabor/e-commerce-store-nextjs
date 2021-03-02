@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getPrintersById } from '../../../utils/database';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const printerId = req.query.id;
   if (req.method === 'GET') {
     const printer = await getPrintersById(Number(printerId));
@@ -11,3 +11,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json({ success: true, printer });
   }
 };
+
+export default handler;

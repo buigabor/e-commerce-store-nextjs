@@ -9,6 +9,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import axios from 'axios';
 import { GetStaticProps } from 'next';
+import Head from 'next/head';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
@@ -158,7 +159,7 @@ const PrinterComponent = ({ printerFetched }: PrinterProps) => {
   }
 
   function showQuantity() {
-    if (printer && cartState) {
+    if (printer) {
       const currentPrinter = cartState.cart.find((cartItem) => {
         return cartItem.id === printer.id;
       });
@@ -169,7 +170,7 @@ const PrinterComponent = ({ printerFetched }: PrinterProps) => {
 
   useEffect(() => {
     setPrinter(printerFetched);
-  }, []);
+  }, [printerFetched]);
 
   function createData(name: string, value: string | string[] | number) {
     return { name, value };
@@ -184,126 +185,131 @@ const PrinterComponent = ({ printerFetched }: PrinterProps) => {
       createData('Price', printer.price + ' €'),
     ];
     return (
-      <Layout>
-        <div css={printerStyles}>
-          <div className="printer-header">
-            <div className="printer-header__img">
-              <Image
-                width={400}
-                height={400}
-                src={`/productImages/${slugify(printer.name)}.jpg`}
-              />
-            </div>
-            <div className="printer-header__content">
-              <TableContainer component={Paper}>
-                <Table aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>{printer.name}</TableCell>
-                      <TableCell align="right">Values</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row) => (
-                      <TableRow key={row.name}>
-                        <TableCell component="th" scope="row">
-                          {row.name}
-                        </TableCell>
-                        <TableCell align="right">{row.value}</TableCell>
+      <>
+        <Head>
+          <title>{printer.name} | 3D BUIG </title>
+        </Head>
+        <Layout>
+          <div css={printerStyles}>
+            <div className="printer-header">
+              <div className="printer-header__img">
+                <Image
+                  width={400}
+                  height={400}
+                  src={`/productImages/${slugify(printer.name)}.jpg`}
+                />
+              </div>
+              <div className="printer-header__content">
+                <TableContainer component={Paper}>
+                  <Table aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>{printer.name}</TableCell>
+                        <TableCell align="right">Values</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              {checkIfInCart() ? (
-                <div className="printer-header__cartBtn">
+                    </TableHead>
+                    <TableBody>
+                      {rows.map((row) => (
+                        <TableRow key={row.name}>
+                          <TableCell component="th" scope="row">
+                            {row.name}
+                          </TableCell>
+                          <TableCell align="right">{row.value}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                {checkIfInCart() ? (
+                  <div className="printer-header__cartBtn">
+                    <button
+                      className="printer-header__cartBtn-btn red"
+                      onClick={() => {
+                        dispatch({
+                          type: 'DECREMENT_QUANTITY',
+                          payload: printer.id,
+                        });
+                      }}
+                    >
+                      -
+                    </button>
+                    <span>{showQuantity()}</span>
+                    <button
+                      className="printer-header__cartBtn-btn"
+                      onClick={() => {
+                        dispatch({
+                          type: 'INCREMENT_QUANTITY',
+                          payload: printer.id,
+                        });
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
+                ) : (
                   <button
-                    className="printer-header__cartBtn-btn red"
                     onClick={() => {
                       dispatch({
-                        type: 'DECREMENT_QUANTITY',
-                        payload: printer.id,
+                        type: 'ADD_TO_CART',
+                        payload: { ...printer, quantity: 1 },
                       });
+                      toggleOverlay();
                     }}
+                    className="printer-header__cta"
                   >
-                    -
+                    Add To Cart
                   </button>
-                  <span>{showQuantity()}</span>
-                  <button
-                    className="printer-header__cartBtn-btn"
-                    onClick={() => {
-                      dispatch({
-                        type: 'INCREMENT_QUANTITY',
-                        payload: printer.id,
-                      });
-                    }}
-                  >
-                    +
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => {
-                    dispatch({
-                      type: 'ADD_TO_CART',
-                      payload: { ...printer, quantity: 1 },
-                    });
-                    toggleOverlay();
-                  }}
-                  className="printer-header__cta"
-                >
-                  Add To Cart
-                </button>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-          <hr />
-          <div className="printer-description">
-            <div>
-              <h2>{printer.name}</h2>
-              <h3>Description</h3>
-              <p>{printer.description}</p>
+            <hr />
+            <div className="printer-description">
+              <div>
+                <h2>{printer.name}</h2>
+                <h3>Description</h3>
+                <p>{printer.description}</p>
+              </div>
             </div>
-          </div>
-          <div className="printer-video">
-            <ReactPlayer url={printer.videoUrl} />
-          </div>
-          <hr />
-          <div className="printer-trusted">
-            <div className="printer-trusted__text">
-              <p>Trusted by over 110,000 engineers worldwide</p>
+            <div className="printer-video">
+              <ReactPlayer url={printer.videoUrl} />
             </div>
-            <div className="printer-trusted__brands">
-              <Image
-                width={100}
-                height={100}
-                src="https://www.3dhubs.com/images/homev2/trusted_by/ABB.svg"
-              />
-              <Image
-                width={100}
-                height={100}
-                src="https://www.3dhubs.com/images/homev2/trusted_by/NASA.svg"
-              />
-              <Image
-                width={100}
-                height={100}
-                src="https://www.3dhubs.com/images/homev2/trusted_by/Audi.svg"
-              />
+            <hr />
+            <div className="printer-trusted">
+              <div className="printer-trusted__text">
+                <p>Trusted by over 110,000 engineers worldwide</p>
+              </div>
+              <div className="printer-trusted__brands">
+                <Image
+                  width={100}
+                  height={100}
+                  src="https://www.3dhubs.com/images/homev2/trusted_by/ABB.svg"
+                />
+                <Image
+                  width={100}
+                  height={100}
+                  src="https://www.3dhubs.com/images/homev2/trusted_by/NASA.svg"
+                />
+                <Image
+                  width={100}
+                  height={100}
+                  src="https://www.3dhubs.com/images/homev2/trusted_by/Audi.svg"
+                />
 
-              <Image
-                width={70}
-                height={70}
-                src="https://www.3dhubs.com/images/homev2/trusted_by/HP.svg"
-              />
-              <Image
-                width={100}
-                height={100}
-                src="https://www.3dhubs.com/images/homev2/trusted_by/fillauer.svg"
-              />
+                <Image
+                  width={70}
+                  height={70}
+                  src="https://www.3dhubs.com/images/homev2/trusted_by/HP.svg"
+                />
+                <Image
+                  width={100}
+                  height={100}
+                  src="https://www.3dhubs.com/images/homev2/trusted_by/fillauer.svg"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </Layout>
+        </Layout>
+      </>
     );
   } else {
     return <div>Loading...</div>;
@@ -315,7 +321,7 @@ export default PrinterComponent;
 export async function getStaticPaths() {
   // Return a list of possible value for id
   const printersIdFetched = await getAllPrintersIds();
-  let printersId = printersIdFetched.map((printer: Printer) => {
+  const printersId = printersIdFetched.map((printer: Printer) => {
     return { params: { id: String(printer.id) } };
   });
   printersId.splice(printersId.length - 2, 2);
@@ -331,14 +337,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     .data.printer;
   console.log(printerFetched);
 
-  let compatibleMaterial = await getCompatibleMatsById(printerFetched.id);
+  const compatibleMaterial = await getCompatibleMatsById(printerFetched.id);
 
   // Combine the compatible materials with the printer...
-  let modifiedCompatibleMaterial = compatibleMaterial.map(
+  const modifiedCompatibleMaterial = compatibleMaterial.map(
     (mat: any) => mat.name,
   );
 
-  let printer = {
+  const printer = {
     ...printerFetched,
     compatibleMaterial: modifiedCompatibleMaterial,
   };

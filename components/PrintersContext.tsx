@@ -48,7 +48,9 @@ const initialPrinterState = {
   error: null,
 };
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const PrinterStateContext = createContext<PrinterState>(initialPrinterState);
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const PrinterDispatchContext = createContext<Dispatch<ActionPrinters>>(
   () => null,
 );
@@ -69,7 +71,7 @@ const handleFilterPrinters = (
         index++
       ) {
         if (
-          printer.compatibleMaterial?.includes(
+          printer.compatibleMaterial.includes(
             action.payload.matFilterTags[index],
           )
         ) {

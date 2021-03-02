@@ -142,7 +142,7 @@ export async function updatePrinterById(id: number, printer: Printer) {
 // MATERIALS TABLE
 
 export async function getMaterials() {
-  let materials = await sql`SELECT * FROM materials`;
+  const materials = await sql`SELECT * FROM materials`;
   return materials.map((m: Material) => camelcaseKeys(m));
 }
 
@@ -255,13 +255,13 @@ export async function deleteSessionByToken(token: string | undefined) {
 
 export async function getAllPrintersWithCompatibleMaterials() {
   // Get printers from PG database
-  let printersFetched = await getPrinters();
+  const printersFetched = await getPrinters();
 
   // Remove last 2 elements (count and SELECT)
   printersFetched.splice(printersFetched.length - 2, 2);
 
   // Insert compatibleMaterial property inside each printer
-  let printers: Printer[] = await Promise.all(
+  const printers: Printer[] = await Promise.all(
     printersFetched.map(async (printer: Printer) => {
       return {
         ...printer,
@@ -271,10 +271,10 @@ export async function getAllPrintersWithCompatibleMaterials() {
   );
 
   // Get all the name of mats
-  let printersWithCompatibleMats = printers.map((printer) => {
+  const printersWithCompatibleMats = printers.map((printer) => {
     return {
       ...printer,
-      compatibleMaterial: printer.compatibleMaterial?.map(
+      compatibleMaterial: printer.compatibleMaterial.map(
         (mat: any) => mat.name,
       ),
     };

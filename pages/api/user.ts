@@ -2,7 +2,7 @@ import cookie from 'cookie';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSessionByToken, getUserById } from '../../utils/database';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     const { token } = cookie.parse(req.headers.cookie || '');
 
@@ -18,3 +18,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json({ user });
   }
 };
+
+export default handler;

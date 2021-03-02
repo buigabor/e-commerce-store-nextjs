@@ -30,6 +30,11 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap"
             rel="stylesheet"
           />
+          <link
+            rel="shortcut icon"
+            href="/3Dlogo-fav-icon.svg"
+            type="image/ico"
+          />
         </Head>
         <body>
           <Main />

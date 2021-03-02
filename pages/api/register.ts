@@ -9,11 +9,11 @@ const {
 const cookie = require('cookie');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const Tokens = require('csrf');
+const csrfTokens = require('csrf');
 
-const tokens = new Tokens();
+const tokens = new csrfTokens();
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     try {
       const { username, email, token, password } = req.body;
@@ -45,7 +45,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       const passwordHashed = await bcrypt.hash(password, 10);
 
       // Save user to DB
-      let user = { username, email, password: passwordHashed };
+      const user = { username, email, password: passwordHashed };
       await saveUser(user);
 
       // Create JWT and send it back in a cookie
@@ -69,3 +69,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
 };
+
+export default handler;

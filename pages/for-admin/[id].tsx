@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
+import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { FormEvent, useEffect, useState } from 'react';
@@ -73,7 +74,7 @@ const editProductStyles = css`
 
 type Product = Printer | Material | undefined;
 
-const product = () => {
+const ProductItem = () => {
   const printersState = usePrinters();
   const materialsState = useMaterials();
   const [product, setProduct] = useState<Product>();
@@ -84,19 +85,19 @@ const product = () => {
   useEffect(() => {
     const { id } = router.query;
     setProductId(id);
-  }, []);
+  }, [router.query]);
   useEffect(() => {
-    let product: Product = printersState.printers.find((printer) => {
+    let currentProduct: Product = printersState.printers.find((printer) => {
       return printer.id === Number(productId);
     });
 
-    if (!product) {
-      product = materialsState.materials.find((material) => {
+    if (!currentProduct) {
+      currentProduct = materialsState.materials.find((material) => {
         return material.id === productId;
       });
     }
-    setProduct(product);
-  }, [productId]);
+    setProduct(currentProduct);
+  }, [materialsState.materials, printersState.printers, productId]);
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -118,59 +119,142 @@ const product = () => {
 
   if (product && 'technology' in product) {
     return (
-      <Layout>
-        <div css={editProductStyles}>
-          <div className="form-wrapper">
-            <form onSubmit={onSubmit} noValidate autoComplete="off">
-              <TextField
-                name="printingSize"
-                id="outlined-basic"
-                label="Printing Size"
-                variant="outlined"
-                value={product.printingSize}
-                onChange={(e) => {
-                  setProduct({ ...product, [e.target.name]: e.target.value });
-                }}
-              />
-              <TextField
-                name="videoUrl"
-                id="outlined-basic"
-                label="Video URL"
-                variant="outlined"
-                value={product.videoUrl}
-                onChange={(e) => {
-                  setProduct({ ...product, [e.target.name]: e.target.value });
-                }}
-              />
-              <div className="form-wrapper__country">
+      <>
+        <Head>
+          <title>{product.name} | 3D BUIG</title>
+        </Head>
+        <Layout>
+          <div css={editProductStyles}>
+            <div className="form-wrapper">
+              <form onSubmit={onSubmit} noValidate autoComplete="off">
                 <TextField
+                  name="printingSize"
                   id="outlined-basic"
-                  label="Printing Speed"
-                  name="printingSpeed"
+                  label="Printing Size"
                   variant="outlined"
-                  value={product.printingSpeed}
+                  value={product.printingSize}
                   onChange={(e) => {
                     setProduct({ ...product, [e.target.name]: e.target.value });
                   }}
                 />
                 <TextField
+                  name="videoUrl"
                   id="outlined-basic"
-                  label="File Format"
-                  name="fileFormat"
+                  label="Video URL"
                   variant="outlined"
-                  value={product.fileFormat}
+                  value={product.videoUrl}
                   onChange={(e) => {
                     setProduct({ ...product, [e.target.name]: e.target.value });
                   }}
                 />
-              </div>
-              <div className="form-wrapper__city">
+                <div className="form-wrapper__country">
+                  <TextField
+                    id="outlined-basic"
+                    label="Printing Speed"
+                    name="printingSpeed"
+                    variant="outlined"
+                    value={product.printingSpeed}
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                  />
+                  <TextField
+                    id="outlined-basic"
+                    label="File Format"
+                    name="fileFormat"
+                    variant="outlined"
+                    value={product.fileFormat}
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                  />
+                </div>
+                <div className="form-wrapper__city">
+                  <TextField
+                    id="outlined-basic"
+                    label="Price (€)"
+                    variant="outlined"
+                    name="price"
+                    value={product.price}
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                  />
+                  <TextField
+                    name="technology"
+                    id="outlined-basic"
+                    label="Technology"
+                    variant="outlined"
+                    value={product.technology}
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                  />
+                </div>
+                <TextField
+                  name="description"
+                  id="outlined-multiline-static"
+                  label="Description"
+                  multiline
+                  rows={4}
+                  variant="outlined"
+                  value={product.description}
+                  onChange={(e) => {
+                    setProduct({ ...product, [e.target.name]: e.target.value });
+                  }}
+                />
+                <button className="form-btn">Update</button>
+              </form>
+            </div>
+            <div className="cart-content">
+              <Image
+                width={250}
+                height={250}
+                src={`/productImages/${slugify(product.name)}.jpg`}
+              />
+            </div>
+          </div>
+        </Layout>
+      </>
+    );
+  } else if (product && 'type' in product) {
+    return (
+      <>
+        <Head>
+          <title>3D BUIG | Edit Product</title>
+        </Head>
+        <Layout>
+          <div css={editProductStyles}>
+            <div className="form-wrapper">
+              <form onSubmit={onSubmit} noValidate autoComplete="off">
+                <TextField
+                  name="type"
+                  id="outlined-basic"
+                  label="Type Of Material"
+                  variant="outlined"
+                  value={product.type}
+                  onChange={(e) => {
+                    setProduct({ ...product, [e.target.name]: e.target.value });
+                  }}
+                />
                 <TextField
                   id="outlined-basic"
                   label="Price (€)"
                   variant="outlined"
-                  name="price"
                   value={product.price}
+                  name="price"
                   onChange={(e) => {
                     setProduct({
                       ...product,
@@ -178,83 +262,19 @@ const product = () => {
                     });
                   }}
                 />
-                <TextField
-                  name="technology"
-                  id="outlined-basic"
-                  label="Technology"
-                  variant="outlined"
-                  value={product.technology}
-                  onChange={(e) => {
-                    setProduct({ ...product, [e.target.name]: e.target.value });
-                  }}
-                />
-              </div>
-              <TextField
-                name="description"
-                id="outlined-multiline-static"
-                label="Description"
-                multiline
-                rows={4}
-                variant="outlined"
-                value={product.description}
-                onChange={(e) => {
-                  setProduct({ ...product, [e.target.name]: e.target.value });
-                }}
+                <button className="form-btn">Update</button>
+              </form>
+            </div>
+            <div className="cart-content">
+              <Image
+                width={250}
+                height={250}
+                src={`/productImages/${slugify(product.name)}.jpg`}
               />
-              <button className="form-btn">Update</button>
-            </form>
+            </div>
           </div>
-          <div className="cart-content">
-            <Image
-              width={250}
-              height={250}
-              src={`/productImages/${slugify(product!.name)}.jpg`}
-            ></Image>
-          </div>
-        </div>
-      </Layout>
-    );
-  } else if (product && 'type' in product) {
-    return (
-      <Layout>
-        <div css={editProductStyles}>
-          <div className="form-wrapper">
-            <form onSubmit={onSubmit} noValidate autoComplete="off">
-              <TextField
-                name="type"
-                id="outlined-basic"
-                label="Type Of Material"
-                variant="outlined"
-                value={product.type}
-                onChange={(e) => {
-                  setProduct({ ...product, [e.target.name]: e.target.value });
-                }}
-              />
-              <TextField
-                id="outlined-basic"
-                label="Price (€)"
-                variant="outlined"
-                value={product.price}
-                name="price"
-                onChange={(e) => {
-                  setProduct({
-                    ...product,
-                    [e.target.name]: Number(e.target.value),
-                  });
-                }}
-              />
-              <button className="form-btn">Update</button>
-            </form>
-          </div>
-          <div className="cart-content">
-            <Image
-              width={250}
-              height={250}
-              src={`/productImages/${slugify(product!.name)}.jpg`}
-            ></Image>
-          </div>
-        </div>
-      </Layout>
+        </Layout>
+      </>
     );
   } else {
     return (
@@ -265,4 +285,4 @@ const product = () => {
   }
 };
 
-export default product;
+export default ProductItem;

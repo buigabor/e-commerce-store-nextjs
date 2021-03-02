@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '../components/Layout';
@@ -170,77 +171,82 @@ const homeStyles = css`
 
 export default function Home() {
   return (
-    <Layout>
-      <div css={homeStyles}>
-        <div className="front-image">
-          <Image width={500} height={500} src="/3D-front-page.jpg" />
+    <>
+      <Head>
+        <title>Home | 3D BUIG </title>
+      </Head>
+      <Layout>
+        <div css={homeStyles}>
+          <div className="front-image">
+            <Image width={500} height={500} src="/3D-front-page.jpg" />
+          </div>
+          <div className="front-wrapper">
+            <div className="front-wrapper__btn-wrapper">
+              <Link href="/register">
+                <button className="front-wrapper__sign-up">Sign Up</button>
+              </Link>
+              <Link href="/login">
+                <button className="front-wrapper__login">Login</button>
+              </Link>
+            </div>
+            <div className="front-wrapper__icon">
+              <Image src="/3Dlogo.svg" width={120} height={120} />
+              <span>3D BUIG</span>
+            </div>
+            <div className="front-wrapper__text">
+              <h2>Order custom parts online</h2>
+              <p>
+                On-demand manufacturing and rapid prototyping. Get your quote in
+                seconds, parts delivered in days.
+              </p>
+              <Link href="/printers">
+                <button>Go To Products</button>
+              </Link>
+            </div>
+          </div>
+          <div className="front-choose-us">
+            <span className="front-choose-us__text">
+              Our experience in numbers
+            </span>
+            <div className="front-choose-us__row">
+              <div className="front-choose-us__row-box">
+                <Image width={60} height={60} src="/icons/engineers.svg" />
+                <h5>145,000</h5>
+                <p>engineers served</p>
+              </div>
+              <div className="front-choose-us__row-box">
+                <Image width={60} height={60} src="/icons/businesses.svg" />
+                <h5>30,000</h5>
+                <p>business</p>
+              </div>
+            </div>
+            <div className="front-choose-us__row">
+              <div className="front-choose-us__row-box">
+                <Image width={60} height={60} src="/icons/mps.svg" />
+                <h5>200</h5>
+                <p>manufacturing partners</p>
+              </div>
+              <div className="front-choose-us__row-box">
+                <Image width={60} height={60} src="/icons/parts.svg" />
+                <h5>5M+</h5>
+                <p>parts &amp; prototypes produced</p>
+              </div>
+            </div>
+            <div className="front-choose-us__row">
+              <div className="front-choose-us__row-box">
+                <Image width={60} height={60} src="/icons/fortune500.svg" />
+                <h5>27%</h5>
+                <p>of Fortune 500 companies</p>
+              </div>
+              <div className="front-choose-us__row-box">
+                <Image width={60} height={60} src="/icons/machines.svg" />
+                <h5>4200+</h5>
+                <p>machines</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="front-wrapper">
-          <div className="front-wrapper__btn-wrapper">
-            <Link href="/register">
-              <button className="front-wrapper__sign-up">Sign Up</button>
-            </Link>
-            <Link href="/login">
-              <button className="front-wrapper__login">Login</button>
-            </Link>
-          </div>
-          <div className="front-wrapper__icon">
-            <Image src="/3Dlogo.svg" width={120} height={120} />
-            <span>3D BUIG</span>
-          </div>
-          <div className="front-wrapper__text">
-            <h2>Order custom parts online</h2>
-            <p>
-              On-demand manufacturing and rapid prototyping. Get your quote in
-              seconds, parts delivered in days.
-            </p>
-            <Link href="/printers">
-              <button>Go To Products</button>
-            </Link>
-          </div>
-        </div>
-        <div className="front-choose-us">
-          <span className="front-choose-us__text">
-            Our experience in numbers
-          </span>
-          <div className="front-choose-us__row">
-            <div className="front-choose-us__row-box">
-              <Image width={60} height={60} src="/icons/engineers.svg" />
-              <h5>145,000</h5>
-              <p>engineers served</p>
-            </div>
-            <div className="front-choose-us__row-box">
-              <Image width={60} height={60} src="/icons/businesses.svg" />
-              <h5>30,000</h5>
-              <p>business</p>
-            </div>
-          </div>
-          <div className="front-choose-us__row">
-            <div className="front-choose-us__row-box">
-              <Image width={60} height={60} src="/icons/mps.svg" />
-              <h5>200</h5>
-              <p>manufacturing partners</p>
-            </div>
-            <div className="front-choose-us__row-box">
-              <Image width={60} height={60} src="/icons/parts.svg" />
-              <h5>5M+</h5>
-              <p>parts &amp; prototypes produced</p>
-            </div>
-          </div>
-          <div className="front-choose-us__row">
-            <div className="front-choose-us__row-box">
-              <Image width={60} height={60} src="/icons/fortune500.svg" />
-              <h5>27%</h5>
-              <p>of Fortune 500 companies</p>
-            </div>
-            <div className="front-choose-us__row-box">
-              <Image width={60} height={60} src="/icons/machines.svg" />
-              <h5>4200+</h5>
-              <p>machines</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 }

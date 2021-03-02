@@ -125,7 +125,6 @@ export const Nav = () => {
   const toggleOverlay = useUpdateOverlay();
   const [profileClicked, setProfileClicked] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [logoutClicked, setLogoutClicked] = useState(false);
 
   const router = useRouter();
 
@@ -146,7 +145,7 @@ export const Nav = () => {
         }
       })
       .catch((e) => console.log(e));
-  }, [logoutClicked]);
+  }, []);
 
   return (
     <div css={navStyles}>
@@ -185,6 +184,13 @@ export const Nav = () => {
             data-cy="nav-cart-button"
           />
           <div
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'o') {
+                return toggleOverlay();
+              }
+            }}
             onClick={() => {
               toggleOverlay();
             }}
@@ -196,6 +202,14 @@ export const Nav = () => {
         {currentUser ? (
           <>
             <div
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                console.log(e.key);
+                if (e.key === 'p') {
+                  setProfileClicked(!profileClicked);
+                }
+              }}
               onClick={() => {
                 setProfileClicked(!profileClicked);
               }}
@@ -210,7 +224,7 @@ export const Nav = () => {
               <div
                 className="nav-dropdown__row"
                 style={{
-                  display: currentUser?.admin ? 'inline-block' : 'none',
+                  display: currentUser.admin ? 'inline-block' : 'none',
                 }}
               >
                 <Link href="/for-admin">
@@ -220,6 +234,16 @@ export const Nav = () => {
                 </Link>
               </div>
               <div
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  console.log(e.key);
+                  if (e.key === 'l') {
+                    setProfileClicked(false);
+                    alert('Logged out!');
+                    router.push('/logout');
+                  }
+                }}
                 className="nav-dropdown__row"
                 onClick={() => {
                   setProfileClicked(false);
@@ -235,14 +259,19 @@ export const Nav = () => {
             </div>
           </>
         ) : (
-          <>
-            <FontAwesomeIcon
-              icon={faUser}
-              onClick={() => {
+          <FontAwesomeIcon
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'i') {
                 router.push('/login');
-              }}
-            />
-          </>
+              }
+            }}
+            icon={faUser}
+            onClick={() => {
+              router.push('/login');
+            }}
+          />
         )}
       </div>
     </div>

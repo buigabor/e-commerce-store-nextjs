@@ -1,11 +1,19 @@
 import cookie from 'cookie';
 import { GetServerSidePropsContext } from 'next';
 import nextCookies from 'next-cookies';
+import Head from 'next/head';
 import React from 'react';
 import { deleteSessionByToken } from '../utils/database';
 
 const logout = () => {
-  return <div></div>;
+  return (
+    <>
+      <Head>
+        <title>Logout | 3D BUIG </title>
+      </Head>
+      <div />
+    </>
+  );
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {

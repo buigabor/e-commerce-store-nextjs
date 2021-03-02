@@ -23,39 +23,37 @@ export const MaterialCard = ({ material }: MaterialProps) => {
   }
 
   return (
-    <>
-      <article className="product">
-        <Link href={'/materials/' + material.id}>
-          <div className="img-container">
-            <img
-              src={`/productImages/${slugify(material.name)}.jpg`}
-              alt="Product 1"
-              className="product-img"
-            />
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleOverlay();
-                dispatchCart({
-                  type: 'ADD_TO_CART',
-                  payload: { ...material, quantity: 1 },
-                });
-              }}
-              className="bag-btn"
-              disabled={checkIfInCart() ? true : false}
-              style={{ cursor: checkIfInCart() ? 'not-allowed' : 'pointer' }}
-            >
-              <FontAwesomeIcon
-                style={{ display: checkIfInCart() ? 'none' : 'inline-block' }}
-                icon={faShoppingCart}
-              />{' '}
-              {checkIfInCart() ? 'In Cart' : 'Add To Cart'}
-            </button>
-          </div>
-        </Link>
-        <h3>{material.name}</h3>
-        <h4>{material.price} €</h4>
-      </article>
-    </>
+    <article className="product">
+      <Link href={'/materials/' + material.id}>
+        <div className="img-container">
+          <img
+            src={`/productImages/${slugify(material.name)}.jpg`}
+            alt="Product 1"
+            className="product-img"
+          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleOverlay();
+              dispatchCart({
+                type: 'ADD_TO_CART',
+                payload: { ...material, quantity: 1 },
+              });
+            }}
+            className="bag-btn"
+            disabled={checkIfInCart() ? true : false}
+            style={{ cursor: checkIfInCart() ? 'not-allowed' : 'pointer' }}
+          >
+            <FontAwesomeIcon
+              style={{ display: checkIfInCart() ? 'none' : 'inline-block' }}
+              icon={faShoppingCart}
+            />{' '}
+            {checkIfInCart() ? 'In Cart' : 'Add To Cart'}
+          </button>
+        </div>
+      </Link>
+      <h3>{material.name}</h3>
+      <h4>{material.price} €</h4>
+    </article>
   );
 };
