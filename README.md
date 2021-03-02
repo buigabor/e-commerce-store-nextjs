@@ -13,14 +13,6 @@ I designed and developed an e-commerce website selling 3D printers and printing 
 - Edit and delete products for admins ✍️
 - REST API 🖥️ 
 
-## Technologies Used
-
-Frontend: Next.js, React, TypeScript, CSS, HTML5
-Backend: Node.js
-Database: PostgreSQL
-Testing: Cypress, Jest
-Miscellaneous: Emotion, Material UI
-
 ## Installation
 
 Use the package manager [yarn](https://yarnpkg.com/) to install the dependencies.
@@ -39,38 +31,37 @@ yarn dev
 
 ## API Routes
 
-GET all materials
+#### GET all materials
 ```bash
 /api/materials
 ```
 
-GET a material by id
+#### GET a material by id
 ```bash
 /api/materials/1
 ```
 
-GET all printers
+#### GET all printers
 ```bash
 /api/printers
 ```
 
-GET a material by id
+#### GET a material by id
 ```bash
 /api/printers/1
 ```
 
-GET user by id
+#### GET user by id
 ```bash
 /api/users/1
 ```
 
-GET user by cookie
+#### GET user by cookie
 ```bash
 /api/user
 ```
 
-
-POST Login
+#### POST Login
 ```bash
 /api/login
 ```
@@ -78,15 +69,25 @@ POST Login
  axios.post('/api/login', {username:'', password:'', email:''})
 ```
 
-POST Register
+#### POST Register
 ```bash
-/api/login
+/api/register
 ```
 ```bash
- axios.post('/api/login', {username:'', password:'', email:'', token:''})
+ axios.post('/api/register', {username:'', password:'', email:'', token:''})
 ```
 
+## Technologies Used
+
+Frontend: Next.js, React, TypeScript, CSS, HTML5  
+Backend: Node.js  
+Database: PostgreSQL   
+Testing: Cypress, Jest   
+Miscellaneous: Emotion, Material UI 
+ 
 ## Preview
 
-
+<img src="/public/previews/preview1.png">
+<img src="/public/previews/preview3.png">
+<img src="/public/previews/preview2.png">
 
