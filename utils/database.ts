@@ -2,7 +2,9 @@ import camelcaseKeys from 'camelcase-keys';
 import postgres from 'postgres';
 import { Material } from '../components/MaterialsContext';
 import { Printer } from '../components/PrintersContext';
-// const require = createRequire(import.meta.url);
+import setPostgresDefaultsOnHeroku from './setPostgresDeafultsOnHeroku';
+setPostgresDefaultsOnHeroku();
+
 require('dotenv-safe').config();
 
 // function connectOneTimeToDB() {
