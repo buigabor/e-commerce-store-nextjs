@@ -193,8 +193,8 @@ const Layout: React.FC = ({ children }) => {
         css={overlayStyles}
         className="overlay"
         style={{ visibility: overlayActive ? 'visible' : 'hidden' }}
-        onClick={(e) => {
-          if (e.target.classList.contains('overlay')) {
+        onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+          if ((e.target as HTMLDivElement).classList.contains('overlay')) {
             return toggleOverlay();
           }
         }}
