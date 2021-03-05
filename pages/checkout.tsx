@@ -7,7 +7,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
 import slugify from 'slugify';
-import { useCart } from '../components/CartContext';
+import { useCart, useDispatchCart } from '../components/CartContext';
 import Layout from '../components/Layout';
 import { isSessionTokenValid } from '../utils/auth';
 
@@ -108,6 +108,7 @@ const checkoutStyles = css`
 
 const Checkout = () => {
   const cartState = useCart();
+  const dispatch = useDispatchCart();
   const router = useRouter();
 
   function calculateTotal() {
@@ -130,6 +131,7 @@ const Checkout = () => {
               autoComplete="off"
               onSubmit={(e) => {
                 e.preventDefault();
+                dispatch({ type: 'CLEAR_CART', payload: '' });
                 router.push('/thankyou');
               }}
             >
