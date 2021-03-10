@@ -1,4 +1,4 @@
-## 🖨️ 3D Printer E-commerce Project
+# 🖨️ 3D Printer E-commerce Project
 
 I designed and developed an e-commerce website selling 3D printers and printing materials. 
 
