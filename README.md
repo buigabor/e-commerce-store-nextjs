@@ -79,7 +79,7 @@ yarn dev
 
 ## 🖥️ Technologies Used
 
-Frontend: Next.js, React, TypeScript, CSS, HTML5  
+Frontend: Next.js, React, TypeScript, CSS, HTML5, React Context  
 Backend: Node.js  
 Database: PostgreSQL   
 Testing: Cypress, Jest   
